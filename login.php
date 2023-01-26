@@ -11,16 +11,19 @@
 
     <body>
     <div>
+        <h1>
+            WiseTreeBank
+        </h1>
         <h2 id="connexion_title">
             Connectez-vous:
         </h2>
-        <form action="./confirmation.html">
+        <form action="./accounts.php">
             <label for="accountnumber">Numéro de compte*:</label><br>
             <input type="text" id="accountnumber" name="accountnumber" placeholder="04123456789" pattern="[0-9]{11}" required><br>
             <small>Format: 04123456789</small><br>
 
             <label for="password">Code Personnel*:</label><br>
-            <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" required><br>
+            <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" required><br><br>
             
             <input type="submit" value="Login" id="command_button">
         </form>
