@@ -4,6 +4,11 @@
     <meta charset="utf-8">
     <title>Ma banque</title>
     <link rel="stylesheet" type="text/css" href="main.css">
+    <style>
+        h1, h2{
+        text-align: center;
+    }
+    </style>   
 </head>
 
 <body>
