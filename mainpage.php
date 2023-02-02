@@ -1,3 +1,9 @@
+<?php
+session_start();
+var_dump($_SESSION);
+?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,7 +31,11 @@
     <p><u>FR1312739000706433417217M62</u></p>
 
 
-    <p><b><a href="login.php">Déconnexion</a></b></p>
+    <p><b>
+        <form method="POST" action="index.php">
+            <button name="Deco">Deconnexion</button>
+        </form> 
+    </b></p>
 
 
 
