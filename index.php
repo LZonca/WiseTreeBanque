@@ -1,22 +1,28 @@
 <?php
-    session_start();
+session_start();
+if(isset($_POST['Deco']))
+    {
+        unset($_SESSION['usernumber']);
+    }
 function checklogin()
 {
     $err = 0;
     if (isset($_POST['login'])) {
         if (isset($_POST['usernumber']) && $_POST['usernumber'] != '' && strlen($_POST['usernumber']) == 11) {
-            if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password'])) {
+            if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password']) == 6) {
                 $err = 0;
                 $_SESSION['usernumber'] = $_POST['usernumber'];
                 header('Location: lescomptes.php');
             } else {
-                return $err = 1;
+                $err = 1;
             }
-        } else {
+        }else
+        {
             $err = 2;
         }
-    }
-    var_dump($_SESSION);
+        var_dump($_SESSION);
+        return $err;
+    }  
 }
 ?>
 
@@ -52,29 +58,26 @@ function checklogin()
         <p id="obligatory">
             * : Champ obligatoire
         </p>
+        <div class = "error_box">
         <?php
         if(isset($_POST['login']))
         {
             if(checklogin() == 0)
             {
-                echo "Entrez données";
-                if (checklogin() == 1)
-                {
-                    echo '<div class = "error_box">';
-                        echo '<h2 class ="error">Identifiant manquant</h2>';
-                    echo '</div>';
-                    if (checklogin() == 2)
-                    {
-                        
-                        echo '<div class = "error_box">';
-                            echo '<h2 class ="error">Mot de passe manquant</h2>';
-                        echo '</div>';
-                    }
-                }
+                echo "Pas erreur";
             }
-            
+            elseif(checklogin() == 1)
+            {
+                echo '<h2 class ="error">Identifiant manquant</h2>';
+            }
+            elseif(checklogin() == 2)
+            {
+                echo '<h2 class ="error">Mot de passe manquant</h2>';
+            }
         }
-?>
+        
+    ?>
+        </div>
     </div>
     </body>
 </html>

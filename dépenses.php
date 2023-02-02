@@ -30,7 +30,6 @@
 
     if (isset($_POST['send'])){
         echo "<p class='confirm'> $confirm <p>";
-        
     }
     ?>
 
