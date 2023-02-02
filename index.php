@@ -1,21 +1,23 @@
 <?php
     session_start();
+function checklogin()
+{
+    $err = 0;
     if (isset($_POST['login'])) {
-            echo '<h1>Traitement en cours</h1>';
-            echo "<br>";
-            if (isset($_POST['usernumber']) && $_POST['usernumber'] != '' && strlen($_POST['usernumber']) == 11) {
-                if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password'])) {
-                    $_SESSION['usernumber'] = $_POST['usernumber'];
-            header('Location: lescomptes.php');
-                } else {
-                    echo 'Mot de passe manquant';
-                }
+        if (isset($_POST['usernumber']) && $_POST['usernumber'] != '' && strlen($_POST['usernumber']) == 11) {
+            if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password'])) {
+                $err = 0;
+                $_SESSION['usernumber'] = $_POST['usernumber'];
+                header('Location: lescomptes.php');
+            } else {
+                return $err = 1;
             }
-            else {
-            echo 'Identifiant manquant';
+        } else {
+            $err = 2;
         }
     }
-        var_dump($_SESSION);
+    var_dump($_SESSION);
+}
 ?>
 
 <!DOCTYPE html>
@@ -50,6 +52,29 @@
         <p id="obligatory">
             * : Champ obligatoire
         </p>
+        <?php
+        if(isset($_POST['login']))
+        {
+            if(checklogin() == 0)
+            {
+                echo "Entrez données";
+                if (checklogin() == 1)
+                {
+                    echo '<div class = "error_box">';
+                        echo '<h2 class ="error">Identifiant manquant</h2>';
+                    echo '</div>';
+                    if (checklogin() == 2)
+                    {
+                        
+                        echo '<div class = "error_box">';
+                            echo '<h2 class ="error">Mot de passe manquant</h2>';
+                        echo '</div>';
+                    }
+                }
+            }
+            
+        }
+?>
     </div>
     </body>
 </html>

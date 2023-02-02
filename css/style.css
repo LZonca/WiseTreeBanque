@@ -1,3 +1,12 @@
 #connexion_title{
     color: #0c6822;
 }
+
+.error
+{
+    color: black;
+}
+
+.error_box{
+    background-color: red;
+}
