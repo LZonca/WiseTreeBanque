@@ -1,6 +1,10 @@
 <?php
 session_start();
 var_dump($_SESSION);
+if(isset($_POST['Deco']))
+    {
+        unset($_SESSION['usernumber']);
+    }
 ?>
 
 
@@ -18,7 +22,9 @@ var_dump($_SESSION);
 </head>
 
 <body>
-    <h1>Bonjour...</h1>
+    <?php
+    echo "<h1>Bonjour \"Nom\"</h1>";
+    echo "<h2>Compte n° " . htmlspecialchars($_SESSION['usernumber']). "</h1>"; ?>
     <h2>Bienvenue sur la Wise Tree Bank</h2>
     <h3><u>Vôtre compte</u></h3>
     <p>
@@ -36,14 +42,5 @@ var_dump($_SESSION);
             <button name="Deco">Deconnexion</button>
         </form> 
     </b></p>
-
-
-
-
-
-
-
-
 </body>
-
 </html>

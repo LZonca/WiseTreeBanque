@@ -1,10 +1,5 @@
 <?php
     session_start();
-    if(isset($_POST['Deco']))
-    {
-        unset($_SESSION['usernumber']);
-    }
-
     if (isset($_POST['login'])) {
             echo '<h1>Traitement en cours</h1>';
             echo "<br>";
@@ -20,7 +15,6 @@
             echo 'Identifiant manquant';
         }
     }
-        
         var_dump($_SESSION);
 ?>
 
