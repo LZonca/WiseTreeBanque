@@ -29,7 +29,7 @@ if(isset($_POST['Deco']))
     <h3><u>Vôtre compte</u></h3>
     <p>
         <ul>
-            <li><a href="dépenses.html">Solde : ___ €</a></li>
+            <li><a href="dépenses.php">Solde : ___ €</a></li>
             <li>Découvert autorisé : ___ €</li>
         </ul>
     </p>
