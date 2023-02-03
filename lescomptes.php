@@ -9,7 +9,7 @@
     {
         header('Location: index.php');
     }
-var_dump($_SESSION['usernumber']);
+// var_dump($_SESSION['usernumber']); // A enlever si nécéssaire
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +17,7 @@ var_dump($_SESSION['usernumber']);
     <head>
         <title>Wise Tree Banque</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="icon" type="image/jpg" href="logo.jpg" />
         <style>
         </style>
     </head>
@@ -31,7 +32,7 @@ var_dump($_SESSION['usernumber']);
         </header>
         <?php
         echo "<h1>Bonjour \"Nom\"</h1>";?>
-        <h2>Bienvenue sur la Wise Tree Bank</h2>
+        <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
         <h1>Vos comptes<h1>
         <div class="comptes_container">
             <?php

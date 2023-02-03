@@ -1,6 +1,6 @@
 <?php
 session_start();
-var_dump($_SESSION);
+// var_dump($_SESSION['usernumber']); // A enlever si nécéssaire
 if(isset($_POST['Deco']))
     {
         unset($_SESSION['usernumber']);
@@ -12,13 +12,13 @@ if(!isset($_SESSION['usernumber']))
     }
 ?>
 
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>Ma banque</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="icon" type="image/jpg" href="logo.jpg" />
     <style>
         h1, h2{
         text-align: center;
@@ -40,9 +40,9 @@ if(!isset($_SESSION['usernumber']))
     </header>
     <?php
     echo "<h1>Bonjour \"Nom\"</h1>";
-    echo "<h2>Compte n° " . htmlspecialchars($_SESSION['usernumber']). "</h1>"; ?>
-    <h2>Bienvenue sur la Wise Tree Bank</h2>
-    <h3><u>Vôtre compte</u></h3>
+    echo "<h2>Compte n° " . htmlspecialchars($_SESSION['usernumber']). "</h2>"; ?>
+    <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
+    <h3><u>Votre compte</u></h3>
     <p>
         <ul>
             <li><a href="dépenses.php">Solde : ___ €</a></li>

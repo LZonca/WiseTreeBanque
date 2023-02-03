@@ -1,5 +1,6 @@
 <?php
 session_start();
+// var_dump($_SESSION['usernumber']); // A enlever si nécéssaire
 if(isset($_POST['Deco']))
     {
         unset($_SESSION['usernumber']);
@@ -33,6 +34,7 @@ checklogin();
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/jpg" href="logo.jpg" />
         <title>Connexion</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
