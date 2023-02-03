@@ -50,7 +50,11 @@ if(!isset($_SESSION['usernumber']))
         </ul>
     </p>
     <h3>RIB</h3>
-    <p><u>FR1312739000706433417217M62</u></p>
+    <?php
+        $ribuser = "FR1312739000706433417217M62";
+        echo "<p><u>$ribuser</u></p>";
+    ?>
+    
 
 </body>
 </html>
