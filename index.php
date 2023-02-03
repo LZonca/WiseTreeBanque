@@ -8,8 +8,8 @@ function checklogin()
 {
     $err = 0;
     if (isset($_POST['login'])) {
-        if (isset($_POST['usernumber']) && $_POST['usernumber'] != '' && strlen($_POST['usernumber']) == 11) {
-            if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password']) == 6) {
+        if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password']) >= 6) {
+            if (isset($_POST['usernumber']) && $_POST['usernumber'] != '' && strlen($_POST['usernumber']) == 11) {
                 $err = 0;
                 $_SESSION['usernumber'] = $_POST['usernumber'];
                 header('Location: lescomptes.php');
@@ -20,10 +20,10 @@ function checklogin()
         {
             $err = 2;
         }
-        var_dump($_SESSION);
         return $err;
     }  
 }
+checklogin();
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +47,7 @@ function checklogin()
         </h2>
         <form action="index.php" method="post">
             <label for="accountnumber">Numéro de compte*:</label><br>
-            <input type="text" id="accountnumber" name="usernumber" placeholder="04123456789" pattern="[0-9]{11}" required><br>
+            <input type="text" name="usernumber" placeholder="04123456789" pattern="[0-9]{11}" required><br>
             <small>Format: 04123456789</small><br>
 
             <label for="password">Code Personnel*:</label><br>
@@ -59,24 +59,23 @@ function checklogin()
             * : Champ obligatoire
         </p>
         <div class = "error_box">
-        <?php
-        if(isset($_POST['login']))
-        {
-            if(checklogin() == 0)
-            {
-                echo "Pas erreur";
-            }
-            elseif(checklogin() == 1)
-            {
-                echo '<h2 class ="error">Identifiant manquant</h2>';
-            }
-            elseif(checklogin() == 2)
-            {
-                echo '<h2 class ="error">Mot de passe manquant</h2>';
-            }
-        }
-        
-    ?>
+            <?php
+                if(isset($_POST['login']))
+                {
+                    if(checklogin() == 0)
+                    {
+                        echo "Pas erreur";
+                    }
+                    elseif(checklogin() == 1)
+                    {
+                        echo '<h2 class ="error">L\'identifiant ne respecte pas les conditions !</h2>';
+                    }
+                    elseif(checklogin() == 2)
+                    {
+                        echo '<h2 class ="error">Le mot de passe ne respecte pas les conditions ! </h2>';
+                    }
+                }
+            ?>
         </div>
     </div>
     </body>
