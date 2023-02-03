@@ -11,6 +11,23 @@
     background-color: red;
 }
 
+.confirm{
+    color: green;
+}
+
 body{
     text-align: center;
+}
+
+.nav_bar{
+    display: flex;
+}
+
+h1, h2{
+    text-align: center;}
+
+.comptes_container{
+    display: flex;
+    border-style: solid;
+    border-width: 10px;
 }

@@ -1,25 +1,49 @@
 <?php
     session_start();
-    var_dump($_SESSION);
-
+    if(isset($_POST['Deco']))
+        {
+            unset($_SESSION['usernumber']);
+        }
+    
+    if(!isset($_SESSION))
+    {
+        header('Location: index.php');
+    }
+var_dump($_SESSION['usernumber']);
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
         <title>Wise Tree Banque</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
         <style>
         </style>
     </head>
     <body>
         <header>
-            <form method="POST" action="index.php">
-                <button name="Deco">Deconnexion</button>
-            </form>
+            <div class="nav_bar">
+                <form method="POST" action="index.php">
+                    <button name="Deco">Deconnexion</button>
+                </form>
+            </div>
+           
         </header>
+        <?php
+        echo "<h1>Bonjour \"Nom\"</h1>";?>
+        <h2>Bienvenue sur la Wise Tree Bank</h2>
         <h1>Vos comptes<h1>
-        <a href="mainpage.php">Compte1</a>
-        <p>Solde</p>
+        <div class="comptes_container">
+            <?php
+                $nbcompte = 1;
+                $solde = 0;
+                echo "<div class='compte'>";
+                echo "<a href='mainpage.php'>Compte $nbcompte</a>";
+                echo "<p>Solde: $solde €</p>";
+                echo '</div>';
+            ?>
+        </div>
+        
 
     </body>
 
