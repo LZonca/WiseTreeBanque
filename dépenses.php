@@ -20,10 +20,6 @@
             display: flex;
         }
 
-        <style>
-        h1, h2{
-        text-align: center;
-        }
         .confirm{
             color: green;
         }
@@ -81,7 +77,7 @@
 <body>
     <header>
         <div class="nav_bar">
-            <form method="POST" action="mainpage.php">
+            <form method="POST" action="compte.php">
                 <button name="lescomptes">Retour</button>
             </form>
             <form method="POST" action="lescomptes.php">
@@ -113,7 +109,7 @@
             var popup = document.getElementById("myPopup");
             popup.classList.toggle("show");
         }
-</script>
+    </script>
     <?php
     
 
@@ -124,6 +120,7 @@
             if (isset($_POST['virement']) && $_POST['virement'] != '' && strlen($_POST['virement']) >= 0) {
                 if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) == 11) {
                     $err = 0;
+                    echo '<script> myFunction(); <script>';
                 } else {
                     $err = 1;
                 }

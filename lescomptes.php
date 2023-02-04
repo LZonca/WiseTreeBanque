@@ -2,14 +2,14 @@
     session_start();
     if(isset($_POST['Deco']))
         {
-            unset($_SESSION['usernumber']);
+            unset($_SESSION['userid']);
         }
     
     if(!isset($_SESSION))
     {
         header('Location: index.php');
     }
-// var_dump($_SESSION['usernumber']); // A enlever si nécéssaire
+// var_dump($_SESSION['userid']); // A enlever si nécéssaire
 ?>
 
 <!DOCTYPE html>
@@ -35,14 +35,14 @@
         <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
         <h1>Vos comptes<h1>
         <div class="comptes_container">
+            <div class='compte'>
             <?php
                 $nbcompte = 1;
                 $solde = 0;
-                echo "<div class='compte'>";
-                echo "<a href='mainpage.php'>Compte $nbcompte</a>";
+                echo "<a href='compte.php'>Compte $nbcompte</a>";
                 echo "<p>Solde: $solde €</p>";
-                echo '</div>';
             ?>
+            </div>
         </div>
         
 

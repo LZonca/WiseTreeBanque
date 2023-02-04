@@ -29,5 +29,5 @@ h1, h2{
 .comptes_container{
     display: flex;
     border-style: solid;
-    border-width: 10px;
+    border-width: 5px;
 }

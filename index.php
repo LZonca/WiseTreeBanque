@@ -1,18 +1,18 @@
 <?php
 session_start();
-// var_dump($_SESSION['usernumber']); // A enlever si nécéssaire
+// var_dump($_SESSION['userid']); // A enlever si nécéssaire
 if(isset($_POST['Deco']))
     {
-        unset($_SESSION['usernumber']);
+        unset($_SESSION['userid']);
     }
 function checklogin()
 {
     $err = 0;
     if (isset($_POST['login'])) {
         if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password']) >= 6) {
-            if (isset($_POST['usernumber']) && $_POST['usernumber'] != '' && strlen($_POST['usernumber']) == 11) {
+            if (isset($_POST['userid']) && $_POST['userid'] != '' && strlen($_POST['userid']) == 11) {
                 $err = 0;
-                $_SESSION['usernumber'] = $_POST['usernumber'];
+                $_SESSION['userid'] = $_POST['userid'];
                 header('Location: lescomptes.php');
             } else {
                 $err = 1;
@@ -49,7 +49,7 @@ checklogin();
         </h2>
         <form action="index.php" method="post">
             <label for="accountnumber">Numéro de compte*:</label><br>
-            <input type="text" name="usernumber" placeholder="04123456789" pattern="[0-9]{11}" required><br>
+            <input type="text" name="userid" placeholder="04123456789" pattern="[0-9]{11}" required><br>
             <small>Format: 04123456789</small><br>
 
             <label for="password">Code Personnel*:</label><br>
