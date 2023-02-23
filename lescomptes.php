@@ -57,7 +57,6 @@
         while($data = $requetedata->fetch())
         {
             echo "<div class='compte'>";
-            
             echo "<h4><a href='compte.php'>Compte " . $data['comptenom'] . "</a></h4>";
             echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
             echo "</div>";

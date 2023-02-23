@@ -66,54 +66,66 @@ checklogin();
         <link rel="icon" type="image/jpg" href="logo.jpg" />
         <title>Connexion</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <style>
+
+            body{
+                background-image: url("background.png");
+                height: 100%;
+                background-position-y: 40%;
+                background-position-x: 50%;
+            }
+        </style>
     </head>
 
     <body>
-    <div>
-        <h1>
-            WiseTreeBank
-        </h1>
-        <h2 id="connexion_title">
-            Connectez-vous:
-        </h2>
-        <div class="form-container">
-            <form action="index.php" method="post">
-                <label for="userid">Numéro de compte*:</label><br>
-                <input type="text" name="userid" placeholder="04123456789" pattern="[0-9]{11}" required><br>
-                <small>Format: 04123456789</small><br>
-
-                <label for="password">Code Personnel*:</label><br>
-                <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" required><br><br>
+        <div class="container">
+            <div class="login-container">
+                <h1>
+                    WiseTreeBank
+                </h1>
                 
-                <button name="login">Se connecter</button>
-            </form>
-            <p id="obligatory">
-                * : Champ obligatoire
-            </p>
-            <div class = "error_box">
-                <?php
-                    if(isset($_POST['login']))
-                    {
-                        if(checklogin() == 1)
-                        {
-                            echo '<h2 class ="error">L\'identifiant ne respecte pas les conditions !</h2>';
-                        }
-                        elseif(checklogin() == 2)
-                        {
-                            echo '<h2 class ="error">Le mot de passe ne respecte pas les conditions ! </h2>';
-                        }
-                        if(loginrequest() == 1)
-                        {
-                            echo '<h2 class ="error">Le mot de passe incorrect ! </h2>';
-                        }
-                        elseif(loginrequest() == 2)
-                        {
-                            echo '<h2 class ="error">Utilisateur inconnu ! </h2>';
-                        }
-                    }
-                ?>
+                <div class="login-form-container">
+                    <h2 id="connexion_title">
+                        Connectez-vous:
+                    </h2>
+                    <form action="index.php" method="post">
+                        <label for="userid">Numéro de compte*:</label><br>
+                        <input type="text" name="userid" placeholder="04123456789" pattern="[0-9]{11}" required><br>
+                        <small>Format: 04123456789</small><br>
+
+                        <label for="password">Code Personnel*:</label><br>
+                        <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" required><br><br>
+                        
+                        <button name="login">Se connecter</button>
+                    </form>
+                    <p id="obligatory">
+                        * : Champ obligatoire
+                    </p>
+                    <div class = "error_box">
+                        <?php
+                            if(isset($_POST['login']))
+                            {
+                                if(checklogin() == 1)
+                                {
+                                    echo '<h2 class ="error">L\'identifiant ne respecte pas les conditions !</h2>';
+                                }
+                                elseif(checklogin() == 2)
+                                {
+                                    echo '<h2 class ="error">Le mot de passe ne respecte pas les conditions ! </h2>';
+                                }
+                                if(loginrequest() == 1)
+                                {
+                                    echo '<h2 class ="error">Le mot de passe incorrect ! </h2>';
+                                }
+                                elseif(loginrequest() == 2)
+                                {
+                                    echo '<h2 class ="error">Utilisateur inconnu ! </h2>';
+                                }
+                            }
+                        ?>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
     </body>
 </html>

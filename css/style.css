@@ -57,3 +57,29 @@ h1, h2{
     margin-left: 33%;
     padding: 5px;
 }
+
+.container-index{
+    margin-top: 0.5%;
+}
+
+div.login-container {
+    color: white;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.login-form-container{
+    text-align: center;
+    border-style: solid;
+    border-radius: 5px;
+    width: 20%;
+    margin-left: 40%;
+    margin-right: 40%;
+    padding: 5px;
+}
+
+div.login-container h1 {
+    margin-left: 20%;
+    margin-right: 20%;
+    opacity: 1;
+}
