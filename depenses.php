@@ -93,23 +93,13 @@
     <h1><b>Mes dépenses</b></h1>
     <h2>FR13 1273 9000 7064 3341 7217 M62</h2>
     <h3>Effectuer un virement</h3>
-    <form action="dépenses.php" method="post">
+    <form action="depenses.php" method="post">
         <input type="text" id="virement" name="destinataire" placeholder="RIB du destinataire"><br><br>
         <input type="text" id="virement" name="virement" placeholder="Somme"><br><br>
         <button name="send">Envoyer</button>
         
 
     </form>
-    <div class="popup" onclick="myFunction()">Effectuer le virement 
-            <span class="popuptext" id="myPopup">Virement effectué ! </span>
-    </div>
-    <script>
-        // When the user clicks on div, open the popup
-        function myFunction() {
-            var popup = document.getElementById("myPopup");
-            popup.classList.toggle("show");
-        }
-    </script>
     <?php
     
 
@@ -118,7 +108,7 @@
         $confirm = "Virement effectué";
         if (isset($_POST['send'])) {
             if (isset($_POST['virement']) && $_POST['virement'] != '' && strlen($_POST['virement']) >= 0) {
-                if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) == 11) {
+                if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) == 27) {
                     $err = 0;
                     echo '<script> myFunction(); <script>';
                 } else {
