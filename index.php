@@ -1,27 +1,59 @@
 <?php
-    session_start();
-    if(isset($_POST['Deco']))
-    {
-        unset($_SESSION['usernumber']);
-    }
+session_start();
+// var_dump($_SESSION['userid']); // A enlever si nécéssaire
 
-    if (isset($_POST['login'])) {
-            echo '<h1>Traitement en cours</h1>';
-            echo "<br>";
-            if (isset($_POST['usernumber']) && $_POST['usernumber'] != '' && strlen($_POST['usernumber']) == 11) {
-                if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password'])) {
-                    $_SESSION['usernumber'] = $_POST['usernumber'];
-            header('Location: lescomptes.php');
-                } else {
-                    echo 'Mot de passe manquant';
-                }
-            }
-            else {
-            echo 'Identifiant manquant';
-        }
+
+function loginrequest()
+{
+    try{
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+    }catch(exception $e){
+        die('Erreur: '. $e->getMessage());
     }
-        
-        var_dump($_SESSION);
+    $user = $_POST['userid'];
+    $pass = $_POST['password'];
+    $requete = "SELECT * FROM users WHERE id = ?;";
+    $requete = $bdd->prepare($requete); 
+    $requete->execute(array($user));
+    $data = $requete->fetch();
+    $err = 0;
+    if(isset($_POST['login']))
+    {
+        if($data)
+        {   
+            if($data['password'] == $_POST['password'])
+            {
+                $_SESSION['userid'] = $_POST['userid'];
+                header('Location: lescomptes.php');
+            }else{
+                $err = 1;
+            }
+        }else{
+            $err = 2;
+        }
+        return $err;
+    }
+}
+
+function checklogin()
+{
+    $err = 0;
+    if (isset($_POST['login'])) {
+        if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password']) >= 6) {
+            if (isset($_POST['userid']) && $_POST['userid'] != '' && strlen($_POST['userid']) == 11) {
+                loginrequest();
+            } else {
+                $err = 1;
+            }
+        }else
+        {
+            $err = 2;
+        }
+        return $err;
+    }  
+}
+checklogin();
 ?>
 
 <!DOCTYPE html>
@@ -31,6 +63,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/jpg" href="logo.jpg" />
         <title>Connexion</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
@@ -43,19 +76,44 @@
         <h2 id="connexion_title">
             Connectez-vous:
         </h2>
-        <form action="index.php" method="post">
-            <label for="accountnumber">Numéro de compte*:</label><br>
-            <input type="text" id="accountnumber" name="usernumber" placeholder="04123456789" pattern="[0-9]{11}" required><br>
-            <small>Format: 04123456789</small><br>
+        <div class="form-container">
+            <form action="index.php" method="post">
+                <label for="userid">Numéro de compte*:</label><br>
+                <input type="text" name="userid" placeholder="04123456789" pattern="[0-9]{11}" required><br>
+                <small>Format: 04123456789</small><br>
 
-            <label for="password">Code Personnel*:</label><br>
-            <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" required><br><br>
-            
-            <button name="login">Se connecter</button>
-        </form>
-        <p id="obligatory">
-            * : Champ obligatoire
-        </p>
+                <label for="password">Code Personnel*:</label><br>
+                <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" required><br><br>
+                
+                <button name="login">Se connecter</button>
+            </form>
+            <p id="obligatory">
+                * : Champ obligatoire
+            </p>
+            <div class = "error_box">
+                <?php
+                    if(isset($_POST['login']))
+                    {
+                        if(checklogin() == 1)
+                        {
+                            echo '<h2 class ="error">L\'identifiant ne respecte pas les conditions !</h2>';
+                        }
+                        elseif(checklogin() == 2)
+                        {
+                            echo '<h2 class ="error">Le mot de passe ne respecte pas les conditions ! </h2>';
+                        }
+                        if(loginrequest() == 1)
+                        {
+                            echo '<h2 class ="error">Le mot de passe incorrect ! </h2>';
+                        }
+                        elseif(loginrequest() == 2)
+                        {
+                            echo '<h2 class ="error">Utilisateur inconnu ! </h2>';
+                        }
+                    }
+                ?>
+            </div>
+        </div>
     </div>
     </body>
 </html>
