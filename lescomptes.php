@@ -26,6 +26,38 @@
         $data = $requete->fetch();
         echo "<h1>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</h1>";
     }
+
+    function solderequest()
+    {
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur solde: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetesolde = "SELECT solde FROM comptes WHERE userid = ?";
+        $requetesolde = $bdd->prepare($requetesolde); 
+        $requetesolde->execute(array($user));
+        $solde = $requetesolde->fetch();
+        echo "<h5>Votre solde: <u>" . $solde['solde'] . " €</u></h5>";
+    }
+
+    function comptenomrequest()
+    {
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur nom compte: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetedata = "SELECT comptenom FROM comptes WHERE userid = ?";
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($user));
+        $data = $requetedata->fetch();
+        echo "<h4>Compte " . $data['comptenom'] . "</h4>";
+    }
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 ?>
 
@@ -53,10 +85,9 @@
         <div class="comptes_container">
             <div class='compte'>
             <?php
-                $nbcompte = 1;
-                $solde = 0;
-                echo "<a href='compte.php'>Compte $nbcompte</a>";
-                echo "<p>Solde: $solde €</p>";
+                comptenomrequest();
+                echo "<a href='compte.php'> </a>";
+                solderequest();
             ?>
             </div>
         </div>

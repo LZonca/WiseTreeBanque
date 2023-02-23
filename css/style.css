@@ -32,9 +32,11 @@ h1, h2{
 .comptes_container{
     display: flex;
     border-style: solid;
+    text-align: center;
     border-width: 5px;
     width: 20%;
     margin-left: 40%;
+    margin-right: 40%;
     padding: 5px;
 }
 

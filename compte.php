@@ -14,7 +14,7 @@ if(!isset($_SESSION['userid']))
     function nomrequest()
     {
         try{
-        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank','wisetreelpbmm');
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
         }catch(exception $e){
             die('Erreur: '. $e->getMessage());
@@ -30,7 +30,7 @@ if(!isset($_SESSION['userid']))
     function ribrequest()
     {
         try{
-        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank','wisetreelpbmm');
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
         }catch(exception $e){
             die('Erreur: '. $e->getMessage());
@@ -46,7 +46,7 @@ if(!isset($_SESSION['userid']))
     function decouvertrequest()
     {
         try{
-        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank','wisetreelpbmm');
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
         }catch(exception $e){
             die('Erreur: '. $e->getMessage());
@@ -61,7 +61,7 @@ if(!isset($_SESSION['userid']))
     function solderequest()
     {
         try{
-            $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank','wisetreelpbmm');
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
         }catch(exception $e){
             die('Erreur solde: '. $e->getMessage());
@@ -71,7 +71,7 @@ if(!isset($_SESSION['userid']))
         $requetesolde = $bdd->prepare($requetesolde); 
         $requetesolde->execute(array($user));
         $solde = $requetesolde->fetch();
-        echo "<h3>Votre solde: <u>" . $solde['solde'] . " €</u></h3>";
+        echo "<h5>Votre solde: <u>" . $solde['solde'] . " €</u></h5>";
     }
 ?>
 
