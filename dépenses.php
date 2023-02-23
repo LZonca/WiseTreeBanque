@@ -84,7 +84,7 @@
                 <button name="lescomptes">Vos comptes</button>
             </form>
             
-            <form method="POST" action="index.php">
+            <form method="POST" action="logout.php">
                 <button name="Deco">Deconnexion</button>
             </form>
         </div>

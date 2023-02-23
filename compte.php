@@ -10,6 +10,54 @@ if(!isset($_SESSION['userid']))
     {
         header('Location: index.php');
     }
+
+    function nomrequest()
+    {
+        try{
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requete = "SELECT nom, prenom FROM users WHERE id = ?;";
+        $requete = $bdd->prepare($requete); 
+        $requete->execute(array($user));
+        $data = $requete->fetch();
+        echo "<h1>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</h1>";
+    }
+
+    function ribrequest()
+    {
+        try{
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requete = "SELECT RIB FROM comptes WHERE userid = ?;";
+        $requete = $bdd->prepare($requete); 
+        $requete->execute(array($user));
+        $data = $requete->fetch();
+        echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
+    }
+
+    function solderequest()
+    {
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur solde: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetesolde = "SELECT solde FROM comptes WHERE userid = ?";
+        $requetesolde = $bdd->prepare($requetesolde); 
+        $requetesolde->execute(array($user));
+        $solde = $requetesolde->fetch();
+        echo "<h3>Votre solde: <u>" . $solde['solde'] . " €</u></h3>";
+    }
 ?>
 
 <!DOCTYPE html>
@@ -39,22 +87,19 @@ if(!isset($_SESSION['userid']))
         
     </header>
     <?php
-    echo "<h1>Bonjour \"Nom\"</h1>";
+    nomrequest();
     echo "<h2>Compte n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
     <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
+    <div class="data-container">
     <h3><u>Votre compte</u></h3>
     <p>
-        <ul>
-            <li><a href="dépenses.php">Solde : ___ €</a></li>
-            <li>Découvert autorisé : ___ €</li>
-        </ul>
+            <a href="dépenses.php"><?php solderequest();?></a><br>    
+            Découvert autorisé : ___ €
     </p>
-    <h3>RIB</h3>
     <?php
-        $ribuser = "FR1312739000706433417217M62";
-        echo "<p><u>$ribuser</u></p>";
+        ribrequest();
     ?>
-    
+    </div>
 
 </body>
 </html>
