@@ -26,6 +26,59 @@
         $data = $requete->fetch();
         echo "<h1>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</h1>";
     }
+
+    function solderequest()
+    {
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur solde: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetesolde = "SELECT solde FROM comptes WHERE userid = ?";
+        $requetesolde = $bdd->prepare($requetesolde); 
+        $requetesolde->execute(array($user));
+        $solde = $requetesolde->fetch();
+        echo "<h5>Votre solde: <u>" . $solde['solde'] . " €</u></h5>";
+    }
+
+    function checkcomptes(){
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur nom compte: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetedata = "SELECT * FROM comptes WHERE userid = ?";
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($user));
+        while($data = $requetedata->fetch())
+        {
+            echo "<div class='compte'>";
+            
+            echo "<h4><a href='compte.php'>Compte " . $data['comptenom'] . "</a></h4>";
+            echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
+            echo "</div>";
+        }
+    }
+
+    function comptenomrequest()
+    {
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur nom compte: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetedata = "SELECT comptenom FROM comptes WHERE userid = ?";
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($user));
+        $data = $requetedata->fetch();
+        echo "<h4><a href='compte.php'> Compte " . $data['comptenom'] . "</a></h4>";
+    }
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 ?>
 
@@ -51,12 +104,12 @@
         <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
         <h1>Vos comptes<h1>
         <div class="comptes_container">
-            <div class='compte'>
+            
             <?php
-                $nbcompte = 1;
-                $solde = 0;
-                echo "<a href='compte.php'>Compte $nbcompte</a>";
-                echo "<p>Solde: $solde €</p>";
+            echo "<div class='compte'>";
+                
+                checkcomptes();
+                echo "</div>";
             ?>
             </div>
         </div>

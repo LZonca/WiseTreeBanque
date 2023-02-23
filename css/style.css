@@ -31,8 +31,13 @@ h1, h2{
 
 .comptes_container{
     display: flex;
+    flex-wrap:wrap;
+    justify-content: center;
     border-style: solid;
+    flex-direction: row;
     border-width: 5px;
+    width: fit-content;
+    padding: 5px;
 }
 
 .form-container{
@@ -48,7 +53,7 @@ h1, h2{
     text-align: center;
     border-style: solid;
     border-radius: 5px;
-    width: 20%;
-    margin-left: 40%;
+    width: 33%;
+    margin-left: 33%;
     padding: 5px;
 }
