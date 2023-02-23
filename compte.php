@@ -43,6 +43,28 @@ if(!isset($_SESSION['userid']))
         echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
     }
 
+    function checkcomptes(){
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur nom compte: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetedata = "SELECT * FROM comptes WHERE userid = ?";
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($user));
+        while($data = $requetedata->fetch())
+        {
+
+            echo "<h3>Compte " . $data['comptenom'] . "</h3>";
+            echo "<h5><a href='depenses.php'>Votre solde: <u>" . $data['solde'] . "€</a></u></h5>";
+            echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
+            echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
+            echo "</div>";
+        }
+    }
+
     function decouvertrequest()
     {
         try{
@@ -71,7 +93,7 @@ if(!isset($_SESSION['userid']))
         $requetesolde = $bdd->prepare($requetesolde); 
         $requetesolde->execute(array($user));
         $solde = $requetesolde->fetch();
-        echo "<h5>Votre solde: <u>" . $solde['solde'] . " €</u></h5>";
+        echo "<h4>Votre solde: <u>" . $solde['solde'] . " €</u></h4>";
     }
 ?>
 
@@ -108,8 +130,9 @@ if(!isset($_SESSION['userid']))
     <div class="data-container">
         <h3><u>Votre compte</u></h3>
         <p>
-            <a href="dépenses.php"><?php solderequest();?></a>    
-            <?php decouvertrequest();?>
+            <?php
+                checkcomptes();
+            ?>
         </p>
         <?php
             ribrequest();

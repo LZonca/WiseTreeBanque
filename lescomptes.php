@@ -43,6 +43,27 @@
         echo "<h5>Votre solde: <u>" . $solde['solde'] . " €</u></h5>";
     }
 
+    function checkcomptes(){
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+        }catch(exception $e){
+            die('Erreur nom compte: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetedata = "SELECT * FROM comptes WHERE userid = ?";
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($user));
+        while($data = $requetedata->fetch())
+        {
+            echo "<div class='compte'>";
+            
+            echo "<h4><a href='compte.php'>Compte " . $data['comptenom'] . "</a></h4>";
+            echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
+            echo "</div>";
+        }
+    }
+
     function comptenomrequest()
     {
         try{
@@ -56,7 +77,7 @@
         $requetedata = $bdd->prepare($requetedata); 
         $requetedata->execute(array($user));
         $data = $requetedata->fetch();
-        echo "<h4>Compte " . $data['comptenom'] . "</h4>";
+        echo "<h4><a href='compte.php'> Compte " . $data['comptenom'] . "</a></h4>";
     }
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 ?>
@@ -83,11 +104,12 @@
         <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
         <h1>Vos comptes<h1>
         <div class="comptes_container">
-            <div class='compte'>
+            
             <?php
-                comptenomrequest();
-                echo "<a href='compte.php'> </a>";
-                solderequest();
+            echo "<div class='compte'>";
+                
+                checkcomptes();
+                echo "</div>";
             ?>
             </div>
         </div>
