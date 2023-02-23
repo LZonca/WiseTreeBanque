@@ -14,7 +14,7 @@ if(!isset($_SESSION['userid']))
     function nomrequest()
     {
         try{
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank','wisetreelpbmm');
 
         }catch(exception $e){
             die('Erreur: '. $e->getMessage());
@@ -30,7 +30,7 @@ if(!isset($_SESSION['userid']))
     function ribrequest()
     {
         try{
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank','wisetreelpbmm');
 
         }catch(exception $e){
             die('Erreur: '. $e->getMessage());
@@ -43,10 +43,25 @@ if(!isset($_SESSION['userid']))
         echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
     }
 
+    function decouvertrequest()
+    {
+        try{
+        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank','wisetreelpbmm');
+
+        }catch(exception $e){
+            die('Erreur: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requete = "SELECT decouvert_autorise FROM comptes WHERE userid = ?;";
+        $requete = $bdd->prepare($requete); 
+        $requete->execute(array($user));
+        $data = $requete->fetch();
+        echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
+    }
     function solderequest()
     {
         try{
-            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+            $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank','wisetreelpbmm');
 
         }catch(exception $e){
             die('Erreur solde: '. $e->getMessage());
@@ -91,14 +106,14 @@ if(!isset($_SESSION['userid']))
     echo "<h2>Compte n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
     <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
     <div class="data-container">
-    <h3><u>Votre compte</u></h3>
-    <p>
-            <a href="dépenses.php"><?php solderequest();?></a><br>    
-            Découvert autorisé : ___ €
-    </p>
-    <?php
-        ribrequest();
-    ?>
+        <h3><u>Votre compte</u></h3>
+        <p>
+            <a href="dépenses.php"><?php solderequest();?></a>    
+            <?php decouvertrequest();?>
+        </p>
+        <?php
+            ribrequest();
+        ?>
     </div>
 
 </body>
