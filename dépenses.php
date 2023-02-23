@@ -76,10 +76,10 @@ if(isset($_POST['submit'])){
         <div class="container">
             <input type="text" id="destinataire" name="destinataire" placeholder="RIB du destinataire"><br><br>
             <input type="text" id="virement" name="virement" placeholder="Somme"><br><br>
-            <button type="submit" name="submit">Cliquez ici</button>
+            <button type="submit" name="submit">Effectuer le virement</button>
             <!-- Ajouter le popup dans le même conteneur que le bouton -->
             <div id="popup" class="popup">
-                <p>Texte à afficher dans le popup</p>
+                <p>Virement effectué</p>
             </div>
         </div>
     </form>
