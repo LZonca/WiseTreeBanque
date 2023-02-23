@@ -33,6 +33,9 @@ h1, h2{
     display: flex;
     border-style: solid;
     border-width: 5px;
+    width: 20%;
+    margin-left: 40%;
+    padding: 5px;
 }
 
 .form-container{
@@ -48,7 +51,7 @@ h1, h2{
     text-align: center;
     border-style: solid;
     border-radius: 5px;
-    width: 20%;
-    margin-left: 40%;
+    width: 33%;
+    margin-left: 33%;
     padding: 5px;
 }
