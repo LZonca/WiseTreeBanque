@@ -21,7 +21,7 @@ function generateRIB($bdd) {
     $accountNumber = str_pad($accountNumber, 11, "0", STR_PAD_LEFT);
   
     // Concaténer le code banque, le code guichet, le numéro de compte et la clé RIB avec des espaces
-    $rib = $bankCode . " " . $branchCode . " " . $accountNumber . " " . $ribKey;
+    $rib = $bankCode . $branchCode . $accountNumber . $ribKey;
   
     // Vérifier si le RIB existe déjà dans la base de données
     $requete = $bdd->prepare("SELECT COUNT(*) FROM comptes WHERE RIB = ?");
@@ -86,7 +86,9 @@ function create_user($bdd)
 
     if (($countnom > 0 && $countpren > 0 && $countnaissance > 0 && $countmail > 0 && $counttel > 0) || $countmail > 0 || $counttel > 0) {
         // Afficher un message d'erreur si l'utilisateur existe déjà
+        echo "<div class = 'error_box'>";
         echo "<p class='error'>Cet utilisateur existe déjà.<p>";
+        echo "</div>";
     } else {
 
         $requete = "INSERT INTO users (id, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -115,7 +117,9 @@ function create_compte($bdd)
 
     if ($countnom == 0 && $countpren == 0){
         // Afficher un message d'erreur si l'utilisateur n'existe pas.
+        echo '<div class="error_box">';
         echo "<p class='error'>Pas d'utilisateur à ce nom!<p>";
+        echo '</div>';
     } else {
         $requeteinfo = "SELECT * FROM users WHERE nom = ? AND prenom = ?";
         $requeteinfo = $bdd->prepare($requeteinfo); 
@@ -132,7 +136,7 @@ function create_compte($bdd)
             die('Erreur creation: '. $e->getMessage());
         }
         // Se connecter à la base de données avec PDO
-        $requete = "INSERT INTO comptes (comptenom, solde, RIB, decouvert_autorise, userid) VALUES (?, 20, ?, ?, ?)";
+        $requete = "INSERT INTO comptes (comptenom, RIB, decouvert_autorise, userid) VALUES ( ?, ?, ?, ?)";
         $requete = $bdd->prepare($requete);
         $requete->execute(array($comptenom, $RIB, $decouvert, $data['id']));
         $datacompte = $requete->fetch();
@@ -181,6 +185,7 @@ function checkmail($mail){
             </form>
         </header>
         <div class="container">
+            <div class='login-container'>
             <div class="titre">
                 <h1>Panneau administrateur</h1>
             </div>
@@ -210,7 +215,7 @@ function checkmail($mail){
                         <option value = "3">Banquier</option>
                         <option value = "4">Administrateur</option>
                     </select><br><br>
-					<button name="adduser">Ajouter un utilisateur</button>
+					<button name="adduser">Ajouter un compte</button>
 				</form>
 
                 <div class="loginform">
@@ -223,8 +228,8 @@ function checkmail($mail){
                     <label for="decouvert">Decouvert autorisé</label><br><br>
                     <select name='nomcompte' required>
                         <option value = "Courant" selected>Compte courant</option>
-                        <option value = "Epargne" selected>Compte epargne</option>
-                        <option value = "Etudiant" selected>Compte étudiant</option>
+                        <option value = "Epargne">Compte epargne</option>
+                        <option value = "Etudiant">Compte étudiant</option>
                     </select>
                     <select name="decouvert" required>
                         <option value = "0" selected>0</option>
@@ -234,8 +239,8 @@ function checkmail($mail){
                         <option value = "400">400</option>
                         <option value = "500">500</option>
                         <option value = "1000">1000</option>
-                        <option value = "2000">1000</option>
-                        <option value = "3000">1000</option>
+                        <option value = "2000">2000</option>
+                        <option value = "3000">3000</option>
                         <option value = "4000">4000</option>
                         <option value = "5000">5000</option>
                         <option value = "10000">10000</option>
@@ -243,6 +248,7 @@ function checkmail($mail){
 					<button name="addcompte">Ajouter un compte</button>
 				</form>
 			</div>
+        </div>
             <?php
             $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');   
             if(isset($_POST['adduser']))
