@@ -56,15 +56,19 @@ if(isset($_POST['submit'])){
     <script>
         window.onload = function() {
             <?php
-            if(isset($_SESSION['popup'])){
-                unset($_SESSION['popup']);
+                if(isset($_SESSION['popup'])){
+                    unset($_SESSION['popup']);
+                    if(!empty($_POST['destinataire']) && !empty($_POST['virement'])){
+                ?>
+                var popup = document.getElementById("popup");
+                popup.classList.add("show");
+                setTimeout(function(){
+                    popup.classList.remove("show");
+                }, 5000);
+                <?php
+                    }
+                }
             ?>
-            var popup = document.getElementById("popup");
-            popup.classList.add("show");
-            setTimeout(function(){
-                popup.classList.remove("show");
-            }, 5000);
-            <?php } ?>
         }
     </script>
 </head>
@@ -110,7 +114,7 @@ if(isset($_POST['submit'])){
         $confirm = "Virement effectué";
         if (isset($_POST['send'])) {
             if (isset($_POST['virement']) && $_POST['virement'] != '' && strlen($_POST['virement']) >= 0) {
-                if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) == 11) {
+                if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) = 27) {
                     $err = 0;
                     echo '<script> myFunction(); <script>';
                 } else {
