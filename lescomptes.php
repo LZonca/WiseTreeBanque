@@ -1,20 +1,45 @@
 <?php
     session_start();
-    if(isset($_POST['Deco']))
-        {
-            unset($_SESSION['userid']);
-        }
     
-    if(!isset($_SESSION))
+    if(!isset($_SESSION['userid']))
     {
         header('Location: index.php');
     }
 
+    if(isset($_POST['lescomptes'])){
+        unset($_SESSION['compteactuel']);
+    }
 
-    function nomrequest()
+
+    if(isset($_POST['compteactuel'])){
+        $_SESSION['compteactuel'] = $_POST['compteactuel'];
+        header('Location: compte.php');
+    }
+    
+    function rankrequest($bdd)
     {
         try{
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+        $bdd;
+
+        }catch(exception $e){
+            die('Erreur rang: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requete = "SELECT permissions FROM users WHERE id = ?;";
+        $requete = $bdd->prepare($requete); 
+        $requete->execute(array($user));
+        $data = $requete->fetch();
+        if ($data['permissions'] > 1) {
+            // Afficher le bouton d'administration
+            echo "<a href='panneladmin.php'>Accéder au panneau d'administration</a>";
+        }
+    }
+    
+
+    function nomrequest($bdd)
+    {
+        try{
+        $bdd;
 
         }catch(exception $e){
             die('Erreur: '. $e->getMessage());
@@ -27,7 +52,7 @@
         echo "<h1>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</h1>";
     }
 
-    function solderequest()
+    /*function solderequest()
     {
         try{
             $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
@@ -41,11 +66,11 @@
         $requetesolde->execute(array($user));
         $solde = $requetesolde->fetch();
         echo "<h5>Votre solde: <u>" . $solde['solde'] . " €</u></h5>";
-    }
+    }*/
 
-    function checkcomptes(){
+    function checkcomptes($bdd){
         try{
-            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+            $bdd;
 
         }catch(exception $e){
             die('Erreur nom compte: '. $e->getMessage());
@@ -57,27 +82,15 @@
         while($data = $requetedata->fetch())
         {
             echo "<div class='compte'>";
-            echo "<h4><a href='compte.php'>Compte " . $data['comptenom'] . "</a></h4>";
+            echo "<form method='POST' action='lescomptes.php'>";
+            echo "<input type='submit' name='compteactuel' value='" . $data['comptenom'] . "'>"; 
+            echo"</form>";
+            echo "<h4>Compte " . $data['comptenom'] . "</h4>";
             echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
             echo "</div>";
         }
     }
 
-    function comptenomrequest()
-    {
-        try{
-            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-
-        }catch(exception $e){
-            die('Erreur nom compte: '. $e->getMessage());
-        }
-        $user = $_SESSION['userid'];
-        $requetedata = "SELECT comptenom FROM comptes WHERE userid = ?";
-        $requetedata = $bdd->prepare($requetedata); 
-        $requetedata->execute(array($user));
-        $data = $requetedata->fetch();
-        echo "<h4><a href='compte.php'> Compte " . $data['comptenom'] . "</a></h4>";
-    }
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 ?>
 
@@ -96,23 +109,30 @@
                 <form method="POST" action="logout.php">
                     <button name="Deco">Deconnexion</button>
                 </form>
+                <form method="POST" action="settings.php">
+                <button name="parametres">Paramètres</button>
+            </form>
+                <form method="POST" action="lescomptes.php">
+                    <?php 
+                    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+                    rankrequest($bdd);
+                    ?>
+                </form>
             </div>
            
         </header>
-        <?php nomrequest();?>
+        <?php nomrequest($bdd);?>
         <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
-        <h1>Vos comptes<h1>
+        <?php echo "<h2>Compte utilisateur n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
+        <h1>Vos comptes</h1>
         <div class="comptes_container">
             
             <?php
-            echo "<div class='compte'>";
-                
-                checkcomptes();
-                echo "</div>";
+                checkcomptes($bdd);
             ?>
             </div>
         </div>
-        
+</div> 
 
     </body>
 

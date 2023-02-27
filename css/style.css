@@ -36,8 +36,19 @@ h1, h2{
     border-style: solid;
     flex-direction: row;
     border-width: 5px;
-    width: fit-content;
+    margin-left: 30%;
+    margin-right: 30%;
+    border-radius: 10px;
     padding: 5px;
+    font-size: 35px;
+    
+}
+
+.compte{
+    border-style: solid;
+    padding: 10px;
+    margin: 5px;
+    width: 30%;
 }
 
 .form-container{

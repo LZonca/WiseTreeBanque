@@ -101,29 +101,48 @@ checklogin();
                     <p id="obligatory">
                         * : Champ obligatoire
                     </p>
-                    <div class = "error_box">
                         <?php
                             if(isset($_POST['login']))
                             {
-                                if(checklogin() == 1)
+                                echo "<div class = 'error_box'>";
+                                switch(checklogin())
                                 {
-                                    echo '<h2 class ="error">L\'identifiant ne respecte pas les conditions !</h2>';
+                                    case 1:
+                                    {
+                                        
+                                        echo '<h2 class ="error">L\'identifiant ne respecte pas les conditions !</h2>';
+                                        
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        echo "<div class = 'error_box'>";
+                                        echo '<h2 class ="error">Le mot de passe ne respecte pas les conditions ! </h2>';
+                                        echo "</div>";
+                                        break;
+                                    }
                                 }
-                                elseif(checklogin() == 2)
+                                switch(loginrequest())
                                 {
-                                    echo '<h2 class ="error">Le mot de passe ne respecte pas les conditions ! </h2>';
+                                    case 1:
+                                    {
+                                        echo "<div class = 'error_box'>";
+                                        echo '<h2 class ="error">Le mot de passe incorrect ! </h2>';
+                                        echo "</div>";
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        echo "<div class = 'error_box'>";
+                                        echo '<h2 class ="error">Utilisateur inconnu ! </h2>';
+                                        echo "</div>";
+                                        break;
+                                    }
+
                                 }
-                                if(loginrequest() == 1)
-                                {
-                                    echo '<h2 class ="error">Le mot de passe incorrect ! </h2>';
-                                }
-                                elseif(loginrequest() == 2)
-                                {
-                                    echo '<h2 class ="error">Utilisateur inconnu ! </h2>';
-                                }
+                                echo "</div>";
                             }
                         ?>
-                    </div>
                 </div>
             </div>
         </div>
