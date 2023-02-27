@@ -13,67 +13,77 @@ if(isset($_POST['submit'])){
     <link rel="icon" type="image/jpg" href="logo.jpg" />
     <title>Ma banque</title>
     <style>
-        h1, h2 {
-            text-align: center;
+        h1, h2{
+        text-align: center;
         }
-
-        .confirm {
+        .confirm{
             color: green;
         }
 
-        .erreur {
+        .erreur{
             color: red;
         }
 
-        .nav_bar {
+        .nav_bar{
             display: flex;
         }
 
-        /* Ajouter une position relative au conteneur */
-        .container {
-            position: relative;
+        .confirm{
+            color: green;
         }
-
-        /* Modifier la position du popup */
+        
+        /* Popup container - can be anything you want */
         .popup {
-            display: block;
-            position: absolute;
-            bottom: 100%; /* Afficher le popup juste en dessous du bouton */
-            right: 0;
-            background-color: #f1f1f1;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.3);
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         }
 
-        .popup.show {
-            opacity: 1;
+        /* The actual popup */
+        .popup .popuptext {
+        visibility: hidden;
+        width: 160px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        transform : translateY(200%);
+        left: 50%;
+        margin-left: -80px;
         }
-    </style>
 
-    <script>
-        window.onload = function() {
-            <?php
-                if(isset($_SESSION['popup'])){
-                    unset($_SESSION['popup']);
-                    if(!empty($_POST['destinataire']) && !empty($_POST['virement'])){
-                ?>
-                var popup = document.getElementById("popup");
-                popup.classList.add("show");
-                setTimeout(function(){
-                    popup.classList.remove("show");
-                }, 5000);
-                <?php
-                    }
-                }
-            ?>
+
+        /* Toggle this class - hide and show the popup */
+        .popup .show {
+        visibility: visible;
+        -webkit-animation: fadeIn 1s;
+        animation: fadeIn 1s;
         }
-    </script>
+
+        /* Add animation (fade in the popup) */
+        @-webkit-keyframes fadeIn {
+        from {opacity: 0;} 
+        to {opacity: 1;}
+        }
+
+        @keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity:1 ;}
+        }
+    </style>   
+
+    
 </head>
-<body style="text-align:center">
-<header>
+<body>
+    <header>
         <div class="nav_bar">
             <form method="POST" action="compte.php">
                 <button name="lescomptes">Retour</button>
@@ -91,21 +101,13 @@ if(isset($_POST['submit'])){
     <h1><b>Mes dépenses</b></h1>
     <h2>FR13 1273 9000 7064 3341 7217 M62</h2>
     <h3>Effectuer un virement</h3>
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-        <div class="container">
-            <input type="text" id="destinataire" name="destinataire" placeholder="RIB du destinataire"><br><br>
-            <input type="text" id="virement" name="virement" placeholder="Somme"><br><br>
-            <button type="submit" name="submit">Effectuer le virement</button>
-            <!-- Ajouter le popup dans le même conteneur que le bouton -->
-            <div id="popup" class="popup">
-                <p>Virement effectué</p>
-            </div>
-        </div>
+    <form action="depenses.php" method="post">
+        <input type="text" id="virement" name="destinataire" placeholder="RIB du destinataire"><br><br>
+        <input type="text" id="virement" name="virement" placeholder="Somme"><br><br>
+        <button name="send">Envoyer</button>
+        
+
     </form>
-
-</body>
-</html>
-
     <?php
     
 
@@ -114,7 +116,7 @@ if(isset($_POST['submit'])){
         $confirm = "Virement effectué";
         if (isset($_POST['send'])) {
             if (isset($_POST['virement']) && $_POST['virement'] != '' && strlen($_POST['virement']) >= 0) {
-                if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) = 27) {
+                if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) == 27) {
                     $err = 0;
                     echo '<script> myFunction(); <script>';
                 } else {

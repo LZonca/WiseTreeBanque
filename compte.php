@@ -1,20 +1,20 @@
 <?php
 session_start();
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
-if(isset($_POST['Deco']))
-    {
-        unset($_SESSION['userid']);
-    }
 
 if(!isset($_SESSION['userid']))
     {
         header('Location: index.php');
     }
 
-    function nomrequest()
+if(!isset($_SESSION['compteactuel'])){
+    header('Location: index.php');
+}
+
+    function nomrequest($bdd)
     {
         try{
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+        $bdd;
 
         }catch(exception $e){
             die('Erreur: '. $e->getMessage());
@@ -27,21 +27,7 @@ if(!isset($_SESSION['userid']))
         echo "<h1>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</h1>";
     }
 
-    function ribrequest()
-    {
-        try{
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-
-        }catch(exception $e){
-            die('Erreur: '. $e->getMessage());
-        }
-        $user = $_SESSION['userid'];
-        $requete = "SELECT RIB FROM comptes WHERE userid = ?;";
-        $requete = $bdd->prepare($requete); 
-        $requete->execute(array($user));
-        $data = $requete->fetch();
-        echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
-    }
+    
 
     function checkcomptes(){
         try{
@@ -50,20 +36,17 @@ if(!isset($_SESSION['userid']))
         }catch(exception $e){
             die('Erreur nom compte: '. $e->getMessage());
         }
-        $user = $_SESSION['userid'];
-        $requetedata = "SELECT * FROM comptes WHERE userid = ?";
+        $compte = $_SESSION['compteactuel'];
+        $requetedata = "SELECT * FROM comptes WHERE comptenom = ?";
         $requetedata = $bdd->prepare($requetedata); 
-        $requetedata->execute(array($user));
-        while($data = $requetedata->fetch())
-        {
-
-            echo "<h3>Compte " . $data['comptenom'] . "</h3>";
-            echo "<h5><a href='depenses.php'>Votre solde: <u>" . $data['solde'] . "€</a></u></h5>";
-            echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
-            echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
-            echo "</div>";
+        $requetedata->execute(array($compte));
+        $data = $requetedata->fetch();
+        echo "<h3>Compte " . $data['comptenom'] . "</h3>";
+        echo "<h5><a href='depenses.php'>Votre solde: <u>" . $data['solde'] . "€</a></u></h5>";
+        echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
+        echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
+        echo "</div>";
         }
-    }
 
     function decouvertrequest()
     {
@@ -80,10 +63,10 @@ if(!isset($_SESSION['userid']))
         $data = $requete->fetch();
         echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
     }
-    function solderequest()
+    function solderequest($bdd)
     {
         try{
-            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+            $bdd;
 
         }catch(exception $e){
             die('Erreur solde: '. $e->getMessage());
@@ -95,6 +78,7 @@ if(!isset($_SESSION['userid']))
         $solde = $requetesolde->fetch();
         echo "<h4>Votre solde: <u>" . $solde['solde'] . " €</u></h4>";
     }
+    //var_dump($_SESSION);
 ?>
 
 <!DOCTYPE html>
@@ -117,26 +101,26 @@ if(!isset($_SESSION['userid']))
             <form method="POST" action="lescomptes.php">
                 <button name="lescomptes">Vos comptes</button>
             </form>
-            <form method="POST" action="index.php">
+            <form method="POST" action="logout.php">
                 <button name="Deco">Deconnexion</button>
             </form>
         </div>
         
     </header>
     <?php
-    nomrequest();
-    echo "<h2>Compte n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+    nomrequest($bdd);
+    ?>
     <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
     <div class="data-container">
         <h3><u>Votre compte</u></h3>
         <p>
             <?php
-                checkcomptes();
+            //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+            if(isset($_POST['"'. checkcomptes($bdd) . '"']))
+                checkcomptes($bdd);
             ?>
         </p>
-        <?php
-            ribrequest();
-        ?>
     </div>
 
 </body>

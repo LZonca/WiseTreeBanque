@@ -7,7 +7,10 @@ if(isset($_POST['Deco']))
         echo "<h1>Deconnexion en cours !</h1>";
         header('Location: index.php');
     }
-
+if(!isset($_SESSION))
+{
+    header('Location: index.php');
+}
 
 
 ?>
