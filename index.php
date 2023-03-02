@@ -13,7 +13,7 @@ function loginrequest()
     }
     $user = $_POST['userid'];
     $pass = $_POST['password'];
-    $requete = "SELECT * FROM users WHERE id = ?;";
+    $requete = "SELECT * FROM users WHERE userid = ?;";
     $requete = $bdd->prepare($requete); 
     $requete->execute(array($user));
     $data = $requete->fetch();

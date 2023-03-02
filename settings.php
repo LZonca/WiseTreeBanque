@@ -27,8 +27,8 @@ if(!isset($_SESSION))
                 </form>
                 <form method="POST" action="lescomptes.php">
                     <?php 
-                    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-                    
+                    //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
+                    $bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
                     ?>
                 </form>
             </div>
