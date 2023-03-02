@@ -1,7 +1,7 @@
 <?php
 session_start();
 function generateRIB($bdd, $numeroCompte) {
-    $codeBanque = "FR69420";
+    $codeBanque = "69420";
   
     // Ajouter des zéros à gauche du numéro de compte pour avoir une longueur de 23 caractères
     $numeroComptePadded = str_pad($numeroCompte, 11, "0", STR_PAD_LEFT) . "000000";
@@ -21,7 +21,7 @@ function generateRIB($bdd, $numeroCompte) {
     
     // Calculer la clé RIB
     $cleRib = str_pad(97 - $reste, 2, "0", STR_PAD_LEFT);
-    $rib = "FR76" . $codeBanque . $numeroCompte . $cleRib ;
+    $rib = "FR76 " . $codeBanque . " " . $numeroCompte . " " . $cleRib ;
     // Vérifier si le RIB existe déjà dans la base de données
     $requete = $bdd->prepare("SELECT COUNT(*) FROM comptes WHERE RIB = ?");
     $requete->execute(array($rib));
@@ -145,7 +145,7 @@ function create_compte($bdd)
         $requeteinfo = $bdd->prepare($requeteinfo); 
         $requeteinfo->execute(array($nom, $prenom));
         $data = $requeteinfo->fetch();
-        $RIB = generateRIB($bdd, generateid($bdd));
+        $RIB = generateRIB($bdd, $data['userid']);
         $decouvert = $_POST['decouvert'];
         $comptenom = $_POST['nomcompte'];
 
@@ -155,9 +155,9 @@ function create_compte($bdd)
             die('Erreur creation: '. $e->getMessage());
         }
         // Se connecter à la base de données avec PDO
-        $requete = "INSERT INTO comptes (comptenom, RIB, decouvert_autorise, userid) VALUES ( ?, ?, ?, ?)";
+        $requete = "INSERT INTO comptes (userid, comptenom, RIB, decouvert_autorise) VALUES (?, ?, ?, ?);";
         $requete = $bdd->prepare($requete);
-        $requete->execute(array($comptenom, $RIB, $decouvert, $data['id']));
+        $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
         $datacompte = $requete->fetch();
 
         echo "<p class='confirm'>Le compte a été créé avec succès.<p>";
