@@ -23,7 +23,7 @@ function loginrequest()
     {
         if($data)
         {   
-            if($data['password'] == $_POST['password'])
+            if(password_verify($pass, $data['password']))
             {
                 $_SESSION['userid'] = $_POST['userid'];
                 header('Location: lescomptes.php');
@@ -66,6 +66,7 @@ checklogin();
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" type="image/jpg" href="logo.jpg" />
         <title>Connexion</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <style>
 
@@ -97,7 +98,7 @@ checklogin();
                         <label for="password">Code Personnel*:</label><br>
                         <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" required><br><br>
                         
-                        <button name="login">Se connecter</button>
+                        <button name="login" class="btn btn-primary">Se connecter</button>
                     </form>
                     <p id="obligatory">
                         * : Champ obligatoire

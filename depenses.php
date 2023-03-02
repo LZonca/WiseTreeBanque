@@ -1,9 +1,13 @@
 <?php
 session_start();
-if(isset($_POST['submit'])){
-    $_SESSION['popup'] = true;
-    header('Location: ' . $_SERVER['PHP_SELF']);
-    exit();
+
+if(!isset($_SESSION['userid']))
+    {
+        header('Location: index.php');
+    }
+
+if(!isset($_SESSION['compteactuel'])){
+    header('Location: index.php');
 }
 
 
@@ -33,7 +37,7 @@ function checkcomptes($bdd){
             die('Erreur solde: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
-        $requetesolde = "SELECT * FROM comptes WHERE userid = ?";
+        $requetesolde = "SELECT * FROM comptes WHERE userid = (SELECT id FROM users WHERE userid = ?)";
         $requetesolde = $bdd->prepare($requetesolde); 
         $requetesolde->execute(array($user));
         $solde = $requetesolde->fetch();
@@ -80,77 +84,78 @@ function checkcomptes($bdd){
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <link rel="icon" type="image/jpg" href="logo.jpg" />
-    <title>Ma banque</title>
-    <style>
-        h1, h2{
-        text-align: center;
-        }
-        .confirm{
-            color: green;
-        }
+    <head>
+        <meta charset="utf-8">
+        <link rel="icon" type="image/jpg" href="logo.jpg" />
+        <title>Ma banque</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <style>
+            h1, h2{
+            text-align: center;
+            }
+            .confirm{
+                background-color: green;
+                color: black;
+            }
 
-        .erreur{
-            color: red;
-        }
+            .erreur{
+                color: red;
+            }
 
-        .nav_bar{
-            display: flex;
-        }
+            body{
+                color: black;
+            }
+            .nav_bar{
+                display: flex;
+            }
+            
+            /* Popup container - can be anything you want */
+            .popup {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            }
 
-        .confirm{
-            color: green;
-        }
-        
-        /* Popup container - can be anything you want */
-        .popup {
-        position: relative;
-        display: inline-block;
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        }
-
-        /* The actual popup */
-        .popup .popuptext {
-        visibility: hidden;
-        width: 160px;
-        background-color: #555;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 8px 0;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        transform : translateY(200%);
-        left: 50%;
-        margin-left: -80px;
-        }
+            /* The actual popup */
+            .popup .popuptext {
+            visibility: hidden;
+            width: 160px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            transform : translateY(200%);
+            left: 50%;
+            margin-left: -80px;
+            }
 
 
-        /* Toggle this class - hide and show the popup */
-        .popup .show {
-        visibility: visible;
-        -webkit-animation: fadeIn 1s;
-        animation: fadeIn 1s;
-        }
+            /* Toggle this class - hide and show the popup */
+            .popup .show {
+            visibility: visible;
+            -webkit-animation: fadeIn 1s;
+            animation: fadeIn 1s;
+            }
 
-        /* Add animation (fade in the popup) */
-        @-webkit-keyframes fadeIn {
-        from {opacity: 0;} 
-        to {opacity: 1;}
-        }
+            /* Add animation (fade in the popup) */
+            @-webkit-keyframes fadeIn {
+            from {opacity: 0;} 
+            to {opacity: 1;}
+            }
 
-        @keyframes fadeIn {
-        from {opacity: 0;}
-        to {opacity:1 ;}
-        }
-    </style>   
+            @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity:1 ;}
+            }
+        </style>   
 
         <link rel="stylesheet" type="text/css" href="css/style.css">    
     </head>
@@ -173,6 +178,7 @@ function checkcomptes($bdd){
         <div class='form-container'>
             <h1><b>Mes dépenses</b></h1>
             <h2><?php 
+            //$bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
             $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
             checkcomptes($bdd);
             ?></h2>
@@ -183,53 +189,40 @@ function checkcomptes($bdd){
                 <button name="send">Envoyer</button>
             </form>
         
-
-    </form>
-    <?php
-    
-
-    function checkvirement($bdd)
-    {
-        $confirm = "Virement effectué";
-        if (isset($_POST['send'])) {
-            if (isset($_POST['virement']) && $_POST['virement'] != '' && strlen($_POST['virement']) >= 0) {
-                if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) == 27) {
-                    $err = 0;
-                    echo '<script> myFunction(); <script>';
-                } else {
-                    $err = 1;
+            <?php
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+            
+            ?>
+            <?php
+                $confirm = "Virement effectué";
+                if(isset($_POST['send']))
+                {
+                    switch(checkvirement($bdd))
+                    {
+                        case 0:
+                        {
+                            echo "<div class='confirm'>";
+                                transfertrequete($bdd);
+                                echo '<script> myFunction(); <script>';
+                                echo "<p><b>Virement effectué!</b><p>";
+                            echo '</div>';
+                        }
+                        case 1:
+                        {
+                            echo '<div class="error_box">';
+                            echo '<p class ="error"><b>Veuillez entrer le RIB du destinataire.</b></p>';
+                            echo '</div>';
+                        }
+                        case 2:
+                        {
+                            echo '<div class="error_box">';
+                            echo '<p class ="error"><b>Veuillez entrer une somme à transférer.</b></p>';
+                            echo '</div>';
+                        }
+                    }
                 }
-            }else
-            {
-                $err = 2;
-            }
-            return $err;
-        }  
-    }
-    ?>
-    <?php
-        $confirm = "Virement effectué";
-        if(isset($_POST['send']))
-        {
-            if(checkvirement() == 0)
-            {
-                echo "<p class='confirm'> $confirm <p>";
-            }
-            elseif(checkvirement() == 1)
-            {
-                echo '<div class="error_box">';
-                    echo '<p class ="error">Veuillez entrer le RIB du destinataire.</p>';
-                echo '</div>';
-            }
-            elseif(checkvirement() == 2)
-            {
-                echo '<div class="error_box">';
-                    echo '<p class ="error">Veuillez entrer une somme à transférer.</p>';
-                echo '</div>';
-            }
-        }
-    ?>
-
-</body>
+            ?>
+        </div>
+    </body>
 </html>
     
