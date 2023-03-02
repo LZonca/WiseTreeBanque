@@ -11,6 +11,7 @@ if(!isset($_SESSION))
 <html>
     <head>
         <title>Wise Tree Banque</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="icon" type="image/jpg" href="logo.jpg" />
         <style>
@@ -42,7 +43,7 @@ if(!isset($_SESSION))
             <input type="password" name="mdpchange" placeholder="Nouveau mot de passe" required><br><br>
             <label for="mdprepeat">Répéter le nouveau mot de passe</label><br><br>
             <input type="password" name="mdprepeat" placeholder="Répéter le nouveau mot de passe" required><br><br>
-            <button name='changemdp'>Changer de mot de passe</button>
+            <button name='changemdp' class="btn btn-primary">Changer de mot de passe</button>
         </form>
         </div>
 </div> 
