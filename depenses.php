@@ -177,8 +177,8 @@ function checkcomptes($bdd){
         <div class='form-container'>
             <h1><b>Mes dépenses</b></h1>
             <h2><?php 
-            $bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-            //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+            //$bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
             checkcomptes($bdd);
             ?></h2>
             <h3>Effectuer un virement</h3>
