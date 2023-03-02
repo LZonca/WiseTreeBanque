@@ -109,6 +109,8 @@ if(!isset($_SESSION['compteactuel'])){
         
     </header>
     <?php
+    // $bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat');
+    
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
     nomrequest($bdd);
     ?>
