@@ -49,6 +49,7 @@ function create_user($bdd)
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
     $password = "123456";
+    $password = password_hash($password, PASSWORD_DEFAULT);
     $datenaissance = $_POST['datenaissance'];
     $mail = $_POST['email'];
     $tel = $_POST['tel'];

@@ -23,7 +23,7 @@ function loginrequest()
     {
         if($data)
         {   
-            if($data['password'] == $_POST['password'])
+            if(($data['password'] == $_POST['password']) && (password_verify($pass, $data['password'])))
             {
                 $_SESSION['userid'] = $_POST['userid'];
                 header('Location: lescomptes.php');
