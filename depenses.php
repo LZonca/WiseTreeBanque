@@ -5,6 +5,78 @@ if(isset($_POST['submit'])){
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit();
 }
+
+
+
+function checkcomptes($bdd){
+    try{
+        $bdd;
+
+    }catch(exception $e){
+        die('Erreur nom compte: '. $e->getMessage());
+    }
+    $compte = $_SESSION['compteactuel'];
+    $requetedata = "SELECT * FROM comptes WHERE comptenom = ?";
+    $requetedata = $bdd->prepare($requetedata); 
+    $requetedata->execute(array($compte));
+    $data = $requetedata->fetch();
+    echo "<h3>Votre solde: <u>" . $data['solde'] . "€</u></h4>";
+    echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
+    }
+
+    function RIBrequest($bdd)
+    {
+        try{
+            $bdd;
+
+        }catch(exception $e){
+            die('Erreur solde: '. $e->getMessage());
+        }
+        $user = $_SESSION['userid'];
+        $requetesolde = "SELECT * FROM comptes WHERE userid = ?";
+        $requetesolde = $bdd->prepare($requetesolde); 
+        $requetesolde->execute(array($user));
+        $solde = $requetesolde->fetch();
+        return $solde['RIB'];
+    }
+
+    function transfertrequete($bdd){
+        try{
+            $bdd;
+    
+        }catch(exception $e){
+            die('Erreur transaction: '. $e->getMessage());
+        }
+        date_default_timezone_set('Europe/Paris');
+        $date = date('d-m-y h:i:s');
+        $envoyeur = RIBrequest($bdd);
+        $destinataire = $_POST['destinataire'];
+        $valeur = $_POST['virement'];
+        $requetedata = 'INSERT INTO virements VALUES (NULL, ?, ?, ?, ?)';
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($destinataire, $envoyeur, $valeur, $date));
+        echo "Effectué ! <br>";
+        //echo "Données transmises: " . $destinataire . ", " . $envoyeur . ", " . $valeur . ", " . $date;
+        
+
+    }
+
+    function checkvirement($bdd)
+            {
+                if (isset($_POST['send'])) {
+                    if (isset($_POST['virement']) && $_POST['virement'] != '' && $_POST['virement'] >= 0 && is_numeric($_POST['virement'])) {
+                        if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) >= 27) {
+                            $err = 0;
+                        } else {
+                            $err = 1;
+                        }
+                    }else
+                    {
+                        $err = 2;
+                    }
+                    return $err;
+                }  
+            }
 ?>
 <!DOCTYPE html>
 <html>
@@ -80,38 +152,43 @@ if(isset($_POST['submit'])){
         }
     </style>   
 
-    
-</head>
-<body>
-    <header>
-        <div class="nav_bar">
-            <form method="POST" action="compte.php">
-                <button name="lescomptes">Retour</button>
-            </form>
-            <form method="POST" action="lescomptes.php">
-                <button name="lescomptes">Vos comptes</button>
-            </form>
+        <link rel="stylesheet" type="text/css" href="css/style.css">    
+    </head>
+    <body>
+        <header>
+            <div class="nav_bar">
+                <form method="POST" action="compte.php">
+                    <button name="lescomptes">Retour</button>
+                </form>
+                <form method="POST" action="lescomptes.php">
+                    <button name="lescomptes">Vos comptes</button>
+                </form>
+                
+                <form method="POST" action="logout.php">
+                    <button name="Deco">Deconnexion</button>
+                </form>
+            </div>
             
-            <form method="POST" action="logout.php">
-                <button name="Deco">Deconnexion</button>
+        </header>
+        <div class='form-container'>
+            <h1><b>Mes dépenses</b></h1>
+            <h2><?php 
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+            checkcomptes($bdd);
+            ?></h2>
+            <h3>Effectuer un virement</h3>
+            <form action="depenses.php" method="post">
+                <input type="text" id="virement" name="destinataire" placeholder="RIB du destinataire"><br><br>
+                <input type="text" id="virement" name="virement" placeholder="Somme"><br><br>
+                <button name="send">Envoyer</button>
             </form>
-        </div>
-        
-    </header>
-    <h1><b>Mes dépenses</b></h1>
-    <h2>FR13 1273 9000 7064 3341 7217 M62</h2>
-    <h3>Effectuer un virement</h3>
-    <form action="depenses.php" method="post">
-        <input type="text" id="virement" name="destinataire" placeholder="RIB du destinataire"><br><br>
-        <input type="text" id="virement" name="virement" placeholder="Somme"><br><br>
-        <button name="send">Envoyer</button>
         
 
     </form>
     <?php
     
 
-    function checkvirement()
+    function checkvirement($bdd)
     {
         $confirm = "Virement effectué";
         if (isset($_POST['send'])) {

@@ -20,7 +20,7 @@ if(!isset($_SESSION['compteactuel'])){
             die('Erreur: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
-        $requete = "SELECT nom, prenom FROM users WHERE id = ?;";
+        $requete = "SELECT nom, prenom FROM users WHERE userid = ?;";
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($user));
         $data = $requete->fetch();
@@ -31,8 +31,8 @@ if(!isset($_SESSION['compteactuel'])){
 
     function checkcomptes(){
         try{
-            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
+            //$bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
         }catch(exception $e){
             die('Erreur nom compte: '. $e->getMessage());
         }
@@ -57,7 +57,7 @@ if(!isset($_SESSION['compteactuel'])){
             die('Erreur: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
-        $requete = "SELECT decouvert_autorise FROM comptes WHERE userid = ?;";
+        $requete = "SELECT * FROM comptes WHERE userid = (SELECT id FROM users WHERE userid = ?);";
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($user));
         $data = $requete->fetch();

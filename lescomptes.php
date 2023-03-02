@@ -25,7 +25,7 @@
             die('Erreur rang: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
-        $requete = "SELECT permissions FROM users WHERE id = ?;";
+        $requete = "SELECT permissions FROM users WHERE userid = ?;";
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($user));
         $data = $requete->fetch();
@@ -45,7 +45,7 @@
             die('Erreur: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
-        $requete = "SELECT nom, prenom FROM users WHERE id = ?;";
+        $requete = "SELECT nom, prenom FROM users WHERE userid = ?;";
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($user));
         $data = $requete->fetch();
@@ -76,7 +76,7 @@
             die('Erreur nom compte: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
-        $requetedata = "SELECT * FROM comptes WHERE userid = ?";
+        $requetedata = "SELECT * FROM comptes WHERE userid = (SELECT id FROM users WHERE userid = ?) ";
         $requetedata = $bdd->prepare($requetedata); 
         $requetedata->execute(array($user));
         while($data = $requetedata->fetch())
@@ -114,7 +114,8 @@
             </form>
                 <form method="POST" action="lescomptes.php">
                     <?php 
-                    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+                    //$bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+                    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
                     rankrequest($bdd);
                     ?>
                 </form>

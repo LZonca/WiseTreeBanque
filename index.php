@@ -6,6 +6,7 @@ session_start();
 function loginrequest()
 {
     try{
+    //$bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat');
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
     }catch(exception $e){
@@ -13,7 +14,7 @@ function loginrequest()
     }
     $user = $_POST['userid'];
     $pass = $_POST['password'];
-    $requete = "SELECT * FROM users WHERE id = ?;";
+    $requete = "SELECT * FROM users WHERE userid = ?;";
     $requete = $bdd->prepare($requete); 
     $requete->execute(array($user));
     $data = $requete->fetch();

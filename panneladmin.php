@@ -1,44 +1,49 @@
 <?php
 session_start();
-function generateRIB($bdd) {
-    // Générer un code banque aléatoire entre 10000 et 99999
-    $bankCode = 69420;
+function generateRIB($bdd, $numeroCompte) {
+    $codeBanque = "FR69420";
   
-    // Générer un code guichet aléatoire entre 10000 et 99999
-    $branchCode = rand(10000, 99999);
-  
-    // Générer un numéro de compte aléatoire entre 10000000000 et 99999999999
-    $accountNumber = rand(10000000000, 99999999999);
-  
-    // Calculer la clé RIB en utilisant la formule : 97 - ((89 x code banque + 15 x code guichet + 3 x numéro de compte) % 97)
-    $ribKey = 97 - ((89 * $bankCode + 15 * $branchCode + 3 * $accountNumber) % 97);
-  
-    // Ajouter des zéros à gauche du code banque et du code guichet pour avoir 5 chiffres
-    $bankCode = str_pad($bankCode, 5, "0", STR_PAD_LEFT);
-    $branchCode = str_pad($branchCode, 5, "0", STR_PAD_LEFT);
-  
-    // Ajouter des zéros à gauche du numéro de compte pour avoir 11 chiffres
-    $accountNumber = str_pad($accountNumber, 11, "0", STR_PAD_LEFT);
-  
-    // Concaténer le code banque, le code guichet, le numéro de compte et la clé RIB avec des espaces
-    $rib = $bankCode . $branchCode . $accountNumber . $ribKey;
-  
+    // Ajouter des zéros à gauche du numéro de compte pour avoir une longueur de 23 caractères
+    $numeroComptePadded = str_pad($numeroCompte, 11, "0", STR_PAD_LEFT) . "000000";
+    
+    // Transformer le code de la banque et le numéro de compte en une chaîne de chiffres
+    $chiffres = str_replace(
+      array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"),
+      array("10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35"),
+      $codeBanque . $numeroComptePadded
+    );
+    
+    // Calculer le reste de la division euclidienne de $chiffres par 97
+    $reste = 0;
+    for ($i = 0; $i < strlen($chiffres); $i++) {
+      $reste = ($reste * 10 + (int)$chiffres[$i]) % 97;
+    }
+    
+    // Calculer la clé RIB
+    $cleRib = str_pad(97 - $reste, 2, "0", STR_PAD_LEFT);
+    $rib = $codeBanque . $cleRib . $numeroCompte;
     // Vérifier si le RIB existe déjà dans la base de données
     $requete = $bdd->prepare("SELECT COUNT(*) FROM comptes WHERE RIB = ?");
     $requete->execute(array($rib));
     $count = $requete->fetchColumn();
+    
   
     // Si le RIB existe déjà, appeler à nouveau la fonction generateRIB()
     if ($count > 0) {
-      return generateRIB($bdd);
+      return generateRIB($bdd, $numeroCompte);
     }
     else{
         return $rib;
     }
         
 }
-    // Sinon, ajouter le RIB à la base de données
-    
+
+function generateid(){
+    $idrand = mt_rand(10000000000, 99999999999);
+    $id = strval($idrand);
+    echo $id;
+}
+
 function create_user($bdd)
   {
     $nom = $_POST['nom'];
@@ -125,8 +130,7 @@ function create_compte($bdd)
         $requeteinfo = $bdd->prepare($requeteinfo); 
         $requeteinfo->execute(array($nom, $prenom));
         $data = $requeteinfo->fetch();
-
-        $RIB = generateRIB($bdd);
+        $RIB = generateRIB($bdd, generateid());
         $decouvert = $_POST['decouvert'];
         $comptenom = $_POST['nomcompte'];
 
@@ -219,7 +223,7 @@ function checkmail($mail){
 				</form>
 
                 <div class="loginform">
-                <h2>Ajouter un utilisateur</h2>
+                <h2>Ajouter un compte</h2>
 				<form action="panneladmin.php" method="post">
 					<label for="nomclient">Nom*:</label><br><br>
 					<input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" required><br><br>
@@ -250,7 +254,8 @@ function checkmail($mail){
 			</div>
         </div>
             <?php
-            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');   
+            //$bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
             if(isset($_POST['adduser']))
                 { 
                     create_user($bdd);
