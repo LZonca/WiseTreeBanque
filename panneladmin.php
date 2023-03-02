@@ -21,7 +21,7 @@ function generateRIB($bdd, $numeroCompte) {
     
     // Calculer la clé RIB
     $cleRib = str_pad(97 - $reste, 2, "0", STR_PAD_LEFT);
-    $rib = $codeBanque . $cleRib . $numeroCompte;
+    $rib = "FR76" . $codeBanque . $numeroCompte . $cleRib ;
     // Vérifier si le RIB existe déjà dans la base de données
     $requete = $bdd->prepare("SELECT COUNT(*) FROM comptes WHERE RIB = ?");
     $requete->execute(array($rib));
@@ -38,14 +38,29 @@ function generateRIB($bdd, $numeroCompte) {
         
 }
 
-function generateid(){
+function generateid($bdd){
     $idrand = mt_rand(10000000000, 99999999999);
+
     $id = strval($idrand);
-    echo $id;
+
+    $idrequete = "SELECT COUNT(*) FROM users WHERE userid = ?";
+    $idrequete= $bdd->prepare($idrequete);
+    $idrequete->execute(array($id));
+    $countid = $idrequete->fetchColumn();
+
+    if($countid>0)
+    {
+        return $id = generateid($bdd);
+        
+    }
+
+    return $id;
 }
 
 function create_user($bdd)
   {
+
+    $id = generateid($bdd);
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
     $password = "123456";
@@ -62,8 +77,7 @@ function create_user($bdd)
     }
     // Se connecter à la base de données avec PDO
     
-
-
+    
     // Vérifier si l'utilisateur existe déjà dans la base de données
     $nomrequete = "SELECT COUNT(*) FROM users WHERE nom = ?";
     $nomrequete= $bdd->prepare($nomrequete);
@@ -97,9 +111,9 @@ function create_user($bdd)
         echo "</div>";
     } else {
 
-        $requete = "INSERT INTO users (id, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $requete = "INSERT INTO users (userid, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $requete = $bdd->prepare($requete); 
-        $requete->execute(array($nom, $prenom,$datenaissance, $password, $mail, $tel, $conseillier, $perms));
+        $requete->execute(array($id, $nom, $prenom,$datenaissance, $password, $mail, $tel, $conseillier, $perms));
         $data = $requete->fetch();
 
         echo "<p class='confirm'>L'utilisateur a été ajouté avec succès.<p>";
@@ -131,7 +145,7 @@ function create_compte($bdd)
         $requeteinfo = $bdd->prepare($requeteinfo); 
         $requeteinfo->execute(array($nom, $prenom));
         $data = $requeteinfo->fetch();
-        $RIB = generateRIB($bdd, generateid());
+        $RIB = generateRIB($bdd, generateid($bdd));
         $decouvert = $_POST['decouvert'];
         $comptenom = $_POST['nomcompte'];
 

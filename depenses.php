@@ -37,7 +37,7 @@ function checkcomptes($bdd){
             die('Erreur solde: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
-        $requetesolde = "SELECT * FROM comptes WHERE userid = (SELECT id FROM users WHERE userid = ?)";
+        $requetesolde = "SELECT * FROM comptes WHERE userid = ?";
         $requetesolde = $bdd->prepare($requetesolde); 
         $requetesolde->execute(array($user));
         $solde = $requetesolde->fetch();

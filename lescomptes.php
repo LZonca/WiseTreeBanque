@@ -76,7 +76,7 @@
             die('Erreur nom compte: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
-        $requetedata = "SELECT * FROM comptes WHERE userid = (SELECT id FROM users WHERE userid = ?) ";
+        $requetedata = "SELECT * FROM comptes WHERE userid = ? ";
         $requetedata = $bdd->prepare($requetedata); 
         $requetedata->execute(array($user));
         while($data = $requetedata->fetch())
