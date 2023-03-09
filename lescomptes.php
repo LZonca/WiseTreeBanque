@@ -1,19 +1,43 @@
 <?php
     session_start();
-    
+    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
     if(!isset($_SESSION['userid']))
     {
         header('Location: index.php');
     }
 
-    if(isset($_POST['lescomptes'])){
-        unset($_SESSION['compteactuel']);
+    if(isset($_POST['Deco'])){
+        header('Location: logout.php');
+    }
+    
+    if(isset($_POST['parametres'])){
+        header('Location: settings.php');
     }
 
+    if(isset($_POST['contact'])){
+        header('Location: contact.php');
+    }
 
     if(isset($_POST['compteactuel'])){
         $_SESSION['compteactuel'] = $_POST['compteactuel'];
         header('Location: compte.php');
+    }
+
+    if(isset($_POST['admin'])){
+        header('Location: panneladmin.php');
+    }
+
+    if(isset($_POST['conseil'])){
+        header('Location: pannelconseiller.php');
+    }
+
+    if(isset($_POST['banquier'])){
+        header('Location: pannelbanquier.php');
+    }
+
+    if(isset($_POST['contact'])){
+        header('Location: contact.php');
     }
     
     function rankrequest($bdd)
@@ -29,9 +53,15 @@
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($user));
         $data = $requete->fetch();
-        if ($data['permissions'] > 1) {
+        if ($data['permissions'] == 4) {
             // Afficher le bouton d'administration
-            echo "<a href='panneladmin.php'>Accéder au panneau d'administration</a>";
+            echo "<button name='admin' class='btn btn-info'>Accéder au panneau d'administration !</button>";
+        }
+        elseif($data['permissions'] == 2){
+            echo "<button name='conseil' class='btn btn-info'>Accéder aux outils conseiller !</button>";
+        }
+        elseif($data['permissions'] == 3){
+            echo "<button name='banquier' class='btn btn-info'>Accéder aux outils banquier !</button>";
         }
     }
     
@@ -92,6 +122,18 @@
     }
 
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
+function messagecount($bdd){
+    $user = $_SESSION['userid'];
+    $idrequete = "SELECT COUNT(*) FROM chat WHERE destinataireid = ? AND requeststatus = 0";
+    $idrequete= $bdd->prepare($idrequete);
+    $idrequete->execute(array($user));
+    $countid = $idrequete->fetchColumn();
+    if($countid > 0)
+    {
+        echo $countid;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -101,41 +143,32 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="icon" type="image/jpg" href="logo.jpg" />
-        <style>
-        </style>
     </head>
     <body>
-        <header>
-            <div class="nav_bar">
-                <form method="POST" action="logout.php">
-                    <button name="Deco">Deconnexion</button>
-                </form>
-                <form method="POST" action="settings.php">
-                <button name="parametres">Paramètres</button>
-            </form>
+            <div class="navbar-nav">
                 <form method="POST" action="lescomptes.php">
+                    <button name="Deco" class="btn btn-secondary">Deconnexion</button>
+                    <button name="parametres" class="btn btn-secondary">Paramètres</button>
+                    <button name='contact' class='btn btn-primary'>Messagerie<span class="badge bg-danger ms-2"><?php messagecount($bdd) ?></span></button>  
                     <?php 
-                    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-                    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
+
                     rankrequest($bdd);
                     ?>
                 </form>
             </div>
-           
-        </header>
-        <?php nomrequest($bdd);?>
-        <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
-        <?php echo "<h2>Compte utilisateur n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
-        <h1>Vos comptes</h1>
-        <div class="comptes_container">
-            
-            <?php
-                checkcomptes($bdd);
-            ?>
+        <div class="container">
+                <?php nomrequest($bdd);?>
+                <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
+                <?php echo "<h2>Compte utilisateur n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
+                <h1>Vos comptes</h1>
+                <div class="comptes_container">
+                    <?php
+                        checkcomptes($bdd);
+                    ?>
+                </div>
             </div>
         </div>
-</div> 
-
+    </div> 
     </body>
 
 </html>

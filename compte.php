@@ -2,13 +2,28 @@
 session_start();
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 
-if(!isset($_SESSION['userid']))
-    {
+if(!isset($_SESSION['userid'])){
         header('Location: index.php');
     }
 
 if(!isset($_SESSION['compteactuel'])){
     header('Location: index.php');
+}
+
+if(isset($_POST['comptes'])){
+    header('Location: compte.php');
+}
+
+if(isset($_POST['lescomptes'])){
+    unset($_SESSION['compteactuel']);
+}
+
+if(isset($_POST['Deco'])){
+    header('Location: logout.php');
+}
+
+if(isset($_POST['virement'])){
+    header('Location: depenses.php');
 }
 
     function nomrequest($bdd)
@@ -42,9 +57,13 @@ if(!isset($_SESSION['compteactuel'])){
         $requetedata->execute(array($compte));
         $data = $requetedata->fetch();
         echo "<h3>Compte " . $data['comptenom'] . "</h3>";
-        echo "<h5><a href='depenses.php'>Votre solde: <u>" . $data['solde'] . "€</a></u></h5>";
+        echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
         echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
-        echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
+        echo "<h3>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
+        echo "<h4>BIC: " . htmlspecialchars(strtoupper($data['BIC'])) . "</h4>";
+        echo "<form action='compte.php' method='POST'>";
+            echo "<button name='virement' class='btn btn-primary'>Effectuer un virement !</button>";
+        echo "</form>";
         echo "</div>";
         }
 
@@ -62,21 +81,6 @@ if(!isset($_SESSION['compteactuel'])){
         $requete->execute(array($user));
         $data = $requete->fetch();
         echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
-    }
-    function solderequest($bdd)
-    {
-        try{
-            $bdd;
-
-        }catch(exception $e){
-            die('Erreur solde: '. $e->getMessage());
-        }
-        $user = $_SESSION['userid'];
-        $requetesolde = "SELECT solde FROM comptes WHERE userid = ?";
-        $requetesolde = $bdd->prepare($requetesolde); 
-        $requetesolde->execute(array($user));
-        $solde = $requetesolde->fetch();
-        echo "<h4>Votre solde: <u>" . $solde['solde'] . " €</u></h4>";
     }
     //var_dump($_SESSION);
 ?>
@@ -97,34 +101,32 @@ if(!isset($_SESSION['compteactuel'])){
 </head>
 
 <body>
-    <header>
-        <div class="nav_bar">
-            <form method="POST" action="lescomptes.php">
-                <button name="lescomptes">Vos comptes</button>
-            </form>
-            <form method="POST" action="logout.php">
-                <button name="Deco">Deconnexion</button>
-            </form>
-        </div>
-        
-    </header>
+    <div class="navbar-nav">
+        <form method="POST" action="lescomptes.php">
+        <button name="comptes" class="btn btn-primary">Retour</button>
+            <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
+            <button name="Deco" class="btn btn-secondary">Deconnexion</button>
+        </form>
+    </div>
+    <div class="container">
     <?php
     // $bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat');
     
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
     nomrequest($bdd);
     ?>
-    <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
-    <div class="data-container">
-        <h3><u>Votre compte</u></h3>
-        <p>
-            <?php
-            //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-            if(isset($_POST['"'. checkcomptes($bdd) . '"']))
-                checkcomptes($bdd);
-            ?>
-        </p>
+    
+        <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
+        <div class="data-container">
+            <h3><u>Votre compte</u></h3>
+            <p>
+                <?php
+                //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+                if(isset($_POST['"'. checkcomptes($bdd) . '"']))
+                    checkcomptes($bdd);
+                ?>
+            </p>
+        </div>
     </div>
-
 </body>
 </html>
