@@ -8,6 +8,61 @@ try{
     die('Erreur: '. $e->getMessage());
 }
 
+
+function displayusers ($bdd) {
+    $sql = "SELECT * FROM users ";
+    $request = $bdd->prepare($sql);
+    $request->execute();
+
+    echo '<table>';
+    echo '<tr>
+        <th>UserID</th>
+        <th>Nom</th>
+        <th>Prenom</th>
+        <th>Mail</th>
+        <th>Téléphone</th>
+        <th>Date de naissance</th>
+        <th>ID conseiller</th>
+        <th>Permissions</th>
+        <th>Actions</th>
+    </tr>';
+
+    while($data = $request->fetch()){
+        echo '<tr>';
+        echo '<td>' . $data['userid'] . '</td>';
+        echo '<td>' . $data['nom'] . '</td>';
+        echo '<td>' . $data['prenom'] . '</td>';
+        echo '<td>' . $data['mail'] . '</td>';
+        echo '<td>' . $data['tel'] . '</td>';
+        echo '<td>' . $data['date_naissance'] . '</td>';
+        echo '<td>' . $data['idconseiller'] . '</td>';
+        echo '<td>' . $data['permissions'] . '</td>';
+        echo '<td>
+            <form method="POST">
+                <input type="hidden" name="id" value="'. $data['userid'] .'">
+                <input type="submit" name="delete" value="supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ?\')">
+            </form>
+        </td>';
+        echo '</tr>';
+    }
+    echo'</table>';
+
+    if(isset($_POST['delete'])) {
+        $id = $_POST['id'];
+        $sql = 'DELETE FROM users WHERE userid = :id';
+        $request = $bdd->prepare($sql);
+        $request->bindParam(':id', $id);
+        $request->execute();
+    }
+}
+
+
+
+
+function displayaccounts ($bdd) {
+
+}
+
 function generateRIB($bdd, $numeroCompte) {
     $codeBanque = "69420";
   
@@ -297,6 +352,8 @@ function verifnewuser()
                     { 
                         create_user($bdd);
                     }
+
+                    displayusers($bdd);
                 ?>
 
                 <div class="loginform">
