@@ -53,10 +53,35 @@ function displaymessage($bdd){
         $data = $requete->fetch();
         while($datamsg = $requetedata->fetch())
         {
-            echo "<h2>" . $data['prenom'] . " " . $data['nom'] . " souhaite plannifier un randez-vous à " . $datamsg['daterdv'] . "<small> - Envoyé à " . $datamsg['time'] . "</small><button name='accept' class='btn btn-success btn-sm'>Accepter le randez-vous.<br></button><button name=deny' class='btn btn-danger btn-sm'>Refuser le randez-vous.</button></h2><br>";
+            echo "<h2>" . $data['prenom'] . " " . $data['nom'] . " souhaite plannifier un randez-vous à " . $datamsg['daterdv'] . " | Message: " . $datamsg['chat'] . "<small> - Envoyé à " . $datamsg['time'] . "</small><button name='accept' class='btn btn-success btn-sm'>Accepter le randez-vous.<br></button><button name=deny' class='btn btn-danger btn-sm'>Refuser le randez-vous.</button></h2><br>";
         }
         echo "</form>";
         echo "<br>";
+
+        function afficherdv(){
+            global $bdd;
+            $user = $_SESSION['userid'];
+            $requete = "SELECT * FROM users, chat WHERE users.userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?) AND chat.requeststatus = 1;";
+            $requete = $bdd->prepare($requete); 
+            $requete->execute(array($user));
+            $data = $requete->fetch();
+
+            echo "<h3>Vos randez-vous</h3>";
+
+            echo "<table>";
+            echo "<th>Raison RDV</th>";
+            echo "<th>Date RDV</th>";
+            echo "<th>Client</th>";
+            while($datardv = $requete->fetch())
+            {      
+                echo "<tr>";
+                echo "<td>" . $datardv['chat'] . "</td>";
+                echo "<td>" . $datardv['date'] . "/td>";
+                echo "<td>" . $data['prenom'] . " " . $data['nom'] . "/td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        }
     }
     /*elseif($datarank['permissions'] > 1){
         $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
