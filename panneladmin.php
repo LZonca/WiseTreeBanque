@@ -343,7 +343,7 @@ function verifnewuser()
                         checkranks($bdd);
                     ?>
                     
-					<button name="adduser" class="btn btn-primary">Ajouter un compte</button>
+					<button name="adduser" class="btn btn-primary">Ajouter un utilisateur</button>
 				</form>
 
                 <?php
