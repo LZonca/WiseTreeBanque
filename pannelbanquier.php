@@ -1,13 +1,5 @@
 <?php
 session_start();
-//$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-try{
-    $bdd;
-}catch(exception $e){
-    die('Erreur: '. $e->getMessage());
-}
-
 function generateRIB($bdd, $numeroCompte) {
     $codeBanque = "69420";
   
@@ -42,11 +34,17 @@ function generateRIB($bdd, $numeroCompte) {
     }
     else{
         return $rib;
-    }   
+    }
+        
 }
 
 function checkconseillers($bdd){
+    try{
+        $bdd;
 
+    }catch(exception $e){
+        die('Erreur conseillers: '. $e->getMessage());
+    }
     $requetedata = "SELECT * FROM users WHERE permissions = 2";
     $requetedata = $bdd->prepare($requetedata);
     $requetedata->execute();
@@ -61,10 +59,15 @@ function checkconseillers($bdd){
 }
 
 function checkranks($bdd){
-    $requetedata = "SELECT * FROM permissions";
+    try{
+        $bdd;
+
+    }catch(exception $e){
+        die('Erreur permissions: '. $e->getMessage());
+    }
+    $requetedata = "SELECT * FROM permissions WHERE permissionid < 3";
     $requetedata = $bdd->prepare($requetedata);
     $requetedata->execute();
-
     echo "<select name='perms' class='form-control' required>";
     while($data = $requetedata->fetch())
     {
@@ -85,6 +88,7 @@ function generateid($bdd){
     if($countid>0)
     {
         return $id = generateid($bdd);
+        
     }
 
     return $id;
@@ -103,7 +107,11 @@ function create_user($bdd)
     $tel = $_POST['tel'];
     $conseillier = $_POST['conseiller'];
     $perms = $_POST['perms'];
-
+    try{
+        $bdd;
+    }catch(exception $e){
+        die('Erreur creation: '. $e->getMessage());
+    }
     // Se connecter à la base de données avec PDO
     
     // Vérifier si l'utilisateur existe déjà dans la base de données
@@ -177,6 +185,11 @@ function create_compte($bdd)
         $decouvert = $_POST['decouvert'];
         $comptenom = $_POST['nomcompte'];
 
+        try{
+            $bdd;
+        }catch(exception $e){
+            die('Erreur creation: '. $e->getMessage());
+        }
         // Se connecter à la base de données avec PDO
         $requete = "INSERT INTO comptes (userid, comptenom, RIB, decouvert_autorise) VALUES (?, ?, ?, ?);";
         $requete = $bdd->prepare($requete);
@@ -241,7 +254,7 @@ function verifnewuser()
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" type="image/jpg" href="logo.jpg" />
-        <title>Pannel administrateur</title>
+        <title>Pannel banquier</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <style>
@@ -262,7 +275,7 @@ function verifnewuser()
         <div class="container">
             <div class='login-container'>
             <div class="titre">
-                <h1>Panneau administrateur</h1>
+                <h1>Panneau banquier</h1>
             </div>
 			<div class="loginform">
                 <h2>Ajouter un utilisateur</h2>
@@ -332,7 +345,8 @@ function verifnewuser()
 			</div>
         </div>
             <?php
-
+            //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
             if(isset($_POST['adduser'])) //&& verifnewuser())
                 { 
                     if(verifnewuser())
