@@ -215,7 +215,7 @@ function create_user($bdd)
 
         $requete = "INSERT INTO users (userid, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $requete = $bdd->prepare($requete); 
-        $requete->execute(array($id, $nom, $prenom,$datenaissance, $password, $mail, $tel, $conseillier, $perms));
+        $requete->execute(array($id, $nom, $prenom, $datenaissance, $password, $mail, $tel, $conseillier, $perms));
         $data = $requete->fetch();
 
         echo "<p class='confirm'>L'utilisateur a été ajouté avec succès.<p>";

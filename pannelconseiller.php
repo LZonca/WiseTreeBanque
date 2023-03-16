@@ -39,18 +39,18 @@ function generateRIB($bdd, $numeroCompte) {
 }
 
 function checkconseillers($bdd){
-    try{
-        $bdd;
 
-    }catch(exception $e){
-        die('Erreur conseillers: '. $e->getMessage());
-    }
-    $user = $_SESSION['userid'];
-    $requetedata = "SELECT * FROM conseillers";
+    $requetedata = "SELECT * FROM users WHERE permissions = 2";
     $requetedata = $bdd->prepare($requetedata);
     $requetedata->execute();
-    $data = $requetedata->fetch();
-    echo "<input type='text' name='conseiller' value = ". $user . " hidden>";
+
+    echo "<select name='conseiller' class='form-control' required>";
+    echo "<option value = '' selected></option>";
+    while($data = $requetedata->fetch())
+    {
+        echo "<option value = ". $data['userid'] . "\">" . $data['nom'] . " " . $data['prenom'] . "</option>";
+    }
+    echo "</select><br><br>";
 }
 
 function checkranks($bdd){

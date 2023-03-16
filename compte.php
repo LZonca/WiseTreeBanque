@@ -59,6 +59,7 @@ if(isset($_POST['virement'])){
         echo "<h3>Compte " . $data['comptenom'] . "</h3>";
         echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
         echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
+        echo "<h2>RIB: </h2><br>";
         echo "<h3>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
         echo "<h4>BIC: " . htmlspecialchars(strtoupper($data['BIC'])) . "</h4>";
         echo "<form action='compte.php' method='POST'>";

@@ -46,6 +46,20 @@ function verifdest($bdd, $dest){
     }
 }
 
+function verifsolde($bdd){
+    $valeur = $_POST['virement'];
+        $usersolde = "SELECT * FROM comptes WHERE RIB = ?;";
+        $usersolde = $bdd->prepare($usersolde); 
+        $usersolde->execute(array(RIBrequest($bdd)));
+        $soldeexpe = $usersolde->fetch();
+        if(($soldeexpe['solde'] - $valeur) >= (0 + $soldeexpe['decouvert_autorise']))
+        {
+            return true;
+        }else{
+            return false;
+        }
+}
+
 function checkcomptes($bdd){
 
     $compte = $_SESSION['compteactuel'];
@@ -54,7 +68,7 @@ function checkcomptes($bdd){
     $requetedata->execute(array($compte));
     $data = $requetedata->fetch();
     echo "<h3>Votre solde: <u>" . $data['solde'] . "€</u></h4>";
-    echo "<h3>RIB: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
+    echo "<h3>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
     }
 
     function RIBrequest($bdd)
@@ -73,32 +87,30 @@ function checkcomptes($bdd){
         $envoyeur = RIBrequest($bdd);
         $destinataire = $_POST['destinataire'];
         $valeur = $_POST['virement'];
-        
-        $requetedata = 'INSERT INTO virements VALUES (NULL, ?, ?, ?, ?)';
-        $requetedata = $bdd->prepare($requetedata); 
-        $requetedata->execute(array($destinataire, $envoyeur, $valeur, $date));
-        echo "Effectué ! <br>";
 
-        $destinatairesolde = "SELECT solde FROM comptes WHERE RIB = ?;";
+        $destinatairesolde = "SELECT * FROM comptes WHERE RIB = ?;";
         $destinatairesolde = $bdd->prepare($destinatairesolde); 
         $destinatairesolde->execute(array($destinataire));
         $soldedest = $destinatairesolde->fetch();
 
-        $usersolde = "SELECT solde FROM comptes WHERE RIB = ?;";
+        $usersolde = "SELECT * FROM comptes WHERE RIB = ?;";
         $usersolde = $bdd->prepare($usersolde); 
         $usersolde->execute(array(RIBrequest($bdd)));
         $soldeexpe = $usersolde->fetch();
-
+        $requetedata = 'INSERT INTO virements VALUES (NULL, ?, ?, ?, ?)';
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($destinataire, $envoyeur, $valeur, $date));
+        
         $destinatairerequete = "UPDATE comptes SET solde = ? WHERE RIB = ?;";
         $destinatairerequete  = $bdd->prepare($destinatairerequete); 
-        $destinatairerequete ->execute(array($soldedest + $valeur, $destinataire));
+        $destinatairerequete ->execute(array($soldedest['solde'] + $valeur, $destinataire));
         
         $userrequete = "UPDATE comptes SET solde = ? WHERE RIB = ?;";
         $userrequete  = $bdd->prepare($userrequete); 
         $userrequete ->execute(array($soldeexpe['solde'] - $valeur, RIBrequest($bdd)));
-        //echo "Données transmises: " . $destinataire . ", " . $envoyeur . ", " . $valeur . ", " . $date;
-
     }
+        
+        //echo "Données transmises: " . $destinataire . ", " . $envoyeur . ", " . $valeur . ", " . $date;
     function checkvirement($bdd)
             {
                 if (isset($_POST['send'])) {
@@ -108,7 +120,13 @@ function checkcomptes($bdd){
                             {
                                 if(verifdest($bdd, $_POST['destinataire']))
                                 {
-                                    $err = 0;
+                                    if(verifsolde($bdd)){
+                                        transfertrequete($bdd);
+                                        $err = 0;
+                                    }else{
+                                        $err = 5;
+                                    }
+                                    
                                 }else{
                                     $err = 4;
                                 }
@@ -222,29 +240,27 @@ function checkcomptes($bdd){
                     <input type="text" id="virement" name="virement" placeholder="Somme" class="form-control" required><br><br>
                     <button name="send" class="btn btn-primary">Envoyer</button>
                 </form>
-            
-                <?php
-                $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-                
-                ?>
+        
                 <?php
                     $confirm = "Virement effectué";
                     if(isset($_POST['send']))
                     {
+                        
                         switch(checkvirement($bdd))
                         {
                             case 0:
                             {
-                                    echo "<div class='confirm'>";
-                                    transfertrequete($bdd);
-                                    echo '<script> myFunction(); <script>';
-                                    echo "<p class='error'><b>Virement effectué!</b><p>";
+                                echo "<div class='confirm'>";
+                                transfertrequete($bdd);
+                                $_POST = array();
+                                echo '<script> myFunction(); <script>';
+                                echo "<p class='error'><b>Virement effectué!</b><p>";
                                 echo '</div>';
                             }
                             case 1:
                             {
                                 echo '<div class="error_box">';
-                                echo '<p class ="error"><b>Veuillez entrer le RIB du destinataire.</b></p>';
+                                echo '<p class ="error"><b>Veuillez entrer l\'IBAN du destinataire.</b></p>';
                                 echo '</div>';
                             }
                             case 2:
@@ -263,6 +279,12 @@ function checkcomptes($bdd){
                             {
                                 echo '<div class="error_box">';
                                 echo '<p class ="error"><b>Compte inconnu</b></p>';
+                                echo '</div>';
+                            }
+                            case 5:
+                            {
+                                echo '<div class="error_box">';
+                                echo '<p class ="error"><b>Votre solde ne peut pas être nul ou negatif.</b></p>';
                                 echo '</div>';
                             }
                         }
