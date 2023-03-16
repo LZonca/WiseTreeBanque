@@ -8,6 +8,80 @@ try{
     die('Erreur: '. $e->getMessage());
 }
 
+
+function displayusers ($bdd) {
+    $sql = "SELECT * FROM users ";
+    $request = $bdd->prepare($sql);
+    $request->execute();
+
+    echo '<table>';
+    echo '<tr>
+        <th>UserID</th>
+        <th>Nom</th>
+        <th>Prenom</th>
+        <th>Mail</th>
+        <th>Téléphone</th>
+        <th>Date de naissance</th>
+        <th>ID conseiller</th>
+        <th>Permissions</th>
+        <th>Actions</th>
+    </tr>';
+
+    while($data = $request->fetch()){
+        echo '<tr>';
+        echo '<td>' . $data['userid'] . '</td>';
+        echo '<td>' . $data['nom'] . '</td>';
+        echo '<td>' . $data['prenom'] . '</td>';
+        echo '<td>' . $data['mail'] . '</td>';
+        echo '<td>' . $data['tel'] . '</td>';
+        echo '<td>' . $data['date_naissance'] . '</td>';
+        echo '<td>' . $data['idconseiller'] . '</td>';
+        echo '<td>' . $data['permissions'] . '</td>';
+        echo '<td>';
+
+        // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
+        if($data['permissions'] == 4){
+            echo '<form method="POST">
+                <input type="hidden" name="id" value="'. $data['userid'] .'">
+                <input type="password" name="password" placeholder="Mot de passe">
+                <input type="submit" name="delete" value="supprimer">
+            </form>';
+        } else {
+            echo '<form method="POST">
+                <input type="hidden" name="id" value="'. $data['userid'] .'">
+                <input type="submit" name="delete" value="supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ?\')">
+            </form>';
+        }
+
+        echo '</td>';
+        echo '</tr>';
+    }
+    echo'</table>';
+
+    if(isset($_POST['delete'])) {
+        $id = $_POST['id'];
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
+
+        // Vérifier le mot de passe si l'utilisateur a une permission de 4
+        if(($data['permissions'] == 4 || $data['permissions'] == 3) && $password == '123456'){
+            $sql = 'DELETE FROM users WHERE userid = :id';
+            $request = $bdd->prepare($sql);
+            $request->bindParam(':id', $id);
+            $request->execute();
+        } else {
+            echo '<p style="color:red;">Mot de passe incorrect !</p>';
+        }
+    }
+}
+
+
+
+
+
+function displayaccounts ($bdd) {
+
+}
+
 function generateRIB($bdd, $numeroCompte) {
     $codeBanque = "69420";
   
@@ -288,7 +362,7 @@ function verifnewuser()
                         checkranks($bdd);
                     ?>
                     
-					<button name="adduser" class="btn btn-primary">Ajouter un compte</button>
+					<button name="adduser" class="btn btn-primary">Ajouter un utilisateur</button>
 				</form>
 
                 <?php
@@ -297,6 +371,8 @@ function verifnewuser()
                     { 
                         create_user($bdd);
                     }
+
+                    displayusers($bdd);
                 ?>
 
                 <div class="loginform">
