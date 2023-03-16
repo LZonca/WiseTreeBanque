@@ -78,7 +78,7 @@ function displaymessage($bdd){
         //Afficher le bouton Annuler
         echo "<form method='post' action='contact.php'>
         <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
-        </form>";
+        </form> ";
     }
 
     // Vérifie si le bouton refuser a été cliqué
