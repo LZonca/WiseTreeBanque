@@ -57,13 +57,13 @@ function displaymessage($bdd){
         }
         echo "</form>";
         echo "<br>";
-
+    }
         function afficherdv(){
             global $bdd;
             $user = $_SESSION['userid'];
-            $requete = "SELECT * FROM users, chat WHERE users.userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?) AND chat.requeststatus = 1;";
+            $requete = "SELECT * FROM users, chat WHERE users.userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?);";
             $requete = $bdd->prepare($requete); 
-            $requete->execute(array($user));
+            $requete->execute($user);
             $data = $requete->fetch();
 
             echo "<h3>Vos randez-vous</h3>";
@@ -82,7 +82,6 @@ function displaymessage($bdd){
             }
             echo "</table>";
         }
-    }
     /*elseif($datarank['permissions'] > 1){
         $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
         $requetedata = $bdd->prepare($requetedata); 

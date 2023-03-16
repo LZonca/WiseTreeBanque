@@ -125,7 +125,7 @@ function checkconseillers($bdd){
     $requetedata = $bdd->prepare($requetedata);
     $requetedata->execute();
 
-    echo "<select name='conseiller' class='form-control' required>";
+    echo "<select name='conseiller' class='form-control'>";
     echo "<option value = '' selected></option>";
     while($data = $requetedata->fetch())
     {
@@ -218,7 +218,7 @@ function create_user($bdd)
         $requete->execute(array($id, $nom, $prenom, $datenaissance, $password, $mail, $tel, $conseillier, $perms));
         $data = $requete->fetch();
 
-        echo "<p class='confirm'>L'utilisateur a été ajouté avec succès.<p>";
+        echo "<div background-color:green><p class='confirm'>L'utilisateur a été ajouté avec succès.<p></div>";
   }
 }
 
@@ -257,7 +257,7 @@ function create_compte($bdd)
         $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
         $datacompte = $requete->fetch();
 
-        echo "<p class='confirm'>Le compte a été créé avec succès.<p>";
+        echo "<div background-color:green><p class='confirm'>Le compte a été créé avec succès.<p></div>";
     }
 }
 
@@ -338,6 +338,8 @@ function verifnewuser()
             <div class="titre">
                 <h1>Panneau administrateur</h1>
             </div>
+            <div class ="row">
+            <div class="col-sm">
 			<div class="loginform">
                 <h2>Ajouter un utilisateur</h2>
 				<form action="panneladmin.php" method="post">
@@ -374,51 +376,51 @@ function verifnewuser()
 
                     displayusers($bdd);
                 ?>
+                </div>
+                <div class="col-sm">
+                    <div class="loginform">
+                    <h2>Ajouter un compte</h2>
+                    <form action="panneladmin.php" method="post">
+                        <label for="nomclient">Nom:*</label><br><br>
+                        <input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
+                        <label for="prenomclient">Prenom:*</label><br><br>
+                        <input type="text" id="prenomclient" name="prenomclient" placeholder="Prenom du propriétaire de compte" class="form-control" required><br><br>
+                        <label for="nomcompte">Type de compte:*</label><br><br>
+                        <select name='nomcompte' class="form-control" required>
+                            <option value = "Courant" selected>Compte courant</option>
+                            <option value = "Epargne">Compte epargne</option>
+                            <option value = "Etudiant">Compte étudiant</option>
+                        </select><br><br>
+                        <label for="decouvert">Decouvert autorisé:*</label><br><br>
+                        <select name="decouvert" class="form-control" required>
+                            <option value = "0" selected>0</option>
+                            <option value = "100">100</option>
+                            <option value ="200">200</option>
+                            <option value = "300">300</option>
+                            <option value = "400">400</option>
+                            <option value = "500">500</option>
+                            <option value = "1000">1000</option>
+                            <option value = "2000">2000</option>
+                            <option value = "3000">3000</option>
+                            <option value = "4000">4000</option>
+                            <option value = "5000">5000</option>
+                            <option value = "10000">10000</option>
+                        </select><br><br>
+                        <button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
+                    </form>
+                </div>
+            </div>
+                <?php
 
-                <div class="loginform">
-                <h2>Ajouter un compte</h2>
-				<form action="panneladmin.php" method="post">
-					<label for="nomclient">Nom:*</label><br><br>
-					<input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
-                    <label for="prenomclient">Prenom:*</label><br><br>
-					<input type="text" id="prenomclient" name="prenomclient" placeholder="Prenom du propriétaire de compte" class="form-control" required><br><br>
-                    <label for="nomcompte">Type de compte:*</label><br><br>
-                    <select name='nomcompte' class="form-control" required>
-                        <option value = "Courant" selected>Compte courant</option>
-                        <option value = "Epargne">Compte epargne</option>
-                        <option value = "Etudiant">Compte étudiant</option>
-                    </select><br><br>
-                    <label for="decouvert">Decouvert autorisé:*</label><br><br>
-                    <select name="decouvert" class="form-control" required>
-                        <option value = "0" selected>0</option>
-                        <option value = "100">100</option>
-                        <option value ="200">200</option>
-                        <option value = "300">300</option>
-                        <option value = "400">400</option>
-                        <option value = "500">500</option>
-                        <option value = "1000">1000</option>
-                        <option value = "2000">2000</option>
-                        <option value = "3000">3000</option>
-                        <option value = "4000">4000</option>
-                        <option value = "5000">5000</option>
-                        <option value = "10000">10000</option>
-                    </select><br><br>
-					<button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
-				</form>
-			</div>
-        </div>
-            <?php
-
-            if(isset($_POST['adduser'])) //&& verifnewuser())
-                { 
-                    if(verifnewuser())
-                    {
-                        create_user($bdd);
+                if(isset($_POST['addcompte'])) //&& verifnewuser())
+                    { 
+                            create_compte($bdd);
                     }
-                }
-            ?>
-			<div class = "error_box">
-			</div>
+                ?>
+                </div>
+                <div class = "error_box">
+                </div>
+            </div>
         </div>
 	</body>
 </html>

@@ -340,12 +340,9 @@ function verifnewuser()
             <?php
             //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
             $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-            if(isset($_POST['adduser'])) //&& verifnewuser())
+            if(isset($_POST['addcompte'])) //&& verifnewuser())
                 { 
-                    if(verifnewuser())
-                    {
-                        create_user($bdd);
-                    }
+                        create_compte($bdd);
                 }
             ?>
 			<div class = "error_box">

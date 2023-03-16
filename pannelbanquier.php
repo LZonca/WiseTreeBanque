@@ -36,7 +36,7 @@ function displayusers ($bdd) {
             echo '<form method="POST">
                 <input type="hidden" name="id" value="'. $data['userid'] .'">
                 <input type="password" name="password" placeholder="Mot de passe">
-                <input type="submit" name="delete" value="supprimer">
+                <input type="submit" name="delete" value="supprimer" class="btn btn-danger">
             </form>';
         } else {
             echo '<form method="POST">
@@ -52,10 +52,12 @@ function displayusers ($bdd) {
 
     if(isset($_POST['delete'])) {
         $id = $_POST['id'];
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        $password = $_POST['password'];
+
+    
 
         // Vérifier le mot de passe si l'utilisateur a une permission de 4
-        if(($data['permissions'] == 4 || $data['permissions'] == 3) && $password == '123456'){
+        if(($data['permissions'] == 4 || $data['permissions'] == 3) && password_verify($password, $data['password'])){
             $sql = 'DELETE FROM users WHERE userid = :id';
             $request = $bdd->prepare($sql);
             $request->bindParam(':id', $id);
@@ -262,8 +264,9 @@ function create_compte($bdd)
         $requete = $bdd->prepare($requete);
         $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
         $datacompte = $requete->fetch();
-
+        echo '<div background-color:green>';
         echo "<p class='confirm'>Le compte a été créé avec succès.<p>";
+        echo "</div>";
     }
 }
 
@@ -414,13 +417,10 @@ function verifnewuser()
             <?php
             //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
             $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-            if(isset($_POST['adduser'])) //&& verifnewuser())
-                { 
-                    if(verifnewuser())
-                    {
-                        create_user($bdd);
+            if(isset($_POST['addcompte'])) //&& verifnewuser())
+                    { 
+                            create_compte($bdd);
                     }
-                }
             ?>
 			<div class = "error_box">
 			</div>
