@@ -42,10 +42,10 @@ function messagerequest($bdd){
 }
 
 function displaymessage($bdd){
-        $user = $_SESSION['userid'];
-        $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
-        $requetedata = $bdd->prepare($requetedata); 
-        $requetedata->execute(array($user));
+    $user = $_SESSION['userid'];
+    $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
+    $requetedata = $bdd->prepare($requetedata); 
+    $requetedata->execute(array($user));
 
         $requete = "SELECT * FROM users WHERE userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?);";
         $requete = $bdd->prepare($requete); 
@@ -57,7 +57,7 @@ function displaymessage($bdd){
         }
         echo "</form>";
         echo "<br>";
-    }
+
         function afficherdv(){
             global $bdd;
             $user = $_SESSION['userid'];
@@ -82,6 +82,7 @@ function displaymessage($bdd){
             }
             echo "</table>";
         }
+    }
     /*elseif($datarank['permissions'] > 1){
         $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
         $requetedata = $bdd->prepare($requetedata); 
