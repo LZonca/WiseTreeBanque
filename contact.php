@@ -78,7 +78,7 @@ function displaymessage($bdd){
         //Afficher le bouton Annuler
         echo "<form method='post' action='contact.php'>
         <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
-        </form>";
+        </form> ";
     }
 
     // Vérifie si le bouton refuser a été cliqué
@@ -87,6 +87,13 @@ function displaymessage($bdd){
         $update = "UPDATE chat SET requeststatus = 2 WHERE idmsg = ?";
         $update = $bdd->prepare($update);
         $update->execute(array($id));
+<<<<<<< HEAD
+=======
+        // Afficher le bouton Annuler
+        echo "<form method='post' action='contact.php'>
+        <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
+        </form>";
+>>>>>>> 64017f1af85cafe9148ad7bb3d613f05fe03cc47
     }
 
     // Vérifie si le bouton annuler a été cliqué
@@ -104,14 +111,16 @@ function displaymessage($bdd){
             $requete = "SELECT * FROM users, chat WHERE chat.requeststatus = 1 AND users.userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?);";
             $requete = $bdd->prepare($requete); 
             $requete->execute(array($user));
-            $data = $requete->fetch();
+            $data = $requete->fetch(); ?>
 
-            echo "<h3>Vos randez-vous</h3>";
+            <h3>Vos randez-vous</h3>
 
-            echo "<table>";
-            echo "<th>Raison RDV</th>";
-            echo "<th>Date RDV</th>";
-            echo "<th>Client</th>";
+            <table>
+            <th>Raison RDV</th>
+            <th>Date RDV</th>
+            <th>Client</th>
+
+            <?php
             while($datardv = $requete->fetch())
             {      
                 echo "<tr>";
@@ -176,6 +185,7 @@ function displaymessage($bdd){
                     }
                     ?>
                 </div>
+<<<<<<< HEAD
                 <?php
                 echo '<form method="POST" action="contact.php" >';
                 echo '<div class="form-group">';
@@ -186,6 +196,16 @@ function displaymessage($bdd){
                 echo '</form>';
                 displaymessage($bdd);
                 ?>
+=======
+                <form method="POST" action="contact.php" >
+                <div class="form-group">
+                    <input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>
+                    <input type="datetime-local" name="rdvtime" class="form-control" min=" <?= date('y-m-d h:i') ?>">
+                    <button name="submit" class="btn btn-primary">Envoyer le message</button>
+                </div>
+                </form>
+
+>>>>>>> 64017f1af85cafe9148ad7bb3d613f05fe03cc47
             </div>
         </div>
     </body>
