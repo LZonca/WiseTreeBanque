@@ -87,13 +87,10 @@ function displaymessage($bdd){
         $update = "UPDATE chat SET requeststatus = 2 WHERE idmsg = ?";
         $update = $bdd->prepare($update);
         $update->execute(array($id));
-<<<<<<< HEAD
-=======
         // Afficher le bouton Annuler
         echo "<form method='post' action='contact.php'>
         <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
         </form>";
->>>>>>> 64017f1af85cafe9148ad7bb3d613f05fe03cc47
     }
 
     // Vérifie si le bouton annuler a été cliqué
@@ -185,18 +182,6 @@ function displaymessage($bdd){
                     }
                     ?>
                 </div>
-<<<<<<< HEAD
-                <?php
-                echo '<form method="POST" action="contact.php" >';
-                echo '<div class="form-group">';
-                echo '<input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>';
-                echo '<input type="datetime-local" name="rdvtime" class="form-control" min="' . date('y-m-d h:i') . '" > ';
-                echo '<button name="submit" class="btn btn-primary">Envoyer le message</button>';
-                echo '</div>';
-                echo '</form>';
-                displaymessage($bdd);
-                ?>
-=======
                 <form method="POST" action="contact.php" >
                 <div class="form-group">
                     <input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>
@@ -205,7 +190,6 @@ function displaymessage($bdd){
                 </div>
                 </form>
 
->>>>>>> 64017f1af85cafe9148ad7bb3d613f05fe03cc47
             </div>
         </div>
     </body>
