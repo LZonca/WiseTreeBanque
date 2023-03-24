@@ -19,8 +19,9 @@
         header('Location: contact.php');
     }
 
-    if(isset($_POST['compteactuel'])){
+    if(isset($_POST['compteactuelnom'])){
         $_SESSION['compteactuel'] = $_POST['compteactuel'];
+        $_SESSION['compteactuelnom'] = $_POST['compteactuelnom'];
         header('Location: compte.php');
     }
 
@@ -111,11 +112,13 @@
         $requetedata->execute(array($user));
         while($data = $requetedata->fetch())
         {
+            
             echo "<div class='compte'>";
+            echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
             echo "<form method='POST' action='lescomptes.php'>";
-            echo "<input type='submit' name='compteactuel' value='" . $data['comptenom'] . "'>"; 
+            echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
+            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>"; 
             echo"</form>";
-            echo "<h4>Compte " . $data['comptenom'] . "</h4>";
             echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
             echo "</div>";
         }
@@ -158,9 +161,9 @@ function messagecount($bdd){
             </div>
         <div class="container">
                 <?php nomrequest($bdd);?>
-                <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
+                <h1><u>Bienvenue sur la Wise Tree Bank</u></h1>
                 <?php echo "<h2>Compte utilisateur n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
-                <h1>Vos comptes</h1>
+                <h2>Vos comptes</h2>
                 <div class="comptes_container">
                     <?php
                         checkcomptes($bdd);
