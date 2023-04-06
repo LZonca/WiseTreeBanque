@@ -438,7 +438,6 @@ function verifnewuser()
                 </div>
             </div>
                 <?php
-
                 if(isset($_POST['addcompte'])) //&& verifnewuser())
                     { 
                             create_compte($bdd);
