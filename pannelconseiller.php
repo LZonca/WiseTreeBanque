@@ -273,7 +273,7 @@ function verifnewuser()
             </div>
 			<div class="loginform">
                 <h2>Ajouter un utilisateur</h2>
-				<form action="panneladmin.php" method="post">
+				<form action="pannelconseiller.php" method="post">
 					<label for="nom">Nom*:</label><br><br>
 					<input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control" required><br><br>
                     <label for="prenom">Prenom*:</label><br><br>
@@ -307,7 +307,7 @@ function verifnewuser()
 
                 <div class="loginform">
                 <h2>Ajouter un compte</h2>
-				<form action="panneladmin.php" method="post">
+				<form action="pannelconseiller.php" method="post">
 					<label for="nomclient">Nom:*</label><br><br>
 					<input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
                     <label for="prenomclient">Prenom:*</label><br><br>
@@ -333,8 +333,15 @@ function verifnewuser()
                         <option value = "5000">5000</option>
                         <option value = "10000">10000</option>
                     </select><br><br>
+
 					<button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
 				</form>
+                <form action='pannelconseiller.php' method="POST">
+                    <input type='text' name='nompret'>
+                    <input type='text' name='prenompret'>
+                    <input type='text' name="valeur">
+                    
+
 			</div>
         </div>
             <?php
