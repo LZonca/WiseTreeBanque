@@ -40,6 +40,41 @@ function messagerequest($bdd){
     echo "<p class='confirm'>Message envoyé avec succès.<p>";
 }
 
+
+// Vérifie si le bouton accepter a été cliqué
+if (isset($_POST['accept'])) {
+    $id = $_POST['accept'];
+    $update = "UPDATE chat SET requeststatus = 1 WHERE idmsg = ?";
+    $update = $bdd->prepare($update);
+    $update->execute(array($id));
+    //Afficher le bouton Annuler
+    echo "<form method='post' action='contact.php'>
+    <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
+    </form> ";
+}
+
+// Vérifie si le bouton refuser a été cliqué
+if (isset($_POST['deny'])) {
+    $id = $_POST['deny'];
+    $update = "UPDATE chat SET requeststatus = 2 WHERE idmsg = ?";
+    $update = $bdd->prepare($update);
+    $update->execute(array($id));
+    // Afficher le bouton Annuler
+    echo "<form method='post' action='contact.php'>
+    <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
+    </form>";
+}
+
+// Vérifie si le bouton annuler a été cliqué
+if (isset($_POST['cancel'])) {
+    $id = $_POST['cancel'];
+    $update = "UPDATE chat SET requeststatus = 3 WHERE idmsg = ?";
+    $update = $bdd->prepare($update);
+    $update->execute(array($id));
+    // Affiche un message de confirmation de l'annulation du rendez-vous
+    echo "<div class='alert alert-warning' role='alert'>Le rendez-vous a été annulé avec succès.</div>";
+
+}   
 function displaymessage(){
     global $bdd;
     $user = $_SESSION['userid'];
@@ -68,39 +103,6 @@ function displaymessage(){
     echo"</h2><br>";
 }
 
-
-    // Vérifie si le bouton accepter a été cliqué
-    if (isset($_POST['accept'])) {
-        $id = $_POST['accept'];
-        $update = "UPDATE chat SET requeststatus = 1 WHERE idmsg = ?";
-        $update = $bdd->prepare($update);
-        $update->execute(array($id));
-        //Afficher le bouton Annuler
-        echo "<form method='post' action='contact.php'>
-        <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
-        </form> ";
-    }
-
-    // Vérifie si le bouton refuser a été cliqué
-    if (isset($_POST['deny'])) {
-        $id = $_POST['deny'];
-        $update = "UPDATE chat SET requeststatus = 2 WHERE idmsg = ?";
-        $update = $bdd->prepare($update);
-        $update->execute(array($id));
-        // Afficher le bouton Annuler
-        echo "<form method='post' action='contact.php'>
-        <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
-        </form>";
-    }
-
-    // Vérifie si le bouton annuler a été cliqué
-    if (isset($_POST['cancel'])) {
-        $id = $_POST['cancel'];
-        $update = "UPDATE chat SET requeststatus = 3 WHERE idmsg = ?";
-        $update = $bdd->prepare($update);
-        $update->execute(array($id));
-        // Affiche un message de confirmation de l'annulation du rendez-vous
-        echo "<div class='alert alert-warning' role='alert'>Le rendez-vous a été annulé avec succès.</div>";
 
         function afficherdv(){
             global $bdd;
@@ -132,7 +134,7 @@ function displaymessage(){
 
     
 
-}
+
 
     /*elseif($datarank['permissions'] > 1){
         $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
