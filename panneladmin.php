@@ -40,7 +40,8 @@ function displayusers ($bdd) {
         echo '<td>';
 
         // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
-        if($data['permissions'] == 4){
+        if($data['permissions'] >=3){
+            echo '<td>';
             echo '<form method="POST">
                 <input type="hidden" name="id" value="'. $data['userid'] .'">
                 <input type="password" name="password" placeholder="Mot de passe">
@@ -61,15 +62,41 @@ function displayusers ($bdd) {
     if(isset($_POST['delete'])) {
         $id = $_POST['id'];
         $password = isset($_POST['password']) ? $_POST['password'] : '';
-
+    
+        $sql = 'SELECT * FROM users WHERE userid = :id';
+        $request = $bdd->prepare($sql);
+        $request->bindParam(':id', $id);
+        $request->execute();
+        $data = $request->fetch();
+        
+        if(!$data) {
+            echo '<p style="color:red;">Utilisateur non trouvé !</p>';
+            return;
+        }
+    
         // Vérifier le mot de passe si l'utilisateur a une permission de 4
-        if(($data['permissions'] == 4 || $data['permissions'] == 3) && $password == '123456'){
-            $sql = 'DELETE FROM users WHERE userid = :id';
+        $authorized = false;
+    
+        if($data['permissions'] == '4' || $data['permissions'] == '3' ){
+            if(password_verify($password, $data['password'])) {
+                $authorized = true;
+            } else {
+                echo '<p style="color:red;">Mot de passe incorrect !</p>';
+            }
+        } else {
+            $authorized = true;
+        }
+    
+        if($authorized) {
+            $sql = 'DELETE FROM comptes WHERE userid = :id';
             $request = $bdd->prepare($sql);
             $request->bindParam(':id', $id);
             $request->execute();
-        } else {
-            echo '<p style="color:red;">Mot de passe incorrect !</p>';
+    
+            $sql = 'DELETE FROM  users WHERE userid = :id';
+            $request = $bdd->prepare($sql);
+            $request->bindParam(':id', $id);
+            $request->execute();
         }
     }
 }
