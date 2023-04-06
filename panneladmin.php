@@ -50,7 +50,7 @@ function displayusers ($bdd) {
         } else {
             echo '<form method="POST" action="panneladmin.php">
                 <input type="hidden" name="id" value="'. $data['userid'] .'">
-                <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ?\')">
+                <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ? Wallali ?\')">
             </form>';
         }
 
