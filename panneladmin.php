@@ -204,7 +204,6 @@ function create_user($bdd)
     $tel = $_POST['tel'];
     $conseillier = $_POST['conseiller'];
     $perms = $_POST['perms'];
-
     // Se connecter à la base de données avec PDO
     
     // Vérifier si l'utilisateur existe déjà dans la base de données
@@ -239,11 +238,14 @@ function create_user($bdd)
         echo "<p class='error'>Cet utilisateur existe déjà.<p>";
         echo "</div>";
     } else {
-
+        
         $requete = "INSERT INTO users (userid, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($id, $nom, $prenom, $datenaissance, $password, $mail, $tel, $conseillier, $perms));
-        $data = $requete->fetch();
+
+        $requeteblame = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?, ?)";
+        $requeteblame = $bdd->prepare($requeteblame);
+        $requete->execute(array(2, $_SESSION['userid']));
 
         echo "<div background-color:green><p class='confirm'>L'utilisateur a été ajouté avec succès.<p></div>";
   }
@@ -282,8 +284,10 @@ function create_compte($bdd)
         $requete = "INSERT INTO comptes (userid, comptenom, RIB, decouvert_autorise) VALUES (?, ?, ?, ?);";
         $requete = $bdd->prepare($requete);
         $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
-        $datacompte = $requete->fetch();
 
+        $requeteblame = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?, ?)";
+        $requeteblame = $bdd->prepare($requeteblame);
+        $requete->execute(array(3, $_SESSION['userid']));
         echo "<div background-color:green><p class='confirm'>Le compte a été créé avec succès.<p></div>";
     }
 }
