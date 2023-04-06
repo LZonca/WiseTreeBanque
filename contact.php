@@ -11,8 +11,6 @@
         die('Erreur messages: '. $e->getMessage());
     }
 
-
-
     if(isset($_POST['retour'])){
         header('Location: lescomptes.php');
     }

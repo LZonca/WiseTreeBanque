@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 06 avr. 2023 à 08:28
+-- Généré le : jeu. 06 avr. 2023 à 09:15
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -26,6 +26,8 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `actionlogs`
 --
+-- Création : jeu. 06 avr. 2023 à 07:07
+--
 
 DROP TABLE IF EXISTS `actionlogs`;
 CREATE TABLE IF NOT EXISTS `actionlogs` (
@@ -41,6 +43,9 @@ CREATE TABLE IF NOT EXISTS `actionlogs` (
 
 --
 -- Structure de la table `actionsindex`
+--
+-- Création : jeu. 06 avr. 2023 à 07:04
+-- Dernière modification : jeu. 06 avr. 2023 à 08:15
 --
 
 DROP TABLE IF EXISTS `actionsindex`;
@@ -71,6 +76,9 @@ INSERT INTO `actionsindex` (`idaction`, `libaction`) VALUES
 --
 -- Structure de la table `chat`
 --
+-- Création : jeu. 16 mars 2023 à 10:23
+-- Dernière modification : jeu. 06 avr. 2023 à 08:40
+--
 
 DROP TABLE IF EXISTS `chat`;
 CREATE TABLE IF NOT EXISTS `chat` (
@@ -84,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
   PRIMARY KEY (`idmsg`),
   KEY `FK_users_chat` (`envoyeurid`),
   KEY `FK_chat_conseiller` (`destinataireid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `chat`
@@ -95,12 +103,15 @@ INSERT INTO `chat` (`idmsg`, `envoyeurid`, `destinataireid`, `chat`, `daterdv`, 
 (2, '10000000000', '10000000002', 'ABOULE UN MAX DE MOULA', '2023-03-12 12:00:00', '2023-03-09 01:35:00', 1),
 (3, '10000000000', '10000000002', 'Bonjour donne des sous', '2023-03-25 10:22:00', '2023-03-09 08:07:00', 1),
 (4, '10000000000', '10000000002', 'ABOULE UN MAX DE MOULA', '2023-03-24 21:20:00', '2023-03-09 10:21:00', 1),
-(5, '10000000000', '10000000002', 'Aled', '2023-04-08 12:12:00', '2023-03-16 11:23:00', 1);
+(5, '10000000000', '10000000002', 'Aled', '2023-04-08 12:12:00', '2023-03-16 11:23:00', 0),
+(6, '10000000000', '10000000002', 'DONNE RDV !!', '2023-04-14 12:40:00', '2023-04-06 10:40:00', 0);
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `comptes`
+--
+-- Création : jeu. 06 avr. 2023 à 07:44
 --
 
 DROP TABLE IF EXISTS `comptes`;
@@ -131,6 +142,8 @@ INSERT INTO `comptes` (`userid`, `RIB`, `BIC`, `comptenom`, `solde`, `decouvert_
 --
 -- Structure de la table `credits`
 --
+-- Création : sam. 04 mars 2023 à 00:49
+--
 
 DROP TABLE IF EXISTS `credits`;
 CREATE TABLE IF NOT EXISTS `credits` (
@@ -149,6 +162,8 @@ CREATE TABLE IF NOT EXISTS `credits` (
 
 --
 -- Structure de la table `permissions`
+--
+-- Création : jeu. 23 fév. 2023 à 07:45
 --
 
 DROP TABLE IF EXISTS `permissions`;
@@ -172,6 +187,9 @@ INSERT INTO `permissions` (`permissionid`, `permissionnom`) VALUES
 
 --
 -- Structure de la table `users`
+--
+-- Création : sam. 04 mars 2023 à 00:57
+-- Dernière modification : jeu. 06 avr. 2023 à 06:51
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -209,6 +227,8 @@ INSERT INTO `users` (`userid`, `nom`, `prenom`, `date_naissance`, `password`, `m
 
 --
 -- Structure de la table `virements`
+--
+-- Création : mer. 01 mars 2023 à 21:58
 --
 
 DROP TABLE IF EXISTS `virements`;
