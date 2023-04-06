@@ -45,12 +45,12 @@ function displayusers ($bdd) {
             echo '<form method="POST">
                 <input type="hidden" name="id" value="'. $data['userid'] .'">
                 <input type="password" name="password" placeholder="Mot de passe">
-                <input type="submit" name="delete" value="supprimer">
+                <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer">
             </form>';
         } else {
-            echo '<form method="POST">
+            echo '<form method="POST" action="panneladmin.php">
                 <input type="hidden" name="id" value="'. $data['userid'] .'">
-                <input type="submit" name="delete" value="supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ?\')">
+                <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ?\')">
             </form>';
         }
 
