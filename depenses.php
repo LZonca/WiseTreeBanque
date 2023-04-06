@@ -26,6 +26,7 @@ if(isset($_POST['comptes'])){
 
 if(isset($_POST['lescomptes'])){
     unset($_SESSION['compteactuel']);
+    header('Location: lescomptes.php');
 }
 
 if(isset($_POST['Deco'])){
