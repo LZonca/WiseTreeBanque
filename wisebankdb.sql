@@ -22,7 +22,26 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
+-- --------------------------------------------------------
 
+--
+-- Structure de la table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `userid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `nom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `prenom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `date_naissance` date NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `mail` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `tel` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `idconseiller` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `permissions` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`userid`),
+  KEY `FK_users_perms` (`permissions`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 --
 -- Structure de la table `actionlogs`
 --
@@ -169,26 +188,7 @@ INSERT INTO `permissions` (`permissionid`, `permissionnom`) VALUES
 (3, 'Banquier'),
 (4, 'Administrateur');
 
--- --------------------------------------------------------
 
---
--- Structure de la table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `userid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `nom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `prenom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `date_naissance` date NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `mail` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `tel` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `idconseiller` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `permissions` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`userid`),
-  KEY `FK_users_perms` (`permissions`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `users`
