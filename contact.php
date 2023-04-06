@@ -2,6 +2,7 @@
     session_start();
     
     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+    global $bdd; 
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
 
     try{
@@ -39,7 +40,8 @@ function messagerequest($bdd){
     echo "<p class='confirm'>Message envoyé avec succès.<p>";
 }
 
-function displaymessage($bdd){
+function displaymessage(){
+    global $bdd;
     $user = $_SESSION['userid'];
     $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
     $requetedata = $bdd->prepare($requetedata); 
@@ -172,6 +174,9 @@ function displaymessage($bdd){
                 <h1>
                     WiseTreeBank - Contact
                 </h1>
+                <?php 
+                    displaymessage();
+                ?>
                 <div class='chat-box'>
                     <?php 
                     

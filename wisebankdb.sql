@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 06 avr. 2023 à 09:15
+-- Généré le : jeu. 06 avr. 2023 à 09:25
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -26,8 +26,6 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `actionlogs`
 --
--- Création : jeu. 06 avr. 2023 à 07:07
---
 
 DROP TABLE IF EXISTS `actionlogs`;
 CREATE TABLE IF NOT EXISTS `actionlogs` (
@@ -43,9 +41,6 @@ CREATE TABLE IF NOT EXISTS `actionlogs` (
 
 --
 -- Structure de la table `actionsindex`
---
--- Création : jeu. 06 avr. 2023 à 07:04
--- Dernière modification : jeu. 06 avr. 2023 à 08:15
 --
 
 DROP TABLE IF EXISTS `actionsindex`;
@@ -76,9 +71,6 @@ INSERT INTO `actionsindex` (`idaction`, `libaction`) VALUES
 --
 -- Structure de la table `chat`
 --
--- Création : jeu. 16 mars 2023 à 10:23
--- Dernière modification : jeu. 06 avr. 2023 à 08:40
---
 
 DROP TABLE IF EXISTS `chat`;
 CREATE TABLE IF NOT EXISTS `chat` (
@@ -103,15 +95,13 @@ INSERT INTO `chat` (`idmsg`, `envoyeurid`, `destinataireid`, `chat`, `daterdv`, 
 (2, '10000000000', '10000000002', 'ABOULE UN MAX DE MOULA', '2023-03-12 12:00:00', '2023-03-09 01:35:00', 1),
 (3, '10000000000', '10000000002', 'Bonjour donne des sous', '2023-03-25 10:22:00', '2023-03-09 08:07:00', 1),
 (4, '10000000000', '10000000002', 'ABOULE UN MAX DE MOULA', '2023-03-24 21:20:00', '2023-03-09 10:21:00', 1),
-(5, '10000000000', '10000000002', 'Aled', '2023-04-08 12:12:00', '2023-03-16 11:23:00', 0),
-(6, '10000000000', '10000000002', 'DONNE RDV !!', '2023-04-14 12:40:00', '2023-04-06 10:40:00', 0);
+(5, '10000000000', '10000000002', 'Aled', '2023-04-08 12:12:00', '2023-03-16 11:23:00', 1),
+(6, '10000000000', '10000000002', 'DONNE RDV !!', '2023-04-14 12:40:00', '2023-04-06 10:40:00', 3);
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `comptes`
---
--- Création : jeu. 06 avr. 2023 à 07:44
 --
 
 DROP TABLE IF EXISTS `comptes`;
@@ -142,8 +132,6 @@ INSERT INTO `comptes` (`userid`, `RIB`, `BIC`, `comptenom`, `solde`, `decouvert_
 --
 -- Structure de la table `credits`
 --
--- Création : sam. 04 mars 2023 à 00:49
---
 
 DROP TABLE IF EXISTS `credits`;
 CREATE TABLE IF NOT EXISTS `credits` (
@@ -162,8 +150,6 @@ CREATE TABLE IF NOT EXISTS `credits` (
 
 --
 -- Structure de la table `permissions`
---
--- Création : jeu. 23 fév. 2023 à 07:45
 --
 
 DROP TABLE IF EXISTS `permissions`;
@@ -187,9 +173,6 @@ INSERT INTO `permissions` (`permissionid`, `permissionnom`) VALUES
 
 --
 -- Structure de la table `users`
---
--- Création : sam. 04 mars 2023 à 00:57
--- Dernière modification : jeu. 06 avr. 2023 à 06:51
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -227,8 +210,6 @@ INSERT INTO `users` (`userid`, `nom`, `prenom`, `date_naissance`, `password`, `m
 
 --
 -- Structure de la table `virements`
---
--- Création : mer. 01 mars 2023 à 21:58
 --
 
 DROP TABLE IF EXISTS `virements`;
@@ -359,13 +340,6 @@ ALTER TABLE `chat`
 --
 ALTER TABLE `comptes`
   ADD CONSTRAINT `FK_users_comptes` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`);
-
---
--- Contraintes pour la table `credits`
---
-ALTER TABLE `credits`
-  ADD CONSTRAINT `FK_compte_credit` FOREIGN KEY (`compteid`) REFERENCES `comptes` (`RIB`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_user_conseiller` FOREIGN KEY (`conseillerid`) REFERENCES `users` (`userid`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `users`
