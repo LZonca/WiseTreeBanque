@@ -336,11 +336,16 @@ function verifnewuser()
 
 					<button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
 				</form>
+                <h2>Créer un prêt: </h2>
                 <form action='pannelconseiller.php' method="POST">
-                    <input type='text' name='nompret'>
-                    <input type='text' name='prenompret'>
-                    <input type='text' name="valeur">
-                    
+                    <label for="nompret">Nom du créancier</label>
+                    <input type='text' name='nompret' class="form-control"><br><br>
+                    <label for="prenompret">Prénom du créancier</label>
+                    <input type='text' name='prenompret' class="form-control"><br><br>
+                    <label for="valeurpret">Valeur du pret</label>
+                    <input type='text' name="valeurpret" class="form-control"><br><br>
+                    <button name="addpret" class="btn btn-primary">Créer un crédit</button>
+                </form>
 
 			</div>
         </div>
