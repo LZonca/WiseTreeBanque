@@ -62,16 +62,21 @@ function displayusers ($bdd) {
     if(isset($_POST['delete'])) {
         $id = $_POST['id'];
         $password = isset($_POST['password']) ? $_POST['password'] : '';
-
+    
         $sql = 'SELECT * FROM users WHERE userid = :id';
         $request = $bdd->prepare($sql);
         $request->bindParam(':id', $id);
         $request->execute();
         $data = $request->fetch();
+        
+        if(!$data) {
+            echo '<p style="color:red;">Utilisateur non trouvé !</p>';
+            return;
+        }
+    
         // Vérifier le mot de passe si l'utilisateur a une permission de 4
-        var_dump($data);
         $authorized = false;
-
+    
         if($data['permissions'] == '4' || $data['permissions'] == '3' ){
             if(password_verify($password, $data['password'])) {
                 $authorized = true;
@@ -81,13 +86,13 @@ function displayusers ($bdd) {
         } else {
             $authorized = true;
         }
-
+    
         if($authorized) {
             $sql = 'DELETE FROM comptes WHERE userid = :id';
             $request = $bdd->prepare($sql);
             $request->bindParam(':id', $id);
             $request->execute();
-
+    
             $sql = 'DELETE FROM  users WHERE userid = :id';
             $request = $bdd->prepare($sql);
             $request->bindParam(':id', $id);
