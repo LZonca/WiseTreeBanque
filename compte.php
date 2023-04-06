@@ -6,7 +6,7 @@ if(!isset($_SESSION['userid'])){
         header('Location: index.php');
     }
 
-if(!isset($_SESSION['compteactuel'])){
+if(!isset($_SESSION['compteactuel']) && !isset($_SESSION['compteactuelnom'])){
     header('Location: index.php');
 }
 
@@ -52,16 +52,17 @@ if(isset($_POST['virement'])){
             die('Erreur nom compte: '. $e->getMessage());
         }
         $compte = $_SESSION['compteactuel'];
-        $requetedata = "SELECT * FROM comptes WHERE comptenom = ?";
+        $comptenom = $_SESSION['compteactuelnom'];
+        $requetedata = "SELECT * FROM comptes WHERE RIB = ?";
         $requetedata = $bdd->prepare($requetedata); 
         $requetedata->execute(array($compte));
         $data = $requetedata->fetch();
-        echo "<h3>Compte " . $data['comptenom'] . "</h3>";
+        echo "<h2>Compte " . $data['comptenom'] . "</h2>";
         echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
         echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
-        echo "<h2>RIB: </h2><br>";
-        echo "<h3>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
-        echo "<h4>BIC: " . htmlspecialchars(strtoupper($data['BIC'])) . "</h4>";
+        echo "<h2>RIB: </h2>";
+        echo "<h2>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h2>";
+        echo "<h3>BIC: " . htmlspecialchars(strtoupper($data['BIC'])) . "</h3>";
         echo "<form action='compte.php' method='POST'>";
             echo "<button name='virement' class='btn btn-primary'>Effectuer un virement !</button>";
         echo "</form>";

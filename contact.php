@@ -58,7 +58,7 @@ function displaymessage($bdd){
     "<small> - Envoyé à " . $datamsg['time'] . "</small>";
         
     if ($datamsg['requeststatus'] == 0) {
-        echo"<form method='post' action=''>
+        echo"<form method='post' action='contact.php'>
         <button type='submit' name='accept' value='" . $datamsg['idmsg'] . "' class='btn btn-success btn-sm'>Accepter le rendez-vous.<br></button>
         <button type='submit' name='deny' value='" . $datamsg['idmsg'] . "' class='btn btn-danger btn-sm'>Refuser le rendez-vous.</button>
         <button type='submit' name='cancel' value='" . $datamsg['idmsg'] . "' class='btn btn-warning btn-sm'>Annuler</button>
@@ -105,7 +105,7 @@ function displaymessage($bdd){
         function afficherdv(){
             global $bdd;
             $user = $_SESSION['userid'];
-            $requete = "SELECT * FROM users, chat WHERE users.userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?) AND chat.requeststatus = 1;";
+            $requete = "SELECT * FROM users, chat WHERE chat.requeststatus = 1 AND users.userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?);";
             $requete = $bdd->prepare($requete); 
             $requete->execute(array($user));
             $data = $requete->fetch(); ?>
@@ -122,8 +122,8 @@ function displaymessage($bdd){
             {      
                 echo "<tr>";
                 echo "<td>" . $datardv['chat'] . "</td>";
-                echo "<td>" . $datardv['date'] . "/td>";
-                echo "<td>" . $data['prenom'] . " " . $data['nom'] . "/td>";
+                echo "<td>" . $datardv['date'] . "</td>";
+                echo "<td>" . $data['prenom'] . " " . $data['nom'] . "</td>";
                 echo "</tr>";
             }
             echo "</table>";
@@ -176,7 +176,7 @@ function displaymessage($bdd){
                 </h1>
                 <div class='chat-box'>
                     <?php 
-                    displaymessage($bdd);
+                    
                     if(isset($_POST['submit'])){
                         messagerequest($bdd);
                     }
