@@ -25,16 +25,8 @@
         header('Location: compte.php');
     }
 
-    if(isset($_POST['admin'])){
-        header('Location: panneladmin.php');
-    }
-
-    if(isset($_POST['conseil'])){
-        header('Location: pannelconseiller.php');
-    }
-
-    if(isset($_POST['banquier'])){
-        header('Location: pannelbanquier.php');
+    if(isset($_POST['control'])){
+        header('Location: controlpannel.php');
     }
 
     if(isset($_POST['contact'])){
@@ -56,13 +48,13 @@
         $data = $requete->fetch();
         if ($data['permissions'] == 4) {
             // Afficher le bouton d'administration
-            echo "<button name='admin' class='btn btn-info'>Accéder au panneau d'administration !</button>";
+            echo "<button name='control' class='btn btn-info'>Accéder au panneau d'administration !</button>";
         }
         elseif($data['permissions'] == 2){
-            echo "<button name='conseil' class='btn btn-info'>Accéder aux outils conseiller !</button>";
+            echo "<button name='control' class='btn btn-info'>Accéder aux outils conseiller !</button>";
         }
         elseif($data['permissions'] == 3){
-            echo "<button name='banquier' class='btn btn-info'>Accéder aux outils banquier !</button>";
+            echo "<button name='control' class='btn btn-info'>Accéder aux outils banquier !</button>";
         }
     }
     
