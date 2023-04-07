@@ -1,5 +1,8 @@
 <?php
-
+session_start();
+if(!isset($_SESSION['userid'])){
+    header('Location: index.php');
+}
 function addcredit($bdd){
     $nom = $_POST['nompret'];
     $prenom = $_POST['prenompret'];
@@ -55,7 +58,11 @@ function addcredit($bdd){
             
         ?>
         <form action='creationcredit.php' method='POST'>
-            <input type=''>
+            <input type='text' name='raisonpret' class='form-control'>
+            <input type='text' name='valeur' pattern="[0-9]" class='form-control' required>
+            <input type='text' name='interet' pattern="[0-9]" class='form-control' required>
+            <input type='date' name='echeance' required>
+
         </form>
     </div>
 </body>

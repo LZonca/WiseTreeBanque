@@ -136,9 +136,7 @@ function create_user($bdd)
 
     if (($countnom > 0 && $countpren > 0 && $countnaissance > 0 && $countmail > 0 && $counttel > 0) || $countmail > 0 || $counttel > 0) {
         // Afficher un message d'erreur si l'utilisateur existe déjà
-        echo "<div class = 'error_box'>";
-        echo "<p class='error'>Cet utilisateur existe déjà.<p>";
-        echo "</div>";
+        echo "<p class='alert alert-danger'>Cet utilisateur existe déjà.<p>";
     } else {
 
         $requete = "INSERT INTO users (userid, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -146,7 +144,7 @@ function create_user($bdd)
         $requete->execute(array($id, $nom, $prenom,$datenaissance, $password, $mail, $tel, $conseillier, $perms));
         $data = $requete->fetch();
 
-        echo "<p class='confirm'>L'utilisateur a été ajouté avec succès.<p>";
+        echo "<p class='alert alert-success'>L'utilisateur a été ajouté avec succès.<p>";
   }
 }
 
@@ -167,9 +165,7 @@ function create_compte($bdd)
 
     if ($countnom == 0 && $countpren == 0){
         // Afficher un message d'erreur si l'utilisateur n'existe pas.
-        echo '<div class="error_box">';
-        echo "<p class='error'>Pas d'utilisateur à ce nom!<p>";
-        echo '</div>';
+        echo "<p class='alert alert-danger'>Pas d'utilisateur à ce nom!<p>";
     } else {
         $requeteinfo = "SELECT * FROM users WHERE nom = ? AND prenom = ?";
         $requeteinfo = $bdd->prepare($requeteinfo); 
@@ -189,7 +185,7 @@ function create_compte($bdd)
         $requete = $bdd->prepare($requete);
         $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
 
-        echo "<p class='confirm'>Le compte a été créé avec succès.<p>";
+        echo "<p class='alert alert-success'>Le compte a été créé avec succès.<p>";
     }
 }
 
@@ -197,24 +193,31 @@ function checkusercomptes($bdd){
     $nom = $_POST['nompret'];
     $prenom = $_POST['prenompret'];
 
-    $requeteinfo = "SELECT * FROM users WHERE nom = ? AND prenom = ?";
+    $requeteinfo = "SELECT *, COUNT(*) AS compteur FROM users WHERE nom = ? AND prenom = ?";
     $requeteinfo = $bdd->prepare($requeteinfo); 
     $requeteinfo->execute(array($nom, $prenom));
     $datauserid = $requeteinfo->fetch();
 
-    $requetedata = "SELECT * FROM comptes WHERE userid = ? ";
-    $requetedata = $bdd->prepare($requetedata); 
-    $requetedata->execute(array($datauserid['userid']));
-    while($data = $requetedata->fetch())
-    {
-        echo "<div class='compte'>";
-        echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
-        echo "<form method='POST' action='creationcredit.php'>";
-        echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
-        echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>"; 
-        echo"</form>";
-        echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
-        echo "</div>";
+    if($datauserid['compteur'] == 0){
+        // Afficher un message d'erreur si l'utilisateur n'existe pas.
+        echo "<p class='alert alert-danger'>Pas d'utilisateur à ce nom!<p>";
+    }else{
+        $requetedata = "SELECT * FROM comptes WHERE userid = ? ";
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($datauserid['userid']));
+        echo '<div class="comptes_container">';
+        while($data = $requetedata->fetch())
+        {
+            echo "<div class='compte'>";
+            echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
+            echo "<form method='POST' action='creationcredit.php'>";
+            echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
+            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>"; 
+            echo"</form>";
+            echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
+            echo "</div>";
+        }
+        echo '</div>';
     }
 }
 function checkmail($mail){
@@ -246,19 +249,19 @@ function verifnewuser()
                         {
                                 return True;
                             }else{
-                                echo 'Numero de téléphone non rempli !';
+                                echo "<p class='alert alert-danger'>Numero de téléphone non rempli !";
                             }  
                         }else{
-                            echo 'Date de naissance non remplie !';
+                            echo "<p class='alert alert-danger'>Date de naissance non remplie !";
                         }
                     }else{
-                        echo 'Numero de téléphone non rempli !';
+                        echo "<p class='alert alert-danger'>Numero de téléphone non rempli !</p>";
                     }
                 }else{
-                    echo 'Le prénom est mal rempli !';
+                    echo "<p class='alert alert-danger'>Le prénom est mal rempli !";
                 }
             }else{
-                echo 'Le nom est mal rempli !';
+                echo "<p class='alert alert-danger'> Le nom est mal rempli !";
             }
         }   
     }
@@ -358,22 +361,21 @@ function verifnewuser()
                     </select><br><br>
 
 					<button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
-				</form>
-                <h2>Créer un prêt: </h2>
+				</form><br>
+                <h2>Créer un prêt pour un utilisateur: </h2>
                 <form action='pannelconseiller.php' method="POST">
-                    <label for="nompret">Nom du créancier</label>
+                    <label for="nompret">Nom du créancier:</label>
                     <input type='text' name='nompret' class="form-control"><br><br>
-                    <label for="prenompret">Prénom du créancier</label>
+                    <label for="prenompret">Prénom du créancier:</label>
                     <input type='text' name='prenompret' class="form-control"><br><br>
-                    <label for="valeurpret">Valeur du pret</label>
-                    <input type='text' name="valeurpret" class="form-control"><br><br>
-                    <button name="addpret" class="btn btn-primary">Créer un crédit</button>
+                    <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
                 </form>
-                <div class="comptes_container">
-                    <h2>Comptes de l'utilisateur: </h2>
-                    <?php
-                    if(isset($_POST['addpret']))
+                <?php
+                    if(isset($_POST['addpret'])){
+                        echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";        
                         checkusercomptes($bdd);
+                    }
+                    
                     ?>
                 </div>
 			</div>
