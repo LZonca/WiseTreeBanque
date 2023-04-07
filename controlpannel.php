@@ -1,114 +1,12 @@
 <?php
 session_start();
-//$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-try{
-    $bdd;
-}catch(exception $e){
-    die('Erreur: '. $e->getMessage());
-}
+    try{
+        //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
 
-
-function displayusers ($bdd) {
-    $sql = "SELECT * FROM users ";
-    $request = $bdd->prepare($sql);
-    $request->execute();
-
-    echo '<table>';
-    echo '<tr>
-        <th>UserID</th>
-        <th>Nom</th>
-        <th>Prenom</th>
-        <th>Mail</th>
-        <th>Téléphone</th>
-        <th>Date de naissance</th>
-        <th>ID conseiller</th>
-        <th>Permissions</th>
-        <th>Actions</th>
-    </tr>';
-
-    while($data = $request->fetch()){
-        echo '<tr>';
-        echo '<td>' . $data['userid'] . '</td>';
-        echo '<td>' . $data['nom'] . '</td>';
-        echo '<td>' . $data['prenom'] . '</td>';
-        echo '<td>' . $data['mail'] . '</td>';
-        echo '<td>' . $data['tel'] . '</td>';
-        echo '<td>' . $data['date_naissance'] . '</td>';
-        echo '<td>' . $data['idconseiller'] . '</td>';
-        echo '<td>' . $data['permissions'] . '</td>';
-        echo '<td>';
-
-        // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
-        if($data['permissions'] >=3){
-            echo '<td>';
-            echo '<form method="POST">
-                <input type="hidden" name="id" value="'. $data['userid'] .'">
-                <input type="password" name="password" placeholder="Mot de passe">
-                <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer">
-            </form>';
-        } else {
-            echo '<form method="POST" action="panneladmin.php">
-                <input type="hidden" name="id" value="'. $data['userid'] .'">
-                <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ? Wallali ?\')">
-            </form>';
-        }
-
-        echo '</td>';
-        echo '</tr>';
+    }catch(exception $e){
+        die('Erreur: '. $e->getMessage());
     }
-    echo'</table>';
-
-    if(isset($_POST['delete'])) {
-        $id = $_POST['id'];
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
-    
-        $sql = 'SELECT * FROM users WHERE userid = :id';
-        $request = $bdd->prepare($sql);
-        $request->bindParam(':id', $id);
-        $request->execute();
-        $data = $request->fetch();
-        
-        if(!$data) {
-            echo '<p style="color:red;">Utilisateur non trouvé !</p>';
-            return;
-        }
-    
-        // Vérifier le mot de passe si l'utilisateur a une permission de 4
-        $authorized = false;
-    
-        if($data['permissions'] == '4' || $data['permissions'] == '3' ){
-            if(password_verify($password, $data['password'])) {
-                $authorized = true;
-            } else {
-                echo '<p style="color:red;">Mot de passe incorrect !</p>';
-            }
-        } else {
-            $authorized = true;
-        }
-    
-        if($authorized) {
-            $sql = 'DELETE FROM comptes WHERE userid = :id';
-            $request = $bdd->prepare($sql);
-            $request->bindParam(':id', $id);
-            $request->execute();
-    
-            $sql = 'DELETE FROM  users WHERE userid = :id';
-            $request = $bdd->prepare($sql);
-            $request->bindParam(':id', $id);
-            $request->execute();
-        }
-    }
-}
-
-
-
-
-
-function displayaccounts ($bdd) {
-
-}
-
 function generateRIB($bdd, $numeroCompte) {
     $codeBanque = "69420";
   
@@ -143,7 +41,8 @@ function generateRIB($bdd, $numeroCompte) {
     }
     else{
         return $rib;
-    }   
+    }
+        
 }
 
 function checkconseillers($bdd){
@@ -152,7 +51,7 @@ function checkconseillers($bdd){
     $requetedata = $bdd->prepare($requetedata);
     $requetedata->execute();
 
-    echo "<select name='conseiller' class='form-control'>";
+    echo "<select name='conseiller' class='form-control' required>";
     echo "<option value = '' selected></option>";
     while($data = $requetedata->fetch())
     {
@@ -162,16 +61,33 @@ function checkconseillers($bdd){
 }
 
 function checkranks($bdd){
-    $requetedata = "SELECT * FROM permissions";
-    $requetedata = $bdd->prepare($requetedata);
-    $requetedata->execute();
-
-    echo "<select name='perms' class='form-control' required>";
-    while($data = $requetedata->fetch())
-    {
-        echo "<option value = ". $data['permissionid'] . "\">" . $data['permissionnom']. "</option>";
+    $user = $_SESSION['userid'];
+    $requete = "SELECT permissions FROM users WHERE userid = ? LIMIT 1;";
+    $requete = $bdd->prepare($requete); 
+    $requete->execute(array($user));
+    $dataperms = $requete->fetch(PDO::FETCH_ASSOC);
+    if(!$dataperms){
+        echo "Erreur: utilisateur non trouvé.";
+        return;
     }
-    echo "</select><br><br>";
+    $permissions = intval($dataperms['permissions']);
+    if($permissions < 1 || $permissions > 4){
+        echo "Erreur: permission invalide.";
+        return;
+    }
+    $requete = "SELECT * FROM permissions WHERE permissionid <= ?;";
+    $requete = $bdd->prepare($requete); 
+    $requete->execute(array($permissions));
+    $data = $requete->fetchAll(PDO::FETCH_ASSOC);
+    if(!$data){
+        echo "Erreur: aucune permission trouvée.";
+        return;
+    }
+    echo "<select name='perms' class='form-control' required>";
+    foreach($data as $row){
+        echo "<option value='". $row['permissionid'] ."'>" . $row['permissionnom'] . "</option>";
+    }
+    echo "</select><br><br>"; 
 }
 
 function generateid($bdd){
@@ -186,6 +102,7 @@ function generateid($bdd){
     if($countid>0)
     {
         return $id = generateid($bdd);
+        
     }
 
     return $id;
@@ -204,6 +121,11 @@ function create_user($bdd)
     $tel = $_POST['tel'];
     $conseillier = $_POST['conseiller'];
     $perms = $_POST['perms'];
+    try{
+        $bdd;
+    }catch(exception $e){
+        die('Erreur creation: '. $e->getMessage());
+    }
     // Se connecter à la base de données avec PDO
     
     // Vérifier si l'utilisateur existe déjà dans la base de données
@@ -234,20 +156,15 @@ function create_user($bdd)
 
     if (($countnom > 0 && $countpren > 0 && $countnaissance > 0 && $countmail > 0 && $counttel > 0) || $countmail > 0 || $counttel > 0) {
         // Afficher un message d'erreur si l'utilisateur existe déjà
-        echo "<div class = 'error_box'>";
-        echo "<p class='error'>Cet utilisateur existe déjà.<p>";
-        echo "</div>";
+        echo "<p class='alert alert-danger'>Cet utilisateur existe déjà.<p>";
     } else {
-        
+
         $requete = "INSERT INTO users (userid, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $requete = $bdd->prepare($requete); 
-        $requete->execute(array($id, $nom, $prenom, $datenaissance, $password, $mail, $tel, $conseillier, $perms));
+        $requete->execute(array($id, $nom, $prenom,$datenaissance, $password, $mail, $tel, $conseillier, $perms));
+        $data = $requete->fetch();
 
-        $requeteblame = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?, ?)";
-        $requeteblame = $bdd->prepare($requeteblame);
-        $requete->execute(array(2, $_SESSION['userid']));
-
-        echo "<div background-color:green><p class='confirm'>L'utilisateur a été ajouté avec succès.<p></div>";
+        echo "<p class='alert alert-success'>L'utilisateur a été ajouté avec succès.<p>";
   }
 }
 
@@ -268,9 +185,7 @@ function create_compte($bdd)
 
     if ($countnom == 0 && $countpren == 0){
         // Afficher un message d'erreur si l'utilisateur n'existe pas.
-        echo '<div class="error_box">';
-        echo "<p class='error'>Pas d'utilisateur à ce nom!<p>";
-        echo '</div>';
+        echo "<p class='alert alert-danger'>Pas d'utilisateur à ce nom!<p>";
     } else {
         $requeteinfo = "SELECT * FROM users WHERE nom = ? AND prenom = ?";
         $requeteinfo = $bdd->prepare($requeteinfo); 
@@ -280,18 +195,45 @@ function create_compte($bdd)
         $decouvert = $_POST['decouvert'];
         $comptenom = $_POST['nomcompte'];
 
-        // Se connecter à la base de données avec PDO
         $requete = "INSERT INTO comptes (userid, comptenom, RIB, decouvert_autorise) VALUES (?, ?, ?, ?);";
         $requete = $bdd->prepare($requete);
         $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
 
-        $requeteblame = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?, ?)";
-        $requeteblame = $bdd->prepare($requeteblame);
-        $requete->execute(array(3, $_SESSION['userid']));
-        echo "<div background-color:green><p class='confirm'>Le compte a été créé avec succès.<p></div>";
+        echo "<p class='alert alert-success'>Le compte a été créé avec succès.<p>";
     }
 }
 
+function checkusercomptes($bdd){
+    $nom = $_POST['nompret'];
+    $prenom = $_POST['prenompret'];
+
+    $requeteinfo = "SELECT *, COUNT(*) AS compteur FROM users WHERE nom = ? AND prenom = ?";
+    $requeteinfo = $bdd->prepare($requeteinfo); 
+    $requeteinfo->execute(array($nom, $prenom));
+    $datauserid = $requeteinfo->fetch();
+
+    if($datauserid['compteur'] == 0){
+        // Afficher un message d'erreur si l'utilisateur n'existe pas.
+        echo "<p class='alert alert-danger'>Pas d'utilisateur à ce nom!<p>";
+    }else{
+        $requetedata = "SELECT * FROM comptes WHERE userid = ? ";
+        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata->execute(array($datauserid['userid']));
+        echo '<div class="comptes_container">';
+        while($data = $requetedata->fetch())
+        {
+            echo "<div class='compte'>";
+            echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
+            echo "<form method='POST' action='creationcredit.php'>";
+            echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
+            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>"; 
+            echo"</form>";
+            echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
+            echo "</div>";
+        }
+        echo '</div>';
+    }
+}
 function checkmail($mail){
 	for($i=0; $i<strlen($mail); $i++)
 	{
@@ -321,19 +263,19 @@ function verifnewuser()
                         {
                                 return True;
                             }else{
-                                echo 'Numero de téléphone non rempli !';
+                                echo "<p class='alert alert-danger'>Numero de téléphone non rempli !";
                             }  
                         }else{
-                            echo 'Date de naissance non remplie !';
+                            echo "<p class='alert alert-danger'>Date de naissance non remplie !";
                         }
                     }else{
-                        echo 'Numero de téléphone non rempli !';
+                        echo "<p class='alert alert-danger'>Numero de téléphone non rempli !</p>";
                     }
                 }else{
-                    echo 'Le prénom est mal rempli !';
+                    echo "<p class='alert alert-danger'>Le prénom est mal rempli !";
                 }
             }else{
-                echo 'Le nom est mal rempli !';
+                echo "<p class='alert alert-danger'> Le nom est mal rempli !";
             }
         }   
     }
@@ -346,7 +288,7 @@ function verifnewuser()
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" type="image/jpg" href="logo.jpg" />
-        <title>Pannel administrateur</title>
+        <title>Pannel conseillers</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <style>
@@ -367,13 +309,11 @@ function verifnewuser()
         <div class="container">
             <div class='login-container'>
             <div class="titre">
-                <h1>Panneau administrateur</h1>
+                <h1>Panneau de controle</h1>
             </div>
-            <div class ="row">
-            <div class="col-sm">
 			<div class="loginform">
                 <h2>Ajouter un utilisateur</h2>
-				<form action="panneladmin.php" method="post">
+				<form action="pannelconseiller.php" method="post">
 					<label for="nom">Nom*:</label><br><br>
 					<input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control" required><br><br>
                     <label for="prenom">Prenom*:</label><br><br>
@@ -384,7 +324,6 @@ function verifnewuser()
 					<input type="date" id="date" name="datenaissance" placeholder="11/10/2003" class="form-control" required><br><br>
                     <label for="tel">N°télephone*:</label><br><br>
                     <input type="text" id="tel" name="tel" placeholder="+33***********" class="form-control" required><br><br>
-                    <label for="conseiller">Conseiller</label><br><br>
                     <?php
                     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
                     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
@@ -395,7 +334,7 @@ function verifnewuser()
                         checkranks($bdd);
                     ?>
                     
-					<button name="adduser" class="btn btn-primary">Ajouter un utilisateur</button>
+					<button name="adduser" class="btn btn-primary">Ajouter un compte</button>
 				</form>
 
                 <?php
@@ -404,53 +343,65 @@ function verifnewuser()
                     { 
                         create_user($bdd);
                     }
+                ?>
 
-                    displayusers($bdd);
-                ?>
-                </div>
-                <div class="col-sm">
-                    <div class="loginform">
-                    <h2>Ajouter un compte</h2>
-                    <form action="panneladmin.php" method="post">
-                        <label for="nomclient">Nom:*</label><br><br>
-                        <input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
-                        <label for="prenomclient">Prenom:*</label><br><br>
-                        <input type="text" id="prenomclient" name="prenomclient" placeholder="Prenom du propriétaire de compte" class="form-control" required><br><br>
-                        <label for="nomcompte">Type de compte:*</label><br><br>
-                        <select name='nomcompte' class="form-control" required>
-                            <option value = "Courant" selected>Compte courant</option>
-                            <option value = "Epargne">Compte epargne</option>
-                            <option value = "Etudiant">Compte étudiant</option>
-                        </select><br><br>
-                        <label for="decouvert">Decouvert autorisé:*</label><br><br>
-                        <select name="decouvert" class="form-control" required>
-                            <option value = "0" selected>0</option>
-                            <option value = "100">100</option>
-                            <option value ="200">200</option>
-                            <option value = "300">300</option>
-                            <option value = "400">400</option>
-                            <option value = "500">500</option>
-                            <option value = "1000">1000</option>
-                            <option value = "2000">2000</option>
-                            <option value = "3000">3000</option>
-                            <option value = "4000">4000</option>
-                            <option value = "5000">5000</option>
-                            <option value = "10000">10000</option>
-                        </select><br><br>
-                        <button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
-                    </form>
-                </div>
-            </div>
+                <div class="loginform">
+                <h2>Ajouter un compte</h2>
+				<form action="pannelconseiller.php" method="post">
+					<label for="nomclient">Nom:*</label><br><br>
+					<input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
+                    <label for="prenomclient">Prenom:*</label><br><br>
+					<input type="text" id="prenomclient" name="prenomclient" placeholder="Prenom du propriétaire de compte" class="form-control" required><br><br>
+                    <label for="nomcompte">Type de compte:*</label><br><br>
+                    <select name='nomcompte' class="form-control" required>
+                        <option value = "Courant" selected>Compte courant</option>
+                        <option value = "Epargne">Compte epargne</option>
+                        <option value = "Etudiant">Compte étudiant</option>
+                    </select><br><br>
+                    <label for="decouvert">Decouvert autorisé:*</label><br><br>
+                    <select name="decouvert" class="form-control" required>
+                        <option value = "0" selected>0</option>
+                        <option value = "100">100</option>
+                        <option value ="200">200</option>
+                        <option value = "300">300</option>
+                        <option value = "400">400</option>
+                        <option value = "500">500</option>
+                        <option value = "1000">1000</option>
+                        <option value = "2000">2000</option>
+                        <option value = "3000">3000</option>
+                        <option value = "4000">4000</option>
+                        <option value = "5000">5000</option>
+                        <option value = "10000">10000</option>
+                    </select><br><br>
+
+					<button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
+				</form><br>
+                <h2>Créer un prêt pour un utilisateur: </h2>
+                <form action='pannelconseiller.php' method="POST">
+                    <label for="nompret">Nom du créancier:</label>
+                    <input type='text' name='nompret' class="form-control"><br><br>
+                    <label for="prenompret">Prénom du créancier:</label>
+                    <input type='text' name='prenompret' class="form-control"><br><br>
+                    <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
+                </form>
                 <?php
-                if(isset($_POST['addcompte'])) //&& verifnewuser())
-                    { 
-                            create_compte($bdd);
+                    if(isset($_POST['addpret'])){
+                        echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";        
+                        checkusercomptes($bdd);
                     }
-                ?>
+                    
+                    ?>
                 </div>
-                <div class = "error_box">
-                </div>
-            </div>
+			</div>
+        </div>
+            <?php
+            
+            if(isset($_POST['addcompte'])) //&& verifnewuser())
+                { 
+                    create_compte($bdd);
+                }
+            ?>
+			</div>
         </div>
 	</body>
 </html>

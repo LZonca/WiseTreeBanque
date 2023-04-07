@@ -3,6 +3,13 @@ session_start();
 if(!isset($_SESSION['userid'])){
     header('Location: index.php');
 }
+/*if(!isset($_POST['nompret']))
+{
+    if(!isset($_POST['prenompret']))
+    {
+        header('Location: controlpannel.php');
+    }
+}*/
 function addcredit($bdd){
     $nom = $_POST['nompret'];
     $prenom = $_POST['prenompret'];
