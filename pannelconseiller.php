@@ -188,12 +188,35 @@ function create_compte($bdd)
         $requete = "INSERT INTO comptes (userid, comptenom, RIB, decouvert_autorise) VALUES (?, ?, ?, ?);";
         $requete = $bdd->prepare($requete);
         $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
-        $datacompte = $requete->fetch();
 
         echo "<p class='confirm'>Le compte a été créé avec succès.<p>";
     }
 }
 
+function checkusercomptes($bdd){
+    $nom = $_POST['nompret'];
+    $prenom = $_POST['prenompret'];
+
+    $requeteinfo = "SELECT * FROM users WHERE nom = ? AND prenom = ?";
+    $requeteinfo = $bdd->prepare($requeteinfo); 
+    $requeteinfo->execute(array($nom, $prenom));
+    $datauserid = $requeteinfo->fetch();
+
+    $requetedata = "SELECT * FROM comptes WHERE userid = ? ";
+    $requetedata = $bdd->prepare($requetedata); 
+    $requetedata->execute(array($datauserid['userid']));
+    while($data = $requetedata->fetch())
+    {
+        echo "<div class='compte'>";
+        echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
+        echo "<form method='POST' action='creationcredit.php'>";
+        echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
+        echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>"; 
+        echo"</form>";
+        echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
+        echo "</div>";
+    }
+}
 function checkmail($mail){
 	for($i=0; $i<strlen($mail); $i++)
 	{
@@ -346,7 +369,13 @@ function verifnewuser()
                     <input type='text' name="valeurpret" class="form-control"><br><br>
                     <button name="addpret" class="btn btn-primary">Créer un crédit</button>
                 </form>
-
+                <div class="comptes_container">
+                    <h2>Comptes de l'utilisateur: </h2>
+                    <?php
+                    if(isset($_POST['addpret']))
+                        checkusercomptes($bdd);
+                    ?>
+                </div>
 			</div>
         </div>
             <?php
