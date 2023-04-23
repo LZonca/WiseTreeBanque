@@ -1,8 +1,20 @@
 <?php
 session_start();
+try{
+    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
+
+}catch(exception $e){
+    die('Erreur: '. $e->getMessage());
+}
+
 if(!isset($_SESSION['userid'])){
     header('Location: index.php');
 }
+if(isset($_POST['compteactuel'])){
+    $_SESSION['compteactuel'] = $_POST['compteactuel'];
+}
+
 /*if(!isset($_POST['nompret']))
 {
     if(!isset($_POST['prenompret']))
@@ -10,30 +22,7 @@ if(!isset($_SESSION['userid'])){
         header('Location: controlpannel.php');
     }
 }*/
-function addcredit($bdd){
-    $nom = $_POST['nompret'];
-    $prenom = $_POST['prenompret'];
 
-    $nomrequete = "SELECT COUNT(*) FROM users WHERE nom = ?";
-    $nomrequete= $bdd->prepare($nomrequete);
-    $nomrequete->execute(array($nom));
-    $countnom = $nomrequete->fetchColumn();
-
-    $prenomrequete = "SELECT COUNT(*) FROM users WHERE prenom = ?";
-    $prenomrequete = $bdd->prepare($prenomrequete);
-    $prenomrequete->execute(array($prenom));
-    $countpren = $prenomrequete->fetchColumn();
-
-    if ($countnom == 0 && $countpren == 0){
-        // Afficher un message d'erreur si l'utilisateur n'existe pas.
-        echo '<div class="error_box">';
-        echo "<p class='error'>Pas d'utilisateur à ce nom!<p>";
-        echo '</div>';
-    } else {
-        checkcomptes($bdd);
-    }
-
-}
 
 ?>
 
@@ -54,22 +43,42 @@ function addcredit($bdd){
 
 <body>
     <header>
-
+    <div class="navbar-nav">
+        <form method="POST" action="controlpannel.php">
+            <button name="comptes" class="btn btn-primary">Retour</button>
+        </form>
+    </div>
     </header>
 
     <div class="container">
+        <h1>Création de crédit</h1>
         <?php 
-            echo 'Compte " ' .  $_POST['compteactuel'] . '" de ' . $_POST['prenompret'] . " " . $_POST['nompret'] . ".";
+            echo '<h2>Compte " '.  $_SESSION['compteactuel'] .'" de ' . $_SESSION['prenompret'] . " " . $_SESSION['nompret'] . "</h2>";
             echo '<br/>';
-
+            if(isset($_SESSION['usermessage'])){
+                echo $_SESSION['usermessage'];
+            }
             
         ?>
-        <form action='creationcredit.php' method='POST'>
-            <input type='text' name='raisonpret' class='form-control'>
-            <input type='text' name='valeur' pattern="[0-9]" class='form-control' required>
-            <input type='text' name='interet' pattern="[0-9]" class='form-control' required>
-            <input type='date' name='echeance' required>
-
+        <form action='traitement.php' method='POST'>
+            <label for="raisonpret">Raison du crédit</label><br>
+            <input type='text' name='raisonpret' class='form-control'><br>
+            <label for="raisonpret">Valeur du crédit</label><br>
+            <input type='text' name='valeur' pattern="[0-9]+" class='form-control' required><br>
+            <label for="raisonpret">Taux d'interêt</label><br>
+            <input type='text' name='interet' pattern="[0-9,.]+" class='form-control' required><br>
+            <label for="raisonpret">Échéance</label><br>
+            <input type='date' name='echeance' class='form-control' required><br>
+            <label for="prelevement">Periodicité de prelevement</label><br>
+            <select name='prelevement'>
+                <option value='Journalier'>Journalier</option>
+                <option value='Hebdomadaire'>Hebdomadaire</option>
+                <option value='Mensuel'>Mensuel</option>
+                <option value='Trimestriel'>Trimestriel</option>
+                <option value='Annuem'>Annuel</option>
+            </select><br>
+            <button name="createpret" class='btn btn-primary'>Créer le crédit</button>
         </form>
+        
     </div>
 </body>
