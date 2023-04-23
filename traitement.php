@@ -1,4 +1,5 @@
 <?php
+session_start();
 //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
 $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
@@ -9,6 +10,7 @@ try{
     die('Erreur connexion: '. $e->getMessage());
 }
 
+unset($_SESSION['usermessage']);
 
 function RIBrequest($bdd)
     {
@@ -92,6 +94,8 @@ function checkvirement($bdd)
                         if(verifsolde($bdd)){
                             transfertrequete($bdd);
                             $err = 0; // Effectuer transfert
+                            sleep(0.03);
+                            header('Location: depenses.php');
                         }
                     }else{
                         $err = 4; // Destinataire inconnu
@@ -110,5 +114,36 @@ function checkvirement($bdd)
     }  
 }
 
-sleep(0.5);
-header('Location: depenses.php');
+function addcredit($bdd){
+
+    $crediteur = $_SESSION['compteactuel'];
+
+    date_default_timezone_set('Europe/Paris');
+    $date = date('d-m-y');
+
+    $creditrequete = "INSERT INTO credits (compteid, soldepret, echeance, date, interet, conseillerid, typeprelevement, raison) VALUES (?,?,?,?,?,?,?,?)";
+    $creditrequete= $bdd->prepare($creditrequete);
+    $creditrequete->execute(array($crediteur, $_POST['valeur'], $_POST['echeance'], $date, $_POST['interet'], $_SESSION['userid'],$_POST['prelevement'], $_POST['raisonpret']));
+    
+    $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+    $logrequete= $bdd->prepare($logrequete);
+    $logrequete->execute(array(1, $_SESSION['userid']));
+
+    $usersolde = "SELECT * FROM comptes WHERE RIB = ?;";
+    $usersolde = $bdd->prepare($usersolde); 
+    $usersolde->execute(array($_SESSION['compteactuel']));
+    $soldecrediteur = $usersolde->fetch();
+
+    $destinatairerequete = "UPDATE comptes SET solde = ? WHERE RIB = ?;";
+    $destinatairerequete  = $bdd->prepare($destinatairerequete); 
+    $destinatairerequete ->execute(array($_POST['valeur'] + $soldecrediteur['solde'], $_SESSION['compteactuel']));
+
+    $_SESSION['usermessage'] = "<p class='alert alert-success'>Le crédit a été effectué avec succès!<p>";
+}
+
+if(isset($_POST['createpret'])){
+    addcredit($bdd);
+    header('Location: creationcredit');
+}
+
+?>

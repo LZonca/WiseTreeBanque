@@ -7,6 +7,10 @@ session_start();
     }catch(exception $e){
         die('Erreur: '. $e->getMessage());
     }
+
+    unset($_SESSION['nompret']);
+    unset($_SESSION['prenompret']);
+    unset($_SESSION['compteactuel']);
 function generateRIB($bdd, $numeroCompte) {
     $codeBanque = "69420";
   
@@ -166,6 +170,16 @@ function create_user($bdd)
 
         echo "<p class='alert alert-success'>L'utilisateur a été ajouté avec succès.<p>";
   }
+  if($perms == 4){
+    $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+    $logrequete= $bdd->prepare($logrequete);
+    $logrequete->execute(array(4, $_SESSION['userid']));
+  }else{
+    $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+    $logrequete= $bdd->prepare($logrequete);
+    $logrequete->execute(array(2, $_SESSION['userid']));
+  }
+    
 }
 
 function create_compte($bdd)
@@ -199,6 +213,11 @@ function create_compte($bdd)
         $requete = $bdd->prepare($requete);
         $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
 
+        $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+        $logrequete= $bdd->prepare($logrequete);
+        $logrequete->execute(array(3, $_SESSION['userid']));
+        
+
         echo "<p class='alert alert-success'>Le compte a été créé avec succès.<p>";
     }
 }
@@ -206,7 +225,8 @@ function create_compte($bdd)
 function checkusercomptes($bdd){
     $nom = $_POST['nompret'];
     $prenom = $_POST['prenompret'];
-
+    $_SESSION['nompret'] = $nom;
+    $_SESSION['prenompret'] = $prenom;
     $requeteinfo = "SELECT *, COUNT(*) AS compteur FROM users WHERE nom = ? AND prenom = ?";
     $requeteinfo = $bdd->prepare($requeteinfo); 
     $requeteinfo->execute(array($nom, $prenom));
@@ -226,12 +246,13 @@ function checkusercomptes($bdd){
             echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
             echo "<form method='POST' action='creationcredit.php'>";
             echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
-            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>"; 
+            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>";
             echo"</form>";
             echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
             echo "</div>";
         }
         echo '</div>';
+        
     }
 }
 function checkmail($mail){
@@ -313,7 +334,7 @@ function verifnewuser()
             </div>
 			<div class="loginform">
                 <h2>Ajouter un utilisateur</h2>
-				<form action="pannelconseiller.php" method="post">
+				<form action="controlpannel.php" method="post">
 					<label for="nom">Nom*:</label><br><br>
 					<input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control" required><br><br>
                     <label for="prenom">Prenom*:</label><br><br>
@@ -347,7 +368,7 @@ function verifnewuser()
 
                 <div class="loginform">
                 <h2>Ajouter un compte</h2>
-				<form action="pannelconseiller.php" method="post">
+				<form action="controlpannel.php" method="post">
 					<label for="nomclient">Nom:*</label><br><br>
 					<input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
                     <label for="prenomclient">Prenom:*</label><br><br>
@@ -377,7 +398,7 @@ function verifnewuser()
 					<button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
 				</form><br>
                 <h2>Créer un prêt pour un utilisateur: </h2>
-                <form action='pannelconseiller.php' method="POST">
+                <form action='controlpannel.php' method="POST">
                     <label for="nompret">Nom du créancier:</label>
                     <input type='text' name='nompret' class="form-control"><br><br>
                     <label for="prenompret">Prénom du créancier:</label>
@@ -388,8 +409,8 @@ function verifnewuser()
                     if(isset($_POST['addpret'])){
                         echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";        
                         checkusercomptes($bdd);
+                        
                     }
-                    
                     ?>
                 </div>
 			</div>

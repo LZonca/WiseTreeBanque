@@ -72,7 +72,7 @@ function checkcomptes($bdd){
     echo "<h3>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
     }
 
-    function RIBrequest($bdd)
+function RIBrequest($bdd)
     {
         $user = $_SESSION['userid'];
         $requetesolde = "SELECT * FROM comptes WHERE userid = ?";

@@ -26,6 +26,10 @@ if(isset($_POST['virement'])){
     header('Location: depenses.php');
 }
 
+if(isset($_POST['credits'])){
+    header('Location: voscredits.php');
+}
+
     function nomrequest($bdd)
     {
         try{
@@ -64,7 +68,8 @@ if(isset($_POST['virement'])){
         echo "<h2>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h2>";
         echo "<h3>BIC: " . htmlspecialchars(strtoupper($data['BIC'])) . "</h3>";
         echo "<form action='compte.php' method='POST'>";
-            echo "<button name='virement' class='btn btn-primary'>Effectuer un virement !</button>";
+        echo "<button name='virement' class='btn btn-primary'>Virement</button> 
+        <button name='credits' class='btn btn-primary'>Vos crédits</button>";
         echo "</form>";
         echo "</div>";
         }
@@ -125,8 +130,10 @@ if(isset($_POST['virement'])){
                 <?php
                 //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
                 if(isset($_POST['"'. checkcomptes($bdd) . '"']))
-                    checkcomptes($bdd);
+                    //checkcomptes($bdd);
+
                 ?>
+
             </p>
         </div>
     </div>
