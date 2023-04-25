@@ -71,6 +71,7 @@ if(isset($_POST['compteactuel'])){
             <input type='date' name='echeance' class='form-control' required><br>
             <label for="prelevement">Periodicité de prelevement</label><br>
             <select name='prelevement' class='form-control'>
+
                 <option value='Journalier'>Journalier</option>
                 <option value='Hebdomadaire'>Hebdomadaire</option>
                 <option value='Mensuel'>Mensuel</option>
