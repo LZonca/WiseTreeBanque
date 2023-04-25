@@ -304,125 +304,168 @@ function verifnewuser()
 
 <!DOCTYPE HTML>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/jpg" href="logo.jpg" />
-        <title>Pannel conseillers</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-        <style>
-            body{
-                background-image: url("background.png");
-                height: 100%;
-                background-position-y: 20%;
-                background-position-x: 50%;
-            }
-        </style>
-    </head>
-    <body> 
-        <div class="navbar-nav">
-            <form method="POST" action="lescomptes.php">
-                <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
-            </form>
-        </div>
-        <div class="container">
-            <div class='login-container'>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpg" href="logo.jpg" />
+    <title>Pannel conseillers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <style>
+    body {
+        background-image: url("background.png");
+        height: 100%;
+        background-position-y: 20%;
+        background-position-x: 50%;
+    }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+    </script>
+    <div class="navbar-nav">
+        <form method="POST" action="lescomptes.php">
+            <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
+        </form>
+    </div>
+    <div class="container">
+        <div class='login-container'>
             <div class="titre">
                 <h1>Panneau de controle</h1>
             </div>
-			<div class="loginform">
-                <h2>Ajouter un utilisateur</h2>
-				<form action="controlpannel.php" method="post">
-					<label for="nom">Nom*:</label><br><br>
-					<input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control" required><br><br>
-                    <label for="prenom">Prenom*:</label><br><br>
-					<input type="text" id="prenom" name="prenom" placeholder="Votre prenom" class="form-control" required><br><br>
-                    <label for="email">Mail*:</label><br><br>
-					<input type="mail" id="mail" name="email" placeholder="Wise@Tree.com" class="form-control" required><br><br>
-					<label for="datenaissance">Date de naissance*:</label><br><br>
-					<input type="date" id="date" name="datenaissance" placeholder="11/10/2003" class="form-control" required><br><br>
-                    <label for="tel">N°télephone*:</label><br><br>
-                    <input type="text" id="tel" name="tel" placeholder="+33***********" class="form-control" required><br><br>
-                    <?php
+            <div class="loginform">
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                <h2>Ajouter un utilisateur</h2>
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <form action="controlpannel.php" method="post">
+                                    <label for="nom">Nom*:</label><br><br>
+                                    <input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control"
+                                        required><br><br>
+                                    <label for="prenom">Prenom*:</label><br><br>
+                                    <input type="text" id="prenom" name="prenom" placeholder="Votre prenom"
+                                        class="form-control" required><br><br>
+                                    <label for="email">Mail*:</label><br><br>
+                                    <input type="mail" id="mail" name="email" placeholder="Wise@Tree.com"
+                                        class="form-control" required><br><br>
+                                    <label for="datenaissance">Date de naissance*:</label><br><br>
+                                    <input type="date" id="date" name="datenaissance" placeholder="11/10/2003"
+                                        class="form-control" required><br><br>
+                                    <label for="tel">N°télephone*:</label><br><br>
+                                    <input type="text" id="tel" name="tel" placeholder="+33***********"
+                                        class="form-control" required><br><br>
+                                    <?php
                     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
                     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
                             checkconseillers($bdd);
                     ?>
-                    <label for="perms">Permissions:*</label><br><br>
-                    <?php
+                                    <label for="perms">Permissions:*</label><br><br>
+                                    <?php
                         checkranks($bdd);
                     ?>
-                    
-					<button name="adduser" class="btn btn-primary">Ajouter un compte</button>
-				</form>
 
-                <?php
+                                    <button name="adduser" class="btn btn-primary">Ajouter un compte</button>
+                                </form>
+
+                                <?php
                 
                 if(isset($_POST['adduser']))
                     { 
                         create_user($bdd);
                     }
                 ?>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+    <div class="loginform">
+    <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+            <h2>Créer un compte</h2>
+        </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+      <form action="controlpannel.php" method="post">
+                        <label for="nomclient">Nom:*</label><br><br>
+                        <input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte"
+                            class="form-control" required><br><br>
+                        <label for="prenomclient">Prenom:*</label><br><br>
+                        <input type="text" id="prenomclient" name="prenomclient"
+                            placeholder="Prenom du propriétaire de compte" class="form-control" required><br><br>
+                        <label for="nomcompte">Type de compte:*</label><br><br>
+                        <select name='nomcompte' class="form-control" required>
+                            <option value="Courant" selected>Compte courant</option>
+                            <option value="Epargne">Compte epargne</option>
+                            <option value="Etudiant">Compte étudiant</option>
+                        </select><br><br>
+                        <label for="decouvert">Decouvert autorisé:*</label><br><br>
+                        <select name="decouvert" class="form-control" required>
+                            <option value="0" selected>0</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="300">300</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                            <option value="2000">2000</option>
+                            <option value="3000">3000</option>
+                            <option value="4000">4000</option>
+                            <option value="5000">5000</option>
+                            <option value="10000">10000</option>
+                        </select><br><br>
 
-                <div class="loginform">
-                <h2>Ajouter un compte</h2>
-				<form action="controlpannel.php" method="post">
-					<label for="nomclient">Nom:*</label><br><br>
-					<input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
-                    <label for="prenomclient">Prenom:*</label><br><br>
-					<input type="text" id="prenomclient" name="prenomclient" placeholder="Prenom du propriétaire de compte" class="form-control" required><br><br>
-                    <label for="nomcompte">Type de compte:*</label><br><br>
-                    <select name='nomcompte' class="form-control" required>
-                        <option value = "Courant" selected>Compte courant</option>
-                        <option value = "Epargne">Compte epargne</option>
-                        <option value = "Etudiant">Compte étudiant</option>
-                    </select><br><br>
-                    <label for="decouvert">Decouvert autorisé:*</label><br><br>
-                    <select name="decouvert" class="form-control" required>
-                        <option value = "0" selected>0</option>
-                        <option value = "100">100</option>
-                        <option value ="200">200</option>
-                        <option value = "300">300</option>
-                        <option value = "400">400</option>
-                        <option value = "500">500</option>
-                        <option value = "1000">1000</option>
-                        <option value = "2000">2000</option>
-                        <option value = "3000">3000</option>
-                        <option value = "4000">4000</option>
-                        <option value = "5000">5000</option>
-                        <option value = "10000">10000</option>
-                    </select><br><br>
+                        <button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
+                        <?php
+                            if(isset($_POST['addcompte'])) //&& verifnewuser())
+                                { 
+                                    create_compte($bdd);
+                                }
+                            ?>
+                    </form>
+      </div>
+    </div>
+  </div>
+  <br>
+<div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+        <h2>Créer un prêt pour un utilisateur: </h2>
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <form action='controlpannel.php' method="POST">
+            <label for="nompret">Nom du créancier:</label>
+            <input type='text' name='nompret' class="form-control"><br><br>
+            <label for="prenompret">Prénom du créancier:</label>
+            <input type='text' name='prenompret' class="form-control"><br><br>
+            <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
+        </form>
+        <?php
+            if(isset($_POST['addpret'])){
+                echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";        
+                checkusercomptes($bdd);
+            }
+        ?>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+</body>
 
-					<button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
-				</form><br>
-                <h2>Créer un prêt pour un utilisateur: </h2>
-                <form action='controlpannel.php' method="POST">
-                    <label for="nompret">Nom du créancier:</label>
-                    <input type='text' name='nompret' class="form-control"><br><br>
-                    <label for="prenompret">Prénom du créancier:</label>
-                    <input type='text' name='prenompret' class="form-control"><br><br>
-                    <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
-                </form>
-                <?php
-                    if(isset($_POST['addpret'])){
-                        echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";        
-                        checkusercomptes($bdd);
-                        
-                    }
-                    ?>
-                </div>
-			</div>
-        </div>
-            <?php
-            
-            if(isset($_POST['addcompte'])) //&& verifnewuser())
-                { 
-                    create_compte($bdd);
-                }
-            ?>
-			</div>
-        </div>
-	</body>
 </html>
