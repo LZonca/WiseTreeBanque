@@ -99,6 +99,16 @@
             die('Erreur nom compte: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
+
+        $countcomptes = "SELECT *, COUNT(*) AS compteur FROM comptes WHERE userid = ?";
+        $countcomptes = $bdd->prepare($countcomptes); 
+        $countcomptes->execute(array($user));
+        $compteur =  $countcomptes->fetchColumn();
+
+        if($compteur == 0){
+            echo "<h2 style='color: black; padding-top: 5px'>Vous n'avez aucun compte, contactez votre conseiller pour en ouvrir un !</h2>";
+        }else{
+
         $requetedata = "SELECT * FROM comptes WHERE userid = ? ";
         $requetedata = $bdd->prepare($requetedata); 
         $requetedata->execute(array($user));
@@ -165,5 +175,4 @@ function messagecount($bdd){
         </div>
     </div> 
     </body>
-
 </html>

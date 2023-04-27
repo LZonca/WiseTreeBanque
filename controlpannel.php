@@ -428,103 +428,55 @@ function verifnewuser()
                             <option value="10000">10000</option>
                         </select><br><br>
 
-                        <button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
-                        <?php
-                            if(isset($_POST['addcompte'])) //&& verifnewuser())
-                                { 
-                                    create_compte($bdd);
+                                    <button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
+                                    <?php
+                                    if (isset($_POST['addcompte'])) //&& verifnewuser())
+                                    {
+                                        create_compte($bdd);
+                                    }
+                                    ?>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="accordion" id="accordionPanelsStayOpenExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+                                <h2>Créer un prêt pour un utilisateur: </h2>
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo">
+                            <div class="accordion-body">
+                                <form action='controlpannel.php' method="POST">
+                                    <label for="nompret">Nom du créancier:</label>
+                                    <input type='text' name='nompret' class="form-control" placeholder='<?php 
+                                    if(isset($_POST['nompret'])){
+                                        echo $_POST['nompret'];
+                                        }
+                                     ?>'><br><br>
+                                    <label for="prenompret">Prénom du créancier:</label>
+                                    <input type='text' name='prenompret' class="form-control" placeholder='<?php
+                                    if(isset($_POST['prenompret'])){
+                                        echo $_POST['prenompret'];
+                                        } ?>'><br><br>
+                                    <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
+                                </form>
+                                <?php
+                                if (isset($_POST['addpret'])) {
+                                    echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";
+                                    checkusercomptes($bdd);
                                 }
-                            ?>
-                    </form>
-      </div>
-    </div>
-  </div>
-  <br>
-<div class="accordion-item">
-    <h2 class="accordion-header" id="flush-headingThree">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-        <h2>Créer un prêt pour un utilisateur: </h2>
-      </button>
-    </h2>
-    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-        <form action='controlpannel.php' method="POST">
-            <label for="nompret">Nom du créancier:</label>
-            <input type='text' name='nompret' class="form-control"><br><br>
-            <label for="prenompret">Prénom du créancier:</label>
-            <input type='text' name='prenompret' class="form-control"><br><br>
-            <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
-        </form>
-        <?php
-            if(isset($_POST['addpret'])){
-                echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";        
-                checkusercomptes($bdd);
-            }
-        ?>
-      </div>
-    </div>
-  </div>
-</div>
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
-                <div class="loginform">
-                <h2>Ajouter un compte</h2>
-				<form action="controlpannel.php" method="post">
-					<label for="nomclient">Nom:*</label><br><br>
-					<input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
-                    <label for="prenomclient">Prenom:*</label><br><br>
-					<input type="text" id="prenomclient" name="prenomclient" placeholder="Prenom du propriétaire de compte" class="form-control" required><br><br>
-                    <label for="nomcompte">Type de compte:*</label><br><br>
-                    <select name='nomcompte' class="form-control" required>
-                        <option value = "Courant" selected>Compte courant</option>
-                        <option value = "Epargne">Compte epargne</option>
-                        <option value = "Etudiant">Compte étudiant</option>
-                    </select><br><br>
-                    <label for="decouvert">Decouvert autorisé:*</label><br><br>
-                    <select name="decouvert" class="form-control" required>
-                        <option value = "0" selected>0</option>
-                        <option value = "100">100</option>
-                        <option value ="200">200</option>
-                        <option value = "300">300</option>
-                        <option value = "400">400</option>
-                        <option value = "500">500</option>
-                        <option value = "1000">1000</option>
-                        <option value = "2000">2000</option>
-                        <option value = "3000">3000</option>
-                        <option value = "4000">4000</option>
-                        <option value = "5000">5000</option>
-                        <option value = "10000">10000</option>
-                    </select><br><br>
-
-					<button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
-				</form><br>
-                <h2>Créer un prêt pour un utilisateur: </h2>
-                <form action='controlpannel.php' method="POST">
-                    <label for="nompret">Nom du créancier:</label>
-                    <input type='text' name='nompret' class="form-control"><br><br>
-                    <label for="prenompret">Prénom du créancier:</label>
-                    <input type='text' name='prenompret' class="form-control"><br><br>
-                    <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
-                </form>
-                <?php
-                    if(isset($_POST['addpret'])){
-                        echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";        
-                        checkusercomptes($bdd);
-                        
-                    }
-                    ?>
-                </div>
-			</div>
-        </div>
-            <?php
-            
-            if(isset($_POST['addcompte'])) //&& verifnewuser())
-                { 
-                    create_compte($bdd);
-                }
-            ?>
-			</div>
-        </div>
-	</body>
 
 </html>

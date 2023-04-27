@@ -36,20 +36,24 @@ function checkcredits($bdd){
     
     while($data = $requetedata->fetch())
     {   
-        $class = date('d-m-y') < $data['echeance'] ? 'alert' : 'normal';
-        echo "<tr class='" . $class . "'>";
-        echo "<td>". $data['creditid'] . "</td>";
-        echo "<td>". $data['soldepret'] . "</td>";
-        echo "<td>". $data['interet'] . "</td>";
-        echo "<td>". $data['soldepret'] * $data['interet'] . "</td>";
-        echo "<td>". $data['raison'] . "</td>";
-        echo "<td>". $data['echeance'] . "</td>";
-        echo "<td>". $data['typeprelevement'] . "</td>";
-        echo "<td>". $data['date'] . "</td>";
-        echo "</tr>";
+        //if(strtotime($data['echeance']) > date('d-m-y')){
+            $class = date('d-m-y') < strtotime($data['echeance']) ? 'alert' : 'normal';
+            echo "<strike><tr class='" . $class . "'>";
+            echo "<td>". $data['creditid'] . "</td>";
+            echo "<td>". $data['soldepret'] . "</td>";
+            echo "<td>". $data['interet'] . "</td>";
+            echo "<td>". $data['remboursement'] . "</td>";
+            echo "<td>". $data['raison'] . "</td>";
+            echo "<td>". $data['echeance'] . "</td>";
+            echo "<td>". $data['typeprelevement'] . "</td>";
+            echo "<td>". $data['date'] . "</td></strike>";
+            // Ajouter les prélèvements
+            echo "</tr>";
+        }
+       
     }
     echo "</table>";
-}
+//}
 
 
 ?>
