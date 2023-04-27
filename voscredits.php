@@ -41,7 +41,8 @@ function checkcredits($bdd){
         <th>Prochain prélèvement</th>  
     <?php } while($data = $requetedata->fetch())
     {   
-        if(strtotime($data['echeance']) > date('d-m-y')){
+        //if(strtotime($data['echeance']) > date('d-m-y')){
+
             $class = date('d-m-y') < strtotime($data['echeance']) ? 'alert' : 'normal';
             echo "<strike><tr class='" . $class . "'>";
             echo "<td>". $data['creditid'] . "</td>";
@@ -58,7 +59,7 @@ function checkcredits($bdd){
        
     }
     echo "</table>";
-}
+//}
 
 
 ?>
