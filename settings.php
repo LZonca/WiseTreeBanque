@@ -1,5 +1,6 @@
 <?php
 session_start();
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
 if(!isset($_SESSION))
 {
     header('Location: index.php');
@@ -66,10 +67,6 @@ function updatepass($bdd){
                     <form method="POST" action="lescomptes.php">
                         <button name="Deco" class="btn btn-secondary">Deconnexion</button>
                         <button name="lescomptes" class="btn btn-secondary">Retour</button>
-                        <?php 
-                        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
-                        //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-                        ?>
                     </form>
                 </div>
             <div class="container">
