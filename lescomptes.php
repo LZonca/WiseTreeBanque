@@ -33,7 +33,7 @@
         header('Location: contact.php');
     }
     
-
+    unset($_SESSION['usermessage']);
     function rankrequest($bdd)
     {
         try{
