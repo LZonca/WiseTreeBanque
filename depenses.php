@@ -26,6 +26,7 @@ if(isset($_POST['comptes'])){
 
 if(isset($_POST['lescomptes'])){
     unset($_SESSION['compteactuel']);
+    unset($_SESSION['compteactuelnom']);
     header('Location: lescomptes.php');
 }
 
@@ -63,7 +64,7 @@ function verifsolde($bdd){
 
 function checkcomptes($bdd){
 
-    $compte = $_SESSION['compteactuel'];
+    $compte = $_SESSION['compteactuelnom'];
     $requetedata = "SELECT * FROM comptes WHERE comptenom = ?";
     $requetedata = $bdd->prepare($requetedata); 
     $requetedata->execute(array($compte));
