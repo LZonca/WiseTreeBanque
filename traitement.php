@@ -81,38 +81,35 @@ function verifdest($bdd, $dest){
     }
 }
 
-function checkvirement($bdd)
-{
-    $err = 0;
+function checkvirement($bdd) {
     if (isset($_POST['send'])) {
-        if (isset($_POST['virement']) && $_POST['virement'] != '' && $_POST['virement'] >= 0 && is_numeric($_POST['virement'])) {
-            if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) >= 24 ) {
-                if($_POST['destinataire'] != RIBrequest($bdd))
-                {
-                    if(verifdest($bdd, $_POST['destinataire']))
-                    {
-                        if(verifsolde($bdd)){
-                            transfertrequete($bdd);
-                            $err = 0; // Effectuer transfert
-                            sleep(0.03);
-                            header('Location: depenses.php');
+        if (isset($_POST['virement']) && $_POST['virement'] != '' && $_POST['virement'] > 0 && is_numeric($_POST['virement'])) {
+            if (isset($_POST['destinataire'])) {
+                if ($_POST['destinataire'] != '' && strlen($_POST['destinataire']) >= 24) {
+                    if ($_POST['destinataire'] != RIBrequest($bdd)) {
+                        if (verifdest($bdd, $_POST['destinataire'])) {
+                            if (verifsolde($bdd)) {
+                                transfertrequete($bdd);
+                                $_SESSION['usermessage'] = "<p class='alert alert-success'>Le virement a été effectué avec succès!<p>"; // Effectuer transfert
+                            } else {
+                                $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Pas assez d\'argent sur le compte.</b></p>';
+                            }
+                        }else{
+                                $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Compte inconnu</b></p>';
+                            }
+                        } else {
+                            $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Vous ne pouvez pas envoyer de l\'argent vers le compte d\'origine</b></p>';
                         }
-                    }else{
-                        $err = 4; // Destinataire inconnu
-                    }
-                }else{
-                    $err = 3; // Destinataire = emetteur
+                     } else{
+                            $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Compte inconnu</b></p>';
+                } }else {
+                    $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Veuillez entrer l\'IBAN du destinataire.</b></p>'; // Destinataire incorrect
                 }
             } else {
-                $err = 1; // Destinataire incorrect
+                $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Veuillez entrer une somme valide à transférer.<br> (La somme ne peut pas etre négative !)</b></p>';
             }
-        }else
-        {
-            $err = 2; // Mauvaise valeur
         }
-        return $err;
-    }  
-}
+    }
 
 function addcredit($bdd){
 
@@ -146,4 +143,9 @@ if(isset($_POST['createpret'])){
     header('Location: creationcredit');
 }
 
+if(isset($_POST['send']))
+{
+    checkvirement($bdd);
+    header('Location: depenses.php');
+}
 ?>

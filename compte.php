@@ -30,6 +30,8 @@ if(isset($_POST['credits'])){
     header('Location: voscredits.php');
 }
 
+unset($_SESSION['usermessage']);
+
     function nomrequest($bdd)
     {
         try{

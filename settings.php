@@ -76,11 +76,11 @@ function updatepass($bdd){
                 <h2><u>Vos paramètres:</u></h2>
                     <form method='POST' action='settings.php'>
                         <label for="mdp">Mot de passe actuel</label><br><br>
-                        <input type="password" name="mdp" placeholder="Mot de passe actuel" required><br><br>
+                        <input type="password" name="mdp" placeholder="Mot de passe actuel" class="form-control" required><br><br>
                         <label for="mdpchange">Nouveau mot de passe</label><br><br>
-                        <input type="password" name="mdpchange" placeholder="Nouveau mot de passe" required><br><br>
+                        <input type="password" name="mdpchange" placeholder="Nouveau mot de passe" class="form-control" required><br><br>
                         <label for="mdprepeat">Répéter le nouveau mot de passe</label><br><br>
-                        <input type="password" name="mdprepeat" placeholder="Répéter le nouveau mot de passe" required><br><br>
+                        <input type="password" name="mdprepeat" placeholder="Répéter le nouveau mot de passe" class="form-control" required><br><br>
                         <button name='changemdp' class="btn btn-primary">Changer de mot de passe</button>
                     </form>
                     <?php
