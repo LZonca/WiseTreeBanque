@@ -52,7 +52,7 @@ if(isset($_POST['compteactuel'])){
 
     <div class="container">
         <h1>Création de crédit</h1>
-        <?php 
+        <?php
             echo '<h2>Compte " '.  $_SESSION['compteactuel'] .'" de ' . $_SESSION['prenompret'] . " " . $_SESSION['nompret'] . "</h2>";
             echo '<br/>';
             if(isset($_SESSION['usermessage'])){
@@ -71,13 +71,14 @@ if(isset($_POST['compteactuel'])){
             <input type='date' name='echeance' class='form-control' required><br>
             <label for="prelevement">Periodicité de prelevement</label><br>
             <select name='prelevement' class='form-control'>
-
                 <option value='Journalier'>Journalier</option>
                 <option value='Hebdomadaire'>Hebdomadaire</option>
                 <option value='Mensuel'>Mensuel</option>
                 <option value='Trimestriel'>Trimestriel</option>
                 <option value='Annuem'>Annuel</option>
             </select><br>
+            <label for="raisonpret">Valeur du remboursement</label><br>
+            <input type='text' name='valeurremboursment' class='form-control' pattern="[0-9]+" required><br>
             <button name="createpret" class='btn btn-primary'>Créer le crédit</button>
         </form>
         

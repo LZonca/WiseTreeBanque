@@ -101,6 +101,7 @@
         $user = $_SESSION['userid'];
 
         $countcomptes = "SELECT *, COUNT(*) AS compteur FROM comptes WHERE userid = ?";
+
         $countcomptes = $bdd->prepare($countcomptes); 
         $countcomptes->execute(array($user));
         $compteur =  $countcomptes->fetchColumn();
@@ -124,6 +125,7 @@
             echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
             echo "</div>";
         }
+    }
     }
 
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire

@@ -1,55 +1,55 @@
 <?php
 session_start();
-    try{
-        //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
+try {
+    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');  //Localhost 
 
-    }catch(exception $e){
-        die('Erreur: '. $e->getMessage());
-    }
+} catch (exception $e) {
+    die('Erreur: ' . $e->getMessage());
+}
 
-    unset($_SESSION['nompret']);
-    unset($_SESSION['prenompret']);
-    unset($_SESSION['compteactuel']);
-function generateRIB($bdd, $numeroCompte) {
+unset($_SESSION['nompret']);
+unset($_SESSION['prenompret']);
+unset($_SESSION['compteactuel']);
+function generateRIB($bdd, $numeroCompte)
+{
     $codeBanque = "69420";
-  
+
     // Ajouter des zéros à gauche du numéro de compte pour avoir une longueur de 24 caractères
     $numeroComptePadded = str_pad($numeroCompte, 11, "0", STR_PAD_LEFT) . "00000";
-    
+
     // Transformer le code de la banque et le numéro de compte en une chaîne de chiffres
     $chiffres = str_replace(
-      array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"),
-      array("10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35"),
-      $codeBanque . $numeroComptePadded
+        array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"),
+        array("10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35"),
+        $codeBanque . $numeroComptePadded
     );
-    
+
     // Calculer le reste de la division euclidienne de $chiffres par 97
     $reste = 0;
     for ($i = 0; $i < strlen($chiffres); $i++) {
-      $reste = ($reste * 10 + (int)$chiffres[$i]) % 97;
+        $reste = ($reste * 10 + (int)$chiffres[$i]) % 97;
     }
-    
+
     // Calculer la clé RIB
     $cleRib = str_pad(97 - $reste, 2, "0", STR_PAD_LEFT);
-    $rib = "FR76 " . $codeBanque . " " . $numeroCompte . " " . $cleRib ;
+    $rib = "FR76 " . $codeBanque . " " . $numeroCompte . " " . $cleRib;
     // Vérifier si le RIB existe déjà dans la base de données
     $requete = $bdd->prepare("SELECT COUNT(*) FROM comptes WHERE RIB = ?");
     $requete->execute(array($rib));
     $count = $requete->fetchColumn();
-    
-  
+
+
     // Si le RIB existe déjà, appeler à nouveau la fonction generateRIB()
     if ($count > 0) {
-      return generateRIB($bdd, $numeroCompte);
-    }
-    else{
+        return generateRIB($bdd, $numeroCompte);
+    } else {
         return $rib;
     }
-        
 }
 
-function checkconseillers($bdd){
+function checkconseillers($bdd)
+{
 
     $requetedata = "SELECT * FROM users WHERE permissions = 2";
     $requetedata = $bdd->prepare($requetedata);
@@ -57,63 +57,62 @@ function checkconseillers($bdd){
 
     echo "<select name='conseiller' class='form-control' required>";
     echo "<option value = '' selected></option>";
-    while($data = $requetedata->fetch())
-    {
-        echo "<option value = ". $data['userid'] . "\">" . $data['nom'] . " " . $data['prenom'] . "</option>";
+    while ($data = $requetedata->fetch()) {
+        echo "<option value = " . $data['userid'] . "\">" . $data['nom'] . " " . $data['prenom'] . "</option>";
     }
     echo "</select><br><br>";
 }
 
-function checkranks($bdd){
+function checkranks($bdd)
+{
     $user = $_SESSION['userid'];
     $requete = "SELECT permissions FROM users WHERE userid = ? LIMIT 1;";
-    $requete = $bdd->prepare($requete); 
+    $requete = $bdd->prepare($requete);
     $requete->execute(array($user));
     $dataperms = $requete->fetch(PDO::FETCH_ASSOC);
-    if(!$dataperms){
+    if (!$dataperms) {
         echo "Erreur: utilisateur non trouvé.";
         return;
     }
     $permissions = intval($dataperms['permissions']);
-    if($permissions < 1 || $permissions > 4){
+    if ($permissions < 1 || $permissions > 4) {
         echo "Erreur: permission invalide.";
         return;
     }
     $requete = "SELECT * FROM permissions WHERE permissionid <= ?;";
-    $requete = $bdd->prepare($requete); 
+    $requete = $bdd->prepare($requete);
     $requete->execute(array($permissions));
     $data = $requete->fetchAll(PDO::FETCH_ASSOC);
-    if(!$data){
+    if (!$data) {
         echo "Erreur: aucune permission trouvée.";
         return;
     }
     echo "<select name='perms' class='form-control' required>";
-    foreach($data as $row){
-        echo "<option value='". $row['permissionid'] ."'>" . $row['permissionnom'] . "</option>";
+    foreach ($data as $row) {
+        echo "<option value='" . $row['permissionid'] . "'>" . $row['permissionnom'] . "</option>";
     }
-    echo "</select><br><br>"; 
+    echo "</select><br><br>";
 }
 
-function generateid($bdd){
+function generateid($bdd)
+{
     $idrand = mt_rand(10000000000, 99999999999);
 
     $id = strval($idrand);
 
     $idrequete = "SELECT COUNT(*) FROM users WHERE userid = ?";
-    $idrequete= $bdd->prepare($idrequete);
+    $idrequete = $bdd->prepare($idrequete);
     $idrequete->execute(array($id));
     $countid = $idrequete->fetchColumn();
-    if($countid>0)
-    {
+    if ($countid > 0) {
         return $id = generateid($bdd);
-        
     }
 
     return $id;
 }
 
 function create_user($bdd)
-  {
+{
 
     $id = generateid($bdd);
     $nom = $_POST['nom'];
@@ -125,16 +124,16 @@ function create_user($bdd)
     $tel = $_POST['tel'];
     $conseillier = $_POST['conseiller'];
     $perms = $_POST['perms'];
-    try{
+    try {
         $bdd;
-    }catch(exception $e){
-        die('Erreur creation: '. $e->getMessage());
+    } catch (exception $e) {
+        die('Erreur creation: ' . $e->getMessage());
     }
     // Se connecter à la base de données avec PDO
-    
+
     // Vérifier si l'utilisateur existe déjà dans la base de données
     $nomrequete = "SELECT COUNT(*) FROM users WHERE nom = ?";
-    $nomrequete= $bdd->prepare($nomrequete);
+    $nomrequete = $bdd->prepare($nomrequete);
     $nomrequete->execute(array($nom));
     $countnom = $nomrequete->fetchColumn();
 
@@ -144,17 +143,17 @@ function create_user($bdd)
     $countpren = $prenomrequete->fetchColumn();
 
     $mailrequete = "SELECT COUNT(*) FROM users WHERE mail = ?";
-    $mailrequete= $bdd->prepare($mailrequete);
+    $mailrequete = $bdd->prepare($mailrequete);
     $mailrequete->execute(array($mail));
     $countmail = $mailrequete->fetchColumn();
 
     $telrequete = "SELECT COUNT(*) FROM users WHERE mail = ?";
-    $telrequete= $bdd->prepare($telrequete);
+    $telrequete = $bdd->prepare($telrequete);
     $telrequete->execute(array($tel));
     $counttel = $telrequete->fetchColumn();
 
     $naissrequete = "SELECT COUNT(*) FROM users WHERE date_naissance = ?";
-    $naissrequete= $bdd->prepare($naissrequete);
+    $naissrequete = $bdd->prepare($naissrequete);
     $naissrequete->execute(array($datenaissance));
     $countnaissance = $naissrequete->fetchColumn();
 
@@ -164,31 +163,30 @@ function create_user($bdd)
     } else {
 
         $requete = "INSERT INTO users (userid, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $requete = $bdd->prepare($requete); 
-        $requete->execute(array($id, $nom, $prenom,$datenaissance, $password, $mail, $tel, $conseillier, $perms));
+        $requete = $bdd->prepare($requete);
+        $requete->execute(array($id, $nom, $prenom, $datenaissance, $password, $mail, $tel, $conseillier, $perms));
         $data = $requete->fetch();
 
         echo "<p class='alert alert-success'>L'utilisateur a été ajouté avec succès.<p>";
-  }
-  if($perms == 4){
-    $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
-    $logrequete= $bdd->prepare($logrequete);
-    $logrequete->execute(array(4, $_SESSION['userid']));
-  }else{
-    $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
-    $logrequete= $bdd->prepare($logrequete);
-    $logrequete->execute(array(2, $_SESSION['userid']));
-  }
-    
+    }
+    if ($perms == 4) {
+        $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+        $logrequete = $bdd->prepare($logrequete);
+        $logrequete->execute(array(4, $_SESSION['userid']));
+    } else {
+        $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+        $logrequete = $bdd->prepare($logrequete);
+        $logrequete->execute(array(2, $_SESSION['userid']));
+    }
 }
 
 function create_compte($bdd)
-  {
+{
     $nom = $_POST['nomclient'];
     $prenom = $_POST['prenomclient'];
 
     $nomrequete = "SELECT COUNT(*) FROM users WHERE nom = ?";
-    $nomrequete= $bdd->prepare($nomrequete);
+    $nomrequete = $bdd->prepare($nomrequete);
     $nomrequete->execute(array($nom));
     $countnom = $nomrequete->fetchColumn();
 
@@ -197,12 +195,12 @@ function create_compte($bdd)
     $prenomrequete->execute(array($prenom));
     $countpren = $prenomrequete->fetchColumn();
 
-    if ($countnom == 0 && $countpren == 0){
+    if ($countnom == 0 && $countpren == 0) {
         // Afficher un message d'erreur si l'utilisateur n'existe pas.
         echo "<p class='alert alert-danger'>Pas d'utilisateur à ce nom!<p>";
     } else {
         $requeteinfo = "SELECT * FROM users WHERE nom = ? AND prenom = ?";
-        $requeteinfo = $bdd->prepare($requeteinfo); 
+        $requeteinfo = $bdd->prepare($requeteinfo);
         $requeteinfo->execute(array($nom, $prenom));
         $data = $requeteinfo->fetch();
         $RIB = generateRIB($bdd, $data['userid']);
@@ -214,93 +212,84 @@ function create_compte($bdd)
         $requete->execute(array($data['userid'], $comptenom, $RIB, $decouvert));
 
         $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
-        $logrequete= $bdd->prepare($logrequete);
+        $logrequete = $bdd->prepare($logrequete);
         $logrequete->execute(array(3, $_SESSION['userid']));
-        
+
 
         echo "<p class='alert alert-success'>Le compte a été créé avec succès.<p>";
     }
 }
 
-function checkusercomptes($bdd){
+function checkusercomptes($bdd)
+{
     $nom = $_POST['nompret'];
     $prenom = $_POST['prenompret'];
     $_SESSION['nompret'] = $nom;
     $_SESSION['prenompret'] = $prenom;
     $requeteinfo = "SELECT *, COUNT(*) AS compteur FROM users WHERE nom = ? AND prenom = ?";
-    $requeteinfo = $bdd->prepare($requeteinfo); 
+    $requeteinfo = $bdd->prepare($requeteinfo);
     $requeteinfo->execute(array($nom, $prenom));
     $datauserid = $requeteinfo->fetch();
 
-    if($datauserid['compteur'] == 0){
+    if ($datauserid['compteur'] == 0) {
         // Afficher un message d'erreur si l'utilisateur n'existe pas.
         echo "<p class='alert alert-danger'>Pas d'utilisateur à ce nom!<p>";
-    }else{
+    } else {
         $requetedata = "SELECT * FROM comptes WHERE userid = ? ";
-        $requetedata = $bdd->prepare($requetedata); 
+        $requetedata = $bdd->prepare($requetedata);
         $requetedata->execute(array($datauserid['userid']));
         echo '<div class="comptes_container">';
-        while($data = $requetedata->fetch())
-        {
+        while ($data = $requetedata->fetch()) {
             echo "<div class='compte'>";
             echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
             echo "<form method='POST' action='creationcredit.php'>";
-            echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
-            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>";
-            echo"</form>";
+            echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>";
+            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB'] . " '>";
+            echo "</form>";
             echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
             echo "</div>";
         }
         echo '</div>';
-        
     }
 }
-function checkmail($mail){
-	for($i=0; $i<strlen($mail); $i++)
-	{
-		if ($mail != '')
-		{
-			if($mail[$i] == '@')
-			{
-				return true;
-			}
-		}
-	}
+function checkmail($mail)
+{
+    for ($i = 0; $i < strlen($mail); $i++) {
+        if ($mail != '') {
+            if ($mail[$i] == '@') {
+                return true;
+            }
+        }
+    }
 }
 
 function verifnewuser()
 {
-    if(isset($_POST['adduser']))
-    {
-        if(isset($_POST['nom']) && $_POST['nom'] != '' && !is_numeric($_POST['nom']))
-        {
-            if(isset($_POST['prenom']) && $_POST['prenom'] != ''&& !is_numeric($_POST['prenom']))
-            {
-                if(isset($_POST['mail']) && $_POST['mail'] != '' && checkmail($_POST['mail']))
-                {
-                    if(isset($_POST['datenaissance']))
-                    {
-                        if(isset($_POST['tel']) && $_POST['tel'] != '')
-                        {
-                                return True;
-                            }else{
-                                echo "<p class='alert alert-danger'>Numero de téléphone non rempli !";
-                            }  
-                        }else{
-                            echo "<p class='alert alert-danger'>Date de naissance non remplie !";
+    if (isset($_POST['adduser'])) {
+        if (isset($_POST['nom']) && $_POST['nom'] != '' && !is_numeric($_POST['nom'])) {
+            if (isset($_POST['prenom']) && $_POST['prenom'] != '' && !is_numeric($_POST['prenom'])) {
+                if (isset($_POST['mail']) && $_POST['mail'] != '' && checkmail($_POST['mail'])) {
+                    if (isset($_POST['datenaissance'])) {
+                        if (isset($_POST['tel']) && $_POST['tel'] != '') {
+                            return True;
+                        } else {
+                            echo "<p class='alert alert-danger'>Numero de téléphone non rempli !";
                         }
-                    }else{
-                        echo "<p class='alert alert-danger'>Numero de téléphone non rempli !</p>";
+                    } else {
+                        echo "<p class='alert alert-danger'>Date de naissance non remplie !";
                     }
-                }else{
-                    echo "<p class='alert alert-danger'>Le prénom est mal rempli !";
+                } else {
+                    echo "<p class='alert alert-danger'>Numero de téléphone non rempli !</p>";
                 }
-            }else{
-                echo "<p class='alert alert-danger'> Le nom est mal rempli !";
+            } else {
+                echo "<p class='alert alert-danger'>Le prénom est mal rempli !";
             }
-        }   
+        } else {
+            echo "<p class='alert alert-danger'> Le nom est mal rempli !";
+        }
     }
-  ?>
+}
+?>
 
 <!DOCTYPE HTML>
 <html lang="fr">
@@ -311,25 +300,26 @@ function verifnewuser()
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/jpg" href="logo.jpg" />
     <title>Pannel conseillers</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <style>
-    body {
-        background-image: url("background.png");
-        height: 100%;
-        background-position-y: 20%;
-        background-position-x: 50%;
-    }
+        body {
+            background-image: url("background.png");
+            height: 100%;
+            background-position-y: 20%;
+            background-position-x: 50%;
+        }
+
+        h2 {
+            font-size: 1.5vw;
+        }
     </style>
 </head>
 
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
     </script>
     <div class="navbar-nav">
         <form method="POST" action="lescomptes.php">
@@ -342,10 +332,10 @@ function verifnewuser()
                 <h1>Panneau de controle</h1>
             </div>
             <div class="loginform">
-            <div class="accordion accordion-flush" id="accordionFlushExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="flush-headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                                 <h2>Ajouter un utilisateur</h2>
                             </button>
                         </h2>
@@ -353,40 +343,34 @@ function verifnewuser()
                             <div class="accordion-body">
                                 <form action="controlpannel.php" method="post">
                                     <label for="nom">Nom*:</label><br><br>
-                                    <input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control"
-                                        required><br><br>
+                                    <input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control" required><br><br>
                                     <label for="prenom">Prenom*:</label><br><br>
-                                    <input type="text" id="prenom" name="prenom" placeholder="Votre prenom"
-                                        class="form-control" required><br><br>
+                                    <input type="text" id="prenom" name="prenom" placeholder="Votre prenom" class="form-control" required><br><br>
                                     <label for="email">Mail*:</label><br><br>
-                                    <input type="mail" id="mail" name="email" placeholder="Wise@Tree.com"
-                                        class="form-control" required><br><br>
+                                    <input type="mail" id="mail" name="email" placeholder="Wise@Tree.com" class="form-control" required><br><br>
                                     <label for="datenaissance">Date de naissance*:</label><br><br>
-                                    <input type="date" id="date" name="datenaissance" placeholder="11/10/2003"
-                                        class="form-control" required><br><br>
+                                    <input type="date" id="date" name="datenaissance" placeholder="11/10/2003" class="form-control" required><br><br>
                                     <label for="tel">N°télephone*:</label><br><br>
-                                    <input type="text" id="tel" name="tel" placeholder="+33***********"
-                                        class="form-control" required><br><br>
+                                    <input type="text" id="tel" name="tel" placeholder="+33***********" class="form-control" required><br><br>
                                     <?php
-                    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-                    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-                            checkconseillers($bdd);
-                    ?>
+                                    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+                                    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');  //Localhost 
+                                    checkconseillers($bdd);
+                                    ?>
                                     <label for="perms">Permissions:*</label><br><br>
                                     <?php
-                        checkranks($bdd);
-                    ?>
+                                    checkranks($bdd);
+                                    ?>
 
                                     <button name="adduser" class="btn btn-primary">Ajouter un compte</button>
                                 </form>
 
                                 <?php
-                
-                if(isset($_POST['adduser']))
-                    { 
-                        create_user($bdd);
-                    }
-                ?>
+
+                                if (isset($_POST['adduser'])) {
+                                    create_user($bdd);
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
