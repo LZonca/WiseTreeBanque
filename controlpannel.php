@@ -8,6 +8,100 @@ try {
     die('Erreur: ' . $e->getMessage());
 }
 
+function displayusers ($bdd) {
+    $sql = "SELECT * FROM users ";
+    $request = $bdd->prepare($sql);
+    $request->execute();
+
+    echo '<div class="table-responsive">';
+    echo '<table class="table">';
+    echo '<thead>
+        <tr>
+            <th>UserID</th>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Mail</th>
+            <th>Téléphone</th>
+            <th style="width: fit-content;">Actions</th>
+        </tr>
+    </thead>';
+
+    echo '<tbody>';
+
+    while($data = $request->fetch()){
+        echo '<tr>';
+        echo '<td>' . $data['userid'] . '</td>';
+        echo '<td>' . $data['nom'] . '</td>';
+        echo '<td>' . $data['prenom'] . '</td>';
+        echo '<td>' . $data['mail'] . '</td>';
+        echo '<td>' . $data['tel'] . '</td>';
+        echo '<td>';
+
+        // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
+        if($data['permissions'] >=3){
+            echo '<td style="width: fit-content; height: fit-content >';
+            echo '<form method="POST">
+                <input type="hidden" name="id" value="'. $data['userid'] .'">
+                <input type="password" name="password" placeholder="Mot de passe">
+                <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer">
+            </form>';
+        } else {
+            echo '<form method="POST" action="panneladmin.php">
+                <input type="hidden" name="id" value="'. $data['userid'] .'">
+                <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ? Wallali ?\')">
+            </form>';
+        }
+
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo'</tbody>';
+    echo'</table>';
+    echo '</div>';
+
+    if(isset($_POST['delete'])) {
+        $id = $_POST['id'];
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
+    
+        $sql = 'SELECT * FROM users WHERE userid = :id';
+        $request = $bdd->prepare($sql);
+        $request->bindParam(':id', $id);
+        $request->execute();
+        $data = $request->fetch();
+        
+        if(!$data) {
+            echo '<p style="color:red;">Utilisateur non trouvé !</p>';
+            return;
+        }
+    
+        // Vérifier le mot de passe si l'utilisateur a une permission de 4
+        $authorized = false;
+    
+        if($data['permissions'] == '4' || $data['permissions'] == '3' ){
+            if(password_verify($password, $data['password'])) {
+                $authorized = true;
+            } else {
+                echo '<p style="color:red;">Mot de passe incorrect !</p>';
+            }
+        } else {
+            $authorized = true;
+        }
+    
+        if($authorized) {
+            $sql = 'DELETE FROM comptes WHERE userid = :id';
+            $request = $bdd->prepare($sql);
+            $request->bindParam(':id', $id);
+            $request->execute();
+    
+            $sql = 'DELETE FROM  users WHERE userid = :id';
+            $request = $bdd->prepare($sql);
+            $request->bindParam(':id', $id);
+            $request->execute();
+        }
+    }
+}
+
 unset($_SESSION['nompret']);
 unset($_SESSION['prenompret']);
 unset($_SESSION['compteactuel']);
@@ -369,7 +463,10 @@ function verifnewuser()
 
                                 if (isset($_POST['adduser'])) {
                                     create_user($bdd);
+                    
+
                                 }
+                                displayusers($bdd);
                                 ?>
                             </div>
                         </div>
