@@ -121,9 +121,9 @@ function addcredit($bdd){
     date_default_timezone_set('Europe/Paris');
     $date = date('d-m-y');
 
-    $creditrequete = "INSERT INTO credits (compteid, soldepret, echeance, date, interet, conseillerid, typeprelevement, raison) VALUES (?,?,?,?,?,?,?,?)";
+    $creditrequete = "INSERT INTO credits (compteid, soldepret, remboursement , echeance, date, interet, valeur_remboursment , conseillerid, typeprelevement, raison) VALUES (?,?,?,?,?,?,?,?,?,?)";
     $creditrequete= $bdd->prepare($creditrequete);
-    $creditrequete->execute(array($crediteur, $_POST['valeur'], $_POST['echeance'], $date, $_POST['interet'], $_SESSION['userid'],$_POST['prelevement'], $_POST['raisonpret']));
+    $creditrequete->execute(array($crediteur, $_POST['valeur'], $_POST['valeurremboursment'],$_POST['valeur'] * (1 + $_POST['valeur']/100), $_POST['echeance'], $date, $_POST['interet'], $_SESSION['userid'],$_POST['prelevement'], $_POST['raisonpret']));
     
     $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
     $logrequete= $bdd->prepare($logrequete);

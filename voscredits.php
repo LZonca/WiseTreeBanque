@@ -19,34 +19,43 @@ function checkcredits($bdd){
     $requetedata = $bdd->prepare($requetedata); 
     $requetedata->execute(array($user));
     
-    
+    $countcredits = "SELECT COUNT(*) FROM credits WHERE compteid = ?";
+    $countcredits = $bdd->prepare( $countcredits); 
+    $countcredits->execute(array($user));
+    $compteur =  $countcredits->fetchColumn();
 
+    if($compteur == 0){
+        echo "<h2>Aucun crédit en cours</h2>";
+    }else{
 
-    echo "<table>";
-    
-    echo "<th>N° du crédit</th>";
-    echo "<th>Montant du prêt</th>";
-    echo "<th>Taux d'interet</th>";
-    echo "<th>Montant a rembourser</th>";
-    echo "<th>Intitulé du prêt</th>";
-    echo "<th>Échéance du prêt</th>";
-    echo "<th>Periodicité des prélèvements</th>";
-    echo "<th>Date du crédit</th>";
-
-    
-    while($data = $requetedata->fetch())
+    ?>
+    <table>
+        <th>N° du crédit</th>
+        <th>Montant du prêt</th>
+        <th>Taux d'interet</th>
+        <th>Montant a rembourser</th>
+        <th>Intitulé du prêt</th>
+        <th>Échéance du prêt</th>
+        <th>Periodicité des prélèvements</th>
+        <th>Date du crédit</th>
+        <th>Prochain prélèvement</th>  
+    <?php } while($data = $requetedata->fetch())
     {   
-        $class = date('d-m-y') < $data['echeance'] ? 'alert' : 'normal';
-        echo "<tr class='" . $class . "'>";
-        echo "<td>". $data['creditid'] . "</td>";
-        echo "<td>". $data['soldepret'] . "</td>";
-        echo "<td>". $data['interet'] . "</td>";
-        echo "<td>". $data['soldepret'] * $data['interet'] . "</td>";
-        echo "<td>". $data['raison'] . "</td>";
-        echo "<td>". $data['echeance'] . "</td>";
-        echo "<td>". $data['typeprelevement'] . "</td>";
-        echo "<td>". $data['date'] . "</td>";
-        echo "</tr>";
+        if(strtotime($data['echeance']) > date('d-m-y')){
+            $class = date('d-m-y') < strtotime($data['echeance']) ? 'alert' : 'normal';
+            echo "<strike><tr class='" . $class . "'>";
+            echo "<td>". $data['creditid'] . "</td>";
+            echo "<td>". $data['soldepret'] . "</td>";
+            echo "<td>". $data['interet'] . "</td>";
+            echo "<td>". $data['remboursement'] . "</td>";
+            echo "<td>". $data['raison'] . "</td>";
+            echo "<td>". $data['echeance'] . "</td>";
+            echo "<td>". $data['typeprelevement'] . "</td>";
+            echo "<td>". $data['date'] . "</td></strike>";
+            // Ajouter les prélèvements
+            echo "</tr>";
+        }
+       
     }
     echo "</table>";
 }
