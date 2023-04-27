@@ -18,7 +18,6 @@ function loginrequest()
     $requete = $bdd->prepare($requete); 
     $requete->execute(array($user));
     $data = $requete->fetch();
-    $err = 0;
     if(isset($_POST['login']))
     {
         if($data)
@@ -28,30 +27,25 @@ function loginrequest()
                 $_SESSION['userid'] = $_POST['userid'];
                 header('Location: lescomptes.php');
             }else{
-                $err = 1;
+                $_SESSION['usermessage'] = "<p class='alert alert-danger'>Mot de passe incorrect<p>";
             }
-        }else{
-            $err = 2;
         }
-        return $err;
     }
 }
 
 function checklogin()
 {
-    $err = 0;
     if (isset($_POST['login'])) {
         if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password']) >= 6) {
             if (isset($_POST['userid']) && $_POST['userid'] != '' && strlen($_POST['userid']) == 11) {
                 loginrequest();
             } else {
-                $err = 1;
+                $_SESSION['usermessage'] = "<p class='alert alert-danger'>Utilisateur incorrect<p>";
             }
         }else
         {
-            $err = 2;
+            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Code à 6 chiffres mal renseigné.<p>";
         }
-        return $err;
     }  
 }
 checklogin();
@@ -77,6 +71,9 @@ checklogin();
                 <h1>
                     WiseTreeBank
                 </h1>
+            <?php if(isset($_SESSION['usermessage'])){
+                echo $_SESSION['usermessage'];
+            }?>
             <div class="row">
             <div class="col"></div>
             <div class="col" border: solid>
