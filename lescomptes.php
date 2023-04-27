@@ -100,7 +100,8 @@
         }
         $user = $_SESSION['userid'];
 
-        $countcomptes = "SELECT COUNT(*) FROM credits WHERE compteid = ?";
+        $countcomptes = "SELECT *, COUNT(*) AS compteur FROM comptes WHERE userid = ?";
+
         $countcomptes = $bdd->prepare($countcomptes); 
         $countcomptes->execute(array($user));
         $compteur =  $countcomptes->fetchColumn();
@@ -176,5 +177,4 @@ function messagecount($bdd){
         </div>
     </div> 
     </body>
-
 </html>
