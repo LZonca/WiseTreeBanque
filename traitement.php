@@ -92,21 +92,21 @@ function checkvirement($bdd) {
                                 transfertrequete($bdd);
                                 $_SESSION['usermessage'] = "<p class='alert alert-success'>Le virement a été effectué avec succès!<p>"; // Effectuer transfert
                             } else {
-                                $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Pas assez d\'argent sur le compte.</b></p>';
+                                $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Pas assez d\'argent sur le compte.</b></p>';
                             }
                         }else{
-                                $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Compte inconnu</b></p>';
+                                $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Compte inconnu</b></p>';
                             }
                         } else {
-                            $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Vous ne pouvez pas envoyer de l\'argent vers le compte d\'origine</b></p>';
+                            $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Vous ne pouvez pas envoyer de l\'argent vers le compte d\'origine</b></p>';
                         }
                      } else{
-                            $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Compte inconnu</b></p>';
+                            $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Compte inconnu</b></p>';
                 } }else {
-                    $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Veuillez entrer l\'IBAN du destinataire.</b></p>'; // Destinataire incorrect
+                    $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Veuillez entrer l\'IBAN du destinataire.</b></p>'; // Destinataire incorrect
                 }
             } else {
-                $_SESSION['usermessage'] = '<p class="alert alert-success"><b>Veuillez entrer une somme valide à transférer.<br> (La somme ne peut pas etre négative !)</b></p>';
+                $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Veuillez entrer une somme valide à transférer.<br> (La somme ne peut pas etre négative !)</b></p>';
             }
         }
     }
