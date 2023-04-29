@@ -1,12 +1,12 @@
 <?php
-
 session_start();
     unset($_SESSION['userid']);
     echo "<h1>Deconnexion en cours !</h1>";
-    header('Location: index.php');
+    unset($_SESSION['usermessage']);
+    header('Location: Connexion');
 
     if(!isset($_SESSION))
     {
-        header('Location: index.php');
+        header('Location: Connexion');
     }
 ?>

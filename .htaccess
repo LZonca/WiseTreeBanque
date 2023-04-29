@@ -1,0 +1,14 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php
+RewriteRule ^Connexion$ index 
+RewriteRule ^Accueil$ lescomptes 
+RewriteRule ^Paramètres$ settings 
+RewriteRule ^VotreCompte$ compte 
+RewriteRule ^Administration$ controlpannel
+RewriteRule ^NouveauCrédit$ creationcredit 
+RewriteRule ^VosCrédits$ voscredits
+RewriteRule ^Messagerie$ contact 
+RewriteRule ^VotreHistorique$ depenses 
+RewriteRule ^Utilisateur$ viewusers [L]

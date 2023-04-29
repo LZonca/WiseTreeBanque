@@ -13,21 +13,21 @@ try{
 
 if(!isset($_SESSION['userid']))
     {
-        header('Location: index.php');
+        header('Location: Connexion');
     }
 
 if(!isset($_SESSION['compteactuel'])){
-    header('Location: lescomptes.php');
+    header('Location: Accueil');
 }
 
 if(isset($_POST['comptes'])){
-    header('Location: compte.php');
+    header('Location: VotreCompte');
 }
 
 if(isset($_POST['lescomptes'])){
     unset($_SESSION['compteactuel']);
     unset($_SESSION['compteactuelnom']);
-    header('Location: lescomptes.php');
+    header('Location: Accueil');
 }
 
 if(isset($_POST['Deco'])){
@@ -122,7 +122,7 @@ function checkcomptes($bdd){
     </head>
     <body>
         <div class="navbar-nav">
-            <form method="POST" action="depenses.php">
+            <form method="POST" action="VotreHistorique">
                 <button name="comptes" class="btn btn-secondary">Retour</button>
                 <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
                 <button name="Deco" class="btn btn-secondary">Deconnexion</button>
@@ -138,11 +138,13 @@ function checkcomptes($bdd){
                 checkcomptes($bdd);
                 ?></h2>
                 <h3>Effectuer un virement</h3>
-                <form action="traitement.php" method="post">
+                <form action="traitement" method="post">
                     <input type="text" id="virement" name="destinataire" placeholder="RIB du destinataire" class="form-control" required><br><br>
                     <input type="text" id="virement" name="virement" placeholder="Somme" class="form-control" required><br><br>
                     <button name="send" class="btn btn-primary">Envoyer</button>
                 </form>
+
+                
             </div>
         </div>
     </body>

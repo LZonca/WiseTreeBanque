@@ -1,5 +1,11 @@
 <?php
 session_start();
+
+if(!isset($_SESSION))
+    {
+        header('Location: Connexion');
+    }
+
 //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
 $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
@@ -146,6 +152,6 @@ if(isset($_POST['createpret'])){
 if(isset($_POST['send']))
 {
     checkvirement($bdd);
-    header('Location: depenses.php');
+    header('Location: depenses');
 }
 ?>

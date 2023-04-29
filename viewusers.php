@@ -1,5 +1,11 @@
 <?php
     session_start();
+
+    if(!isset($_SESSION))
+    {
+        header('Location: Connexion');
+    }
+
     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
@@ -45,13 +51,13 @@
             // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
             if($data['permissions'] >=3){
                 echo '<td>';
-                echo '<form method="POST">
+                echo '<form method="POST" action="Utilisateur">
                     <input type="hidden" name="id" value="'. $data['userid'] .'">
                     <input type="password" name="password" placeholder="Mot de passe">
                     <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer">
                 </form>';
             } else {
-                echo '<form method="POST" action="panneladmin.php">
+                echo '<form method="POST" action="Utilisateur">
                     <input type="hidden" name="id" value="'. $data['userid'] .'">
                     <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ? Wallali ?\')">
                 </form>';
@@ -145,7 +151,7 @@
 
   <header>
     <div class="navbar-nav">
-        <form method="POST" action="lescomptes.php">
+        <form method="POST" action="Utilisateur">
             <button name="comptes" class="btn btn-primary">Retour</button>
             <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
             <button name="Deco" class="btn btn-secondary">Deconnexion</button>

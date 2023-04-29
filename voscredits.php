@@ -1,5 +1,11 @@
 <?php
     session_start();
+
+    if(!isset($_SESSION))
+    {
+        header('Location: Connexion');
+    }
+
     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
 
@@ -61,6 +67,26 @@ function checkcredits($bdd){
     echo "</table>";
 //}
 
+if(isset($_POST['comptes'])){
+    (header('Location: VotreCompte'));
+}
+
+if(isset($_POST['lescomptes']) ){
+    unset($_SESSION['compteactuel']);
+    header('Location: Accueil');
+}
+
+if(isset($_POST['Deco'])){
+    header('Location: logout');
+}
+
+if(isset($_POST['lescomptes'])){
+    unset($_SESSION['compteactuel']);
+}
+
+if(isset($_POST['Deco'])){
+    header('Location: logout');
+}
 
 ?>
 
@@ -101,7 +127,7 @@ function checkcredits($bdd){
 
   <header>
     <div class="navbar-nav">
-        <form method="POST" action="lescomptes.php">
+        <form method="POST" action="VosCrédits">
             <button name="comptes" class="btn btn-primary">Retour</button>
             <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
             <button name="Deco" class="btn btn-secondary">Deconnexion</button>
