@@ -1,30 +1,30 @@
 <?php
-    session_start();
-    
-    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-    global $bdd; 
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
+session_start();
 
-    try{
-        $bdd;
+//$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+global $bdd;
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');  //Localhost 
 
-    }catch(exception $e){
-        die('Erreur messages: '. $e->getMessage());
-    }
+try {
+    $bdd;
+} catch (exception $e) {
+    die('Erreur messages: ' . $e->getMessage());
+}
 
-    if(!isset($_SESSION['userid'])){
-        header('Location: Connexion');
-    }
+if (!isset($_SESSION['userid'])) {
+    header('Location: Connexion');
+}
 
-    if(isset($_POST['retour'])){
-        header('Location: Accueil');
-    }
-    
-    if(isset($_POST['Deco'])){
-        header('Location: logout');
-    }
+if (isset($_POST['retour'])) {
+    header('Location: Accueil');
+}
 
-function messagerequest($bdd){
+if (isset($_POST['Deco'])) {
+    header('Location: logout');
+}
+
+function messagerequest($bdd)
+{
 
     $message = $_POST['usermessage'];
     date_default_timezone_set('Europe/Paris');
@@ -77,55 +77,64 @@ if (isset($_POST['cancel'])) {
     $update->execute(array($id));
     // Affiche un message de confirmation de l'annulation du rendez-vous
     echo "<div class='alert alert-warning' role='alert'>Le rendez-vous a été annulé avec succès.</div>";
-
-}   
-function displaymessage(){
+}
+function displaymessage()
+{
     global $bdd;
     $user = $_SESSION['userid'];
     $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
-    $requetedata = $bdd->prepare($requetedata); 
+    $requetedata = $bdd->prepare($requetedata);
     $requetedata->execute(array($user));
 
     $requete = "SELECT * FROM users WHERE userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?);";
-    $requete = $bdd->prepare($requete); 
+    $requete = $bdd->prepare($requete);
     $requete->execute(array($user));
     $data = $requete->fetch();
-    
-    while($datamsg = $requetedata->fetch())
-{
-    echo "<h2>" . $data['prenom'] . " " . $data['nom'] . " souhaite planifier un rendez-vous à " . $datamsg['daterdv'] . " | Message: " . $datamsg['chat'] . 
-    "<small> - Envoyé à " . $datamsg['time'] . "</small>";
-        
-    if ($datamsg['requeststatus'] == 0) {
-        echo"<form method='post' action='Messagerie'>
+
+    while ($datamsg = $requetedata->fetch()) {
+        echo "<h2>" . $data['prenom'] . " " . $data['nom'] . " souhaite planifier un rendez-vous à " . $datamsg['daterdv'] . " | Message: " . $datamsg['chat'] .
+            "<small> - Envoyé à " . $datamsg['time'] . "</small>";
+
+        if ($datamsg['requeststatus'] == 0) {
+            echo "<form method='post' action='Messagerie'>
         <button type='submit' name='accept' value='" . $datamsg['idmsg'] . "' class='btn btn-success btn-sm'>Accepter le rendez-vous.<br></button>
         <button type='submit' name='deny' value='" . $datamsg['idmsg'] . "' class='btn btn-danger btn-sm'>Refuser le rendez-vous.</button>
         <button type='submit' name='cancel' value='" . $datamsg['idmsg'] . "' class='btn btn-warning btn-sm'>Annuler</button>
         </form>";
+        }
+
+        echo "</h2><br>";
     }
-         
-    echo"</h2><br>";
-}
 
 
-        function afficherdv(){
-            global $bdd;
-            $user = $_SESSION['userid'];
-            $requete = "SELECT * FROM users, chat WHERE chat.requeststatus = 1 AND users.userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?);";
-            $requete = $bdd->prepare($requete); 
-            $requete->execute(array($user));
-            $data = $requete->fetch(); ?>
+    function afficherdv()
+    {
+        global $bdd;
+        $user = $_SESSION['userid'];
+        $requete = "SELECT * FROM users, chat WHERE chat.requeststatus = 1 AND users.userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?);";
+        $requete = $bdd->prepare($requete);
+        $requete->execute(array($user));
+        $data = $requete->fetch();
+        $countcredits = "SELECT COUNT(*) FROM credits WHERE compteid = ?";
+        $countcredits = $bdd->prepare($countcredits);
+        $countcredits->execute(array($user));
+        $compteur =  $countcredits->fetchColumn();
 
-            <h3>Vos randez-vous</h3>
+        if ($compteur == 0) {
+            echo "<h2>Aucun RDV planifiés</h2>";
+        } else {
+?>
+
+            <h3>Vos rendez-vous</h3>
 
             <table>
-            <th>Raison RDV</th>
-            <th>Date RDV</th>
-            <th>Client</th>
-
-            <?php
-            while($datardv = $requete->fetch())
-            {      
+                <tr>
+                    <th>Raison RDV</th>
+                    <th>Date RDV</th>
+                    <th>Client</th>
+                </tr>
+    <?php
+            while ($datardv = $requete->fetch()) {
                 echo "<tr>";
                 echo "<td>" . $datardv['chat'] . "</td>";
                 echo "<td>" . $datardv['date'] . "</td>";
@@ -135,12 +144,16 @@ function displaymessage(){
             echo "</table>";
         }
     }
-
-    
-
+}
 
 
-    /*elseif($datarank['permissions'] > 1){
+
+
+
+
+
+
+/*elseif($datarank['permissions'] > 1){
         $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
         $requetedata = $bdd->prepare($requetedata); 
         $requetedata->execute(array($user));
@@ -149,13 +162,12 @@ function displaymessage(){
             echo $data['chat'] . " - " . $dataconseiller['prenom'] . " " . $dataconseiller['nom'] . "<button name='accept' class='btn btn-secondary'>Accepter le randez-vous.</button><br>";
         }
     }*/
-    
 
 
-?>
+    ?>
 
-<!DOCTYPE html>
-<html lang="fr">
+    <!DOCTYPE html>
+    <html lang="fr">
 
     <head>
         <meta charset="UTF-8">
@@ -170,36 +182,37 @@ function displaymessage(){
     </head>
 
     <body>
-    <div class="navbar-nav">
-                <form method="POST" action="Accueil">
-                    <button name="Deco" class="btn btn-secondary">Deconnexion</button>
-                    <button name="retour" class="btn btn-secondary">Retour</button>
-                </form>
-            </div>
+        <div class="navbar-nav">
+            <form method="POST" action="Accueil">
+                <button name="Deco" class="btn btn-secondary">Deconnexion</button>
+                <button name="retour" class="btn btn-secondary">Retour</button>
+            </form>
+        </div>
         <div class="container">
-                <h1>
-                    WiseTreeBank - Contact
-                </h1>
-                <?php 
-                    displaymessage();
+            <h1>
+                WiseTreeBank - Contact
+            </h1>
+            <?php
+                displaymessage();
+            ?>
+            <div class='chat-box'>
+                <?php
+
+                if (isset($_POST['submit'])) {
+                    messagerequest($bdd);
+                }
                 ?>
-                <div class='chat-box'>
-                    <?php 
-                    
-                    if(isset($_POST['submit'])){
-                        messagerequest($bdd);
-                    }
-                    ?>
-                </div>
-                <form method="POST" action="contact.php" >
+            </div>
+            <form method="POST" action="contact.php">
                 <div class="form-group">
                     <input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>
                     <input type="datetime-local" name="rdvtime" class="form-control" min=" <?= date('y-m-d h:i') ?>">
                     <button name="submit" class="btn btn-primary">Envoyer le message</button>
                 </div>
-                </form>
+            </form>
 
-            </div>
+        </div>
         </div>
     </body>
-</html>
+
+    </html>

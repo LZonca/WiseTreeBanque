@@ -29,11 +29,11 @@ function RIBrequest($bdd)
     }
 
 function transfertrequete($bdd){
-    date_default_timezone_set('Europe/Paris');
-    $date = date('d-m-y h:i:s');
+
     $envoyeur = RIBrequest($bdd);
     $destinataire = $_POST['destinataire'];
     $valeur = $_POST['virement'];
+    $raison = $_POST['raison'];
 
     $destinatairesolde = "SELECT * FROM comptes WHERE RIB = ?;";
     $destinatairesolde = $bdd->prepare($destinatairesolde); 
@@ -44,9 +44,9 @@ function transfertrequete($bdd){
     $usersolde = $bdd->prepare($usersolde); 
     $usersolde->execute(array(RIBrequest($bdd)));
     $soldeexpe = $usersolde->fetch();
-    $requetedata = 'INSERT INTO virements VALUES (NULL, ?, ?, ?, ?)';
+    $requetedata = 'INSERT INTO virements (id_destinataire, id_envoyeur, valeur, raison) VALUES (?, ?, ?, ?)';
     $requetedata = $bdd->prepare($requetedata); 
-    $requetedata->execute(array($destinataire, $envoyeur, $valeur, $date));
+    $requetedata->execute(array($destinataire, $envoyeur, $valeur));
     
     $destinatairerequete = "UPDATE comptes SET solde = ? WHERE RIB = ?;";
     $destinatairerequete  = $bdd->prepare($destinatairerequete); 
@@ -146,12 +146,12 @@ function addcredit($bdd){
 
 if(isset($_POST['createpret'])){
     addcredit($bdd);
-    header('Location: creationcredit');
+    header('Location: NouveauCrédit');
 }
 
 if(isset($_POST['send']))
 {
     checkvirement($bdd);
-    header('Location: depenses');
+    header('Location: VotreHistorique');
 }
 ?>

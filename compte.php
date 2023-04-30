@@ -71,17 +71,6 @@ unset($_SESSION['usermessage']);
         echo "</form>";
         echo "</div>";
         }
-
-    function decouvertrequest($bdd)
-    {
-        
-        $user = $_SESSION['userid'];
-        $requete = "SELECT * FROM comptes WHERE userid = (SELECT id FROM users WHERE userid = ?);";
-        $requete = $bdd->prepare($requete); 
-        $requete->execute(array($user));
-        $data = $requete->fetch();
-        echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
-    }
     //var_dump($_SESSION);
 ?>
 
@@ -89,7 +78,7 @@ unset($_SESSION['usermessage']);
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Ma banque</title>
+    <title>Mon Compte</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="icon" type="image/jpg" href="logo.jpg" />

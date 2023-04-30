@@ -1,14 +1,21 @@
 RewriteEngine On
+
+## Modifier l'IP pour avoir celui du serveur debian 10.206.237.9 (J'espere c ça popaul)
+RewriteCond %{HTTP_HOST} ^10\.206\.237\.9$
+RewriteRule ^(.*)$ http://www.WiseTreeBanque.com/$1 [R=301,L]
+
+
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^(.*)$ $1.php
-RewriteRule ^Connexion$ index 
-RewriteRule ^Accueil$ lescomptes 
-RewriteRule ^Paramètres$ settings 
-RewriteRule ^VotreCompte$ compte 
-RewriteRule ^Administration$ controlpannel
-RewriteRule ^NouveauCrédit$ creationcredit 
-RewriteRule ^VosCrédits$ voscredits
-RewriteRule ^Messagerie$ contact 
-RewriteRule ^VotreHistorique$ depenses 
+RewriteRule ^(.*)$ $1.php [L]
+
+RewriteRule ^Connexion$ index [L]
+RewriteRule ^Accueil$ lescomptes [L]
+RewriteRule ^Paramètres$ settings [L]
+RewriteRule ^VotreCompte$ compte [L]
+RewriteRule ^Administration$ controlpannel [L]
+RewriteRule ^NouveauCrédit$ creationcredit [L]
+RewriteRule ^VosCrédits$ voscredits [L]
+RewriteRule ^Messagerie$ contact [L]
+RewriteRule ^VotreHistorique$ depenses [L]
 RewriteRule ^Utilisateur$ viewusers [L]
