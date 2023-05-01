@@ -48,8 +48,9 @@ function checkcredits($bdd)
     while ($data = $requetedata->fetch()) {
         //if(strtotime($data['echeance']) > date('d-m-y')){
 
-        $class = date('d-m-y') < strtotime($data['echeance']) ? 'alert' : 'normal';
-        echo "<strike><tr class='" . $class . "'>";
+        //$class = date('d-m-y') < strtotime($data['echeance']) ? 'alert' : 'normal';
+        //echo "<strike><tr class='" . $class . "'>";
+        echo "<tr>";
         echo "<td>" . $data['creditid'] . "</td>";
         echo "<td>" . $data['soldepret'] . "</td>";
         echo "<td>" . $data['interet'] . "</td>";
@@ -60,10 +61,8 @@ function checkcredits($bdd)
         echo "<td>" . $data['date'] . "</td></strike>";
         // Ajouter les prélèvements
         echo "</tr>";
-    }
+    }echo "</table>";
 }
-echo "</table>";
-//}
 
 if (isset($_POST['comptes'])) {
     (header('Location: VotreCompte'));
@@ -116,6 +115,10 @@ if (isset($_POST['Deco'])) {
                 padding: 10px;
             }
 
+            tr{
+                border-bottom: 1px;
+            }
+            
             .normal {
                 background-color: transparent;
             }

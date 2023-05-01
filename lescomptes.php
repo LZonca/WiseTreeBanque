@@ -22,7 +22,7 @@
     }
 
     if(isset($_POST['control'])){
-        header('Location: controlpannel');
+        header('Location: Administration');
     }
 
     if(isset($_POST['contact'])){

@@ -15,6 +15,10 @@ if (isset($_POST['Deco'])) {
 if (isset($_POST['parametres'])) {
     header('Location: Paramètres');
 }
+if(isset($_POST['lescomptes'])){
+    header('Location: Accueil');
+}
+
 try {
     $bdd;
 } catch (exception $e) {
