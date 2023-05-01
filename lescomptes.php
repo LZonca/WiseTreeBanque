@@ -4,33 +4,29 @@
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree'); // Localhost
     if(!isset($_SESSION['userid']))
     {
-        header('Location: index.php');
+        header('Location: Connexion');
     }
 
     if(isset($_POST['Deco'])){
-        header('Location: logout.php');
+        header('Location: logout');
     }
     
     if(isset($_POST['parametres'])){
-        header('Location: settings.php');
-    }
-
-    if(isset($_POST['contact'])){
-        header('Location: contact.php');
+        header('Location: Paramètres');
     }
 
     if(isset($_POST['compteactuelnom'])){
         $_SESSION['compteactuel'] = $_POST['compteactuel'];
         $_SESSION['compteactuelnom'] = $_POST['compteactuelnom'];
-        header('Location: compte.php');
+        header('Location: VotreCompte');
     }
 
     if(isset($_POST['control'])){
-        header('Location: controlpannel.php');
+        header('Location: Administration');
     }
 
     if(isset($_POST['contact'])){
-        header('Location: contact.php');
+        header('Location: Messagerie');
     }
     
     unset($_SESSION['usermessage']);
@@ -118,9 +114,10 @@
             
             echo "<div class='compte'>";
             echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
-            echo "<form method='POST' action='lescomptes.php'>";
-            echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
-            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>"; 
+            echo "<form method='POST' action='Accueil'>";
+            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>";
+            echo "<input class='btn btn-primary' type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
+            
             echo"</form>";
             echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
             echo "</div>";
@@ -153,7 +150,7 @@ function messagecount($bdd){
     </head>
     <body>
             <div class="navbar-nav">
-                <form method="POST" action="lescomptes.php">
+                <form method="POST" action="Accueil">
                     <button name="Deco" class="btn btn-secondary">Deconnexion</button>
                     <button name="parametres" class="btn btn-secondary">Paramètres</button>
                     <button name='contact' class='btn btn-primary'>Messagerie<span class="badge bg-danger ms-2"><?php messagecount($bdd) ?></span></button>  

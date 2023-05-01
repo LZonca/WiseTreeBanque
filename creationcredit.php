@@ -9,8 +9,9 @@ try{
 }
 
 if(!isset($_SESSION['userid'])){
-    header('Location: index.php');
+    header('Location: Connexion');
 }
+
 if(isset($_POST['compteactuel'])){
     $_SESSION['compteactuel'] = $_POST['compteactuel'];
 }
@@ -23,6 +24,9 @@ if(isset($_POST['compteactuel'])){
     }
 }*/
 
+if(isset($_POST['comptes'])){
+    header('Location: Administration');
+}
 
 ?>
 
@@ -44,7 +48,7 @@ if(isset($_POST['compteactuel'])){
 <body>
     <header>
     <div class="navbar-nav">
-        <form method="POST" action="controlpannel.php">
+        <form method="POST" action="Crédit">
             <button name="comptes" class="btn btn-primary">Retour</button>
         </form>
     </div>
@@ -60,7 +64,7 @@ if(isset($_POST['compteactuel'])){
             }
             
         ?>
-        <form action='traitement.php' method='POST'>
+        <form action='traitement' method='POST'>
             <label for="raisonpret">Raison du crédit</label><br>
             <input type='text' name='raisonpret' class='form-control'><br>
             <label for="raisonpret">Valeur du crédit</label><br>

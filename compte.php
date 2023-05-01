@@ -3,44 +3,46 @@ session_start();
 $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 
+try{
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+
+    }catch(exception $e){
+        die('Erreur: '. $e->getMessage());
+    }
+
 if(!isset($_SESSION['userid'])){
-        header('Location: index.php');
+        header('Location: Connexion');
     }
 
 if(!isset($_SESSION['compteactuel']) && !isset($_SESSION['compteactuelnom'])){
-    header('Location: index.php');
+    header('Location: Connexion');
 }
 
 if(isset($_POST['comptes'])){
-    header('Location: compte.php');
+    header('Location: Accueil');
 }
 
 if(isset($_POST['lescomptes'])){
     unset($_SESSION['compteactuel']);
+    header('Location: Accueil');
 }
 
 if(isset($_POST['Deco'])){
-    header('Location: logout.php');
+    header('Location: logout');
 }
 
 if(isset($_POST['virement'])){
-    header('Location: depenses.php');
+    header('Location: VotreHistorique');
 }
 
 if(isset($_POST['credits'])){
-    header('Location: voscredits.php');
+    header('Location: VosCrédits');
 }
 
 unset($_SESSION['usermessage']);
 
     function nomrequest($bdd)
     {
-        try{
-        $bdd;
-
-        }catch(exception $e){
-            die('Erreur: '. $e->getMessage());
-        }
         $user = $_SESSION['userid'];
         $requete = "SELECT nom, prenom FROM users WHERE userid = ?;";
         $requete = $bdd->prepare($requete); 
@@ -51,13 +53,7 @@ unset($_SESSION['usermessage']);
 
     
 
-    function checkcomptes(){
-        try{
-            $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
-            //$bdd = new PDO('mysql:host=;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-        }catch(exception $e){
-            die('Erreur nom compte: '. $e->getMessage());
-        }
+    function checkcomptes($bdd){
         $compte = $_SESSION['compteactuel'];
         $comptenom = $_SESSION['compteactuelnom'];
         $requetedata = "SELECT * FROM comptes WHERE RIB = ?";
@@ -70,28 +66,12 @@ unset($_SESSION['usermessage']);
         echo "<h2>RIB: </h2>";
         echo "<h2>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h2>";
         echo "<h3>BIC: " . htmlspecialchars(strtoupper($data['BIC'])) . "</h3>";
-        echo "<form action='compte.php' method='POST'>";
+        echo "<form action='VotreCompte' method='POST'>";
         echo "<button name='virement' class='btn btn-primary'>Virement</button> 
         <button name='credits' class='btn btn-primary'>Vos crédits</button>";
         echo "</form>";
         echo "</div>";
         }
-
-    function decouvertrequest()
-    {
-        try{
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-
-        }catch(exception $e){
-            die('Erreur: '. $e->getMessage());
-        }
-        $user = $_SESSION['userid'];
-        $requete = "SELECT * FROM comptes WHERE userid = (SELECT id FROM users WHERE userid = ?);";
-        $requete = $bdd->prepare($requete); 
-        $requete->execute(array($user));
-        $data = $requete->fetch();
-        echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
-    }
     //var_dump($_SESSION);
 ?>
 
@@ -99,7 +79,7 @@ unset($_SESSION['usermessage']);
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Ma banque</title>
+    <title>Mon Compte</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="icon" type="image/jpg" href="logo.jpg" />
@@ -112,7 +92,7 @@ unset($_SESSION['usermessage']);
 
 <body>
     <div class="navbar-nav">
-        <form method="POST" action="lescomptes.php">
+        <form method="POST" action="VotreCompte">
         <button name="comptes" class="btn btn-primary">Retour</button>
             <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
             <button name="Deco" class="btn btn-secondary">Deconnexion</button>

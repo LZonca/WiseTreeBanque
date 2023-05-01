@@ -1,52 +1,53 @@
 <?php
 session_start();
 $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
-if(!isset($_SESSION))
-{
-    header('Location: index.php');
+
+//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', ''); // Localhost
+//$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+
+if (!isset($_SESSION)) {
+    header('Location: Connexion');
 }
 
-if(isset($_POST['Deco'])){
-    header('Location: logout.php');
+if (isset($_POST['Deco'])) {
+    header('Location: logout');
 }
 
-if(isset($_POST['parametres'])){
-    header('Location: settings.php');
+if (isset($_POST['parametres'])) {
+    header('Location: Paramètres');
+}
+if(isset($_POST['lescomptes'])){
+    header('Location: Accueil');
 }
 
-
-function updatepass($bdd){
-    try{
+try {
     $bdd;
-
-    }catch(exception $e){
-        die('Erreur: '. $e->getMessage());
-    }
+} catch (exception $e) {
+    die('Erreur: ' . $e->getMessage());
+}
+function updatepass($bdd)
+{
     $user = $_SESSION['userid'];
     $pass = $_POST['mdp'];
     $requetemdp = "SELECT * FROM users WHERE userid = ?;";
-    $requetemdp = $bdd->prepare($requetemdp); 
+    $requetemdp = $bdd->prepare($requetemdp);
     $requetemdp->execute(array($user));
     $data = $requetemdp->fetch();
-    
-    if(($_POST['mdpchange'] == $_POST['mdprepeat']) && strlen($_POST['mdpchange']) == 6)
-    {
-        if(password_verify($pass, $data['password'])){
-            $newpassword = password_hash($_POST['mdpchange'], PASSWORD_DEFAULT);
-            $requete = "UPDATE users SET password = ? WHERE userid = ?;";
-            $requete = $bdd->prepare($requete); 
-            $requete->execute(array($newpassword, $user));
-            echo "<p class='confirm'> Mot de passe changé !<p>";
-        }else{
-            echo "<div class = 'error_box'>";
-            echo "<p class='error'>Mauvais mot de passe<p>";
-            echo "</div>";
+
+    if (($_POST['mdpchange'] == $_POST['mdprepeat']) && strlen($_POST['mdpchange']) == 6) {
+        if ($data) {
+            if (password_verify($pass, $data['password'])) {
+                $newpassword = password_hash($_POST['mdpchange'], PASSWORD_DEFAULT);
+                $requete = "UPDATE users SET password = ? WHERE userid = ?;";
+                $requete = $bdd->prepare($requete);
+                $requete->execute(array($newpassword, $user));
+                $_SESSION['usermessage'] = "<p class='alert alert-success'>Mot de passe changé !</p>";
+            } else {
+                $_SESSION['usermessage'] = "<p class='alert alert-danger'>>Mauvais mot de passe</p>";
+            }
+        } else {
+            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Les mots de passe ne correspondent pas ou n'a pas 6 caractères</p>";
         }
-    }
-    else{
-        echo "<div class = 'error_box'>";
-        echo "<p class='error'>Les mots de passe ne correspondent pas ou n'a pas 6 caractères<p>";
-        echo "</div>";
     }
 }
 

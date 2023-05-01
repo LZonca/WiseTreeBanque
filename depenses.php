@@ -13,27 +13,75 @@ try{
 
 if(!isset($_SESSION['userid']))
     {
-        header('Location: index.php');
+        header('Location: Connexion');
     }
 
 if(!isset($_SESSION['compteactuel'])){
-    header('Location: lescomptes.php');
+    header('Location: Accueil');
 }
 
 if(isset($_POST['comptes'])){
-    header('Location: compte.php');
+    header('Location: VotreCompte');
 }
 
 if(isset($_POST['lescomptes'])){
     unset($_SESSION['compteactuel']);
     unset($_SESSION['compteactuelnom']);
-    header('Location: lescomptes.php');
+    header('Location: Accueil');
 }
 
 if(isset($_POST['Deco'])){
     header('Location: logout.php');
 }
 
+function historique($bdd){
+    $requetedata = "SELECT * FROM comptes WHERE userid = ?";
+    $requetedata = $bdd->prepare($requetedata); 
+    $requetedata->execute(array($_SESSION['userid']));
+    $data = $requetedata->fetch();
+
+    $countcomptes = "SELECT COUNT(id_envoyeur) FROM virements WHERE id_envoyeur = ?";
+    $countcomptes = $bdd->prepare($countcomptes); 
+    $countcomptes->execute(array($data['RIB']));
+    $compteur =  $countcomptes->fetchColumn();
+
+    if($compteur == 0){
+
+        echo "<h2>Vous n'avez effectué aucun virement.</h2>";
+
+    }else{
+        
+        $sql = "SELECT * FROM virements WHERE id_envoyeur = ? ORDER BY date DESC;";
+        $request = $bdd->prepare($sql);
+        $request->execute(array($data['RIB']));
+        
+
+        echo '<table>';
+        echo '<tr>
+            <th style="padding: 10px">Destinataire</th>
+            <th style="padding: 10px">Somme transferrée</th>
+            <th style="padding: 10px;">Date du transfert</th>
+            <th style="padding: 10px">Raison du transfert</th>
+
+        </tr>';
+
+        while($data = $request->fetch()){
+            echo '<tr>';
+            echo '<td>' . $data['id_destinataire'] . '</td>';
+            echo '<td>' . $data['valeur'] . '</td>';
+            echo '<td>' . $data['date'] . '</td>';
+            if($data['raison'] == ''){
+                echo '<td>N/A</td>';
+            }else{
+                echo '<td>' . $data['raison'] . '</td>';
+            }
+            
+            echo '</tr>';
+        }
+        echo'</table>';
+    }
+    
+}
 
 function checkcomptes($bdd){
 
@@ -122,7 +170,7 @@ function checkcomptes($bdd){
     </head>
     <body>
         <div class="navbar-nav">
-            <form method="POST" action="depenses.php">
+            <form method="POST" action="VotreHistorique">
                 <button name="comptes" class="btn btn-secondary">Retour</button>
                 <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
                 <button name="Deco" class="btn btn-secondary">Deconnexion</button>
@@ -138,11 +186,23 @@ function checkcomptes($bdd){
                 checkcomptes($bdd);
                 ?></h2>
                 <h3>Effectuer un virement</h3>
-                <form action="traitement.php" method="post">
-                    <input type="text" id="virement" name="destinataire" placeholder="RIB du destinataire" class="form-control" required><br><br>
-                    <input type="text" id="virement" name="virement" placeholder="Somme" class="form-control" required><br><br>
+                <form action="traitement" method="post">
+                    <label for="destinataire">RIB du destinataire:</label><br>
+                    <input type="text" id="virement" name="destinataire" placeholder="RIB du destinataire" class="form-control" required><br>
+                    <label for="virement">Somme à transferrer:</label><br>
+                    <input type="text" id="virement" name="virement" placeholder="Somme" class="form-control" required><br>
+                    <label for="raison">Raison du virement:</label><br>
+                    <input type="text" id="virement" name="raison" placeholder="Raison du virement (100 caractères maximum)" class="form-control"><br>
                     <button name="send" class="btn btn-primary">Envoyer</button>
                 </form>
+
+                <h2>
+                    Historique:
+                </h2>
+
+                <?php   
+                    historique($bdd);
+                ?>
             </div>
         </div>
     </body>
