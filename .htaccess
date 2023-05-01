@@ -18,16 +18,16 @@ RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php [NC]
 
 # Réécrire les URL pour utiliser des noms de fichiers
-RewriteRule ^connexion$ index.php [NC]
-RewriteRule ^accueil$ lescomptes.php [NC]
-RewriteRule ^parametres$ settings.php [NC]
-RewriteRule ^votrecompte$ compte.php [NC]
-RewriteRule ^administration$ controlpannel.php [NC]
-RewriteRule ^nouveaucrédit$ creationcredit.php [NC]
-RewriteRule ^voscrédits$ voscredits.php [NC]
-RewriteRule ^messagerie$ contact.php [NC]
-RewriteRule ^votrehistorique$ depenses.php [NC]
-RewriteRule ^utilisateur$ viewusers.php [NC]
+RewriteRule ^Connexion$ index.php [NC]
+RewriteRule ^Accueil$ lescomptes.php [NC]
+RewriteRule ^Parametres$ settings.php [NC]
+RewriteRule ^VotreCompte$ compte.php [NC]
+RewriteRule ^Administration$ controlpannel.php [NC]
+RewriteRule ^NouveauCrédit$ creationcredit.php [NC]
+RewriteRule ^VosCrédits$ voscredits.php [NC]
+RewriteRule ^Messagerie$ contact.php [NC]
+RewriteRule ^VotreHistorique$ depenses.php [NC]
+RewriteRule ^Utilisateur$ viewusers.php [NC]
 
 # Renvoyer les erreurs 404 vers la page 404.php
 RewriteRule ^404$ 404.php [NC]

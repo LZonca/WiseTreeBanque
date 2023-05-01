@@ -1,39 +1,44 @@
 <?php
 session_start();
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
-try {
-    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat');
-    $bdd;
-} catch (exception $e) {
-    die('Erreur: ' . $e->getMessage());
+
+
+function loginrequest($bdd)
+{
+    $user = $_POST['userid'];
+    $pass = $_POST['password'];
+    $requete = "SELECT * FROM users WHERE userid = ?;";
+    $requete = $bdd->prepare($requete); 
+    $requete->execute(array($user));
+    $data = $requete->fetch();
+    $err = 0;
+    if(isset($_POST['login']))
+    {
+        if($data)
+        {   
+            if(password_verify($pass, $data['password']))
+            {
+                $_SESSION['userid'] = $_POST['userid'];
+                header('Location: lescomptes.php');
+            }else{
+                $err = 1;
+            }
+        }else{
+            $err = 2;
+        }
+        return $err;
+    }
 }
 
 function checklogin($bdd)
 {
+    $err = 0;
     if (isset($_POST['login'])) {
         if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password']) >= 6) {
             if (isset($_POST['userid']) && $_POST['userid'] != '' && strlen($_POST['userid']) == 11) {
-                $user = $_POST['userid'];
-                $pass = $_POST['password'];
-                $requete = "SELECT * FROM users WHERE userid = ?;";
-                $requete = $bdd->prepare($requete);
-                $requete->execute(array($user));
-                $data = $requete->fetch();
-                if (isset($_POST['login'])) {
-                    if ($data){
-                        if (password_verify($pass, $data['password'])) {
-                            $_SESSION['userid'] = $_POST['userid'];
-                            header('Location: Accueil');
-                        } else {
-                            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Mot de passe incorrect</p>";
-                        }
-                    } else {
-                        $_SESSION['usermessage'] = "<p class='alert alert-danger'>Numero d'utilisateur à 11 chiffres mal renseigné.</p>";
-                    }
-                } else {
-                    $_SESSION['usermessage'] = "<p class='alert alert-danger'>Code à 6 chiffres mal renseigné.</p>";
-                }
+                loginrequest($bdd);
+            } else {
+                $err = 1;
             }
         }
     }

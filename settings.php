@@ -1,7 +1,8 @@
 <?php
 session_start();
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
 
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', ''); // Localhost
+//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', ''); // Localhost
 //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
 
 if (!isset($_SESSION)) {
@@ -54,46 +55,40 @@ function updatepass($bdd)
 
 <!DOCTYPE html>
 <html>
-
-<head>
-    <title>Wise Tree Banque - Paramètres</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="icon" type="image/jpg" href="logo.jpg" />
-    <style>
-    </style>
-</head>
-
-<body>
-    <div class="navbar-nav">
-        <form method="POST" action="Paramètres">
-            <button name="Deco" class="btn btn-secondary">Deconnexion</button>
-            <button name="lescomptes" class="btn btn-secondary">Retour</button>
-        </form>
-    </div>
-    <div class="container">
-        <h2><u>Vos paramètres:</u></h2>
-        <?php
-        if (isset($_SESSION['usermessage'])) {
-            echo $_SESSION['usermessage'];
-        } ?>
-        <form method='POST' action='Paramètres'>
-            <label for="mdp">Mot de passe actuel</label><br><br>
-            <input type="password" name="mdp" placeholder="Mot de passe actuel" class="form-control" required><br><br>
-            <label for="mdpchange">Nouveau mot de passe</label><br><br>
-            <input type="password" name="mdpchange" placeholder="Nouveau mot de passe" class="form-control" required><br><br>
-            <label for="mdprepeat">Répéter le nouveau mot de passe</label><br><br>
-            <input type="password" name="mdprepeat" placeholder="Répéter le nouveau mot de passe" class="form-control" required><br><br>
-            <button name='changemdp' class="btn btn-primary">Changer de mot de passe</button>
-        </form>
-        <?php
-        if (isset($_POST['changemdp'])) {
-            updatepass($bdd);
-        }
-        ?>
-    </div>
-    </div>
-    </div>
-</body>
-
+    <head>
+        <title>Wise Tree Banque - Paramètres</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="icon" type="image/jpg" href="logo.jpg" />
+        <style>
+        </style>
+    </head>
+        <body>
+                <div class="navbar-nav">
+                    <form method="POST" action="lescomptes.php">
+                        <button name="Deco" class="btn btn-secondary">Deconnexion</button>
+                        <button name="lescomptes" class="btn btn-secondary">Retour</button>
+                    </form>
+                </div>
+            <div class="container">
+                <h2><u>Vos paramètres:</u></h2>
+                    <form method='POST' action='settings.php'>
+                        <label for="mdp">Mot de passe actuel</label><br><br>
+                        <input type="password" name="mdp" placeholder="Mot de passe actuel" class="form-control" required><br><br>
+                        <label for="mdpchange">Nouveau mot de passe</label><br><br>
+                        <input type="password" name="mdpchange" placeholder="Nouveau mot de passe" class="form-control" required><br><br>
+                        <label for="mdprepeat">Répéter le nouveau mot de passe</label><br><br>
+                        <input type="password" name="mdprepeat" placeholder="Répéter le nouveau mot de passe" class="form-control" required><br><br>
+                        <button name='changemdp' class="btn btn-primary">Changer de mot de passe</button>
+                    </form>
+                    <?php
+                        if(isset($_POST['changemdp']))
+                        {
+                            updatepass($bdd);
+                        }
+                    ?>
+                </div>
+            </div>
+        </div> 
+    </body>
 </html>

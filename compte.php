@@ -1,5 +1,6 @@
 <?php
 session_start();
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 
 try{
