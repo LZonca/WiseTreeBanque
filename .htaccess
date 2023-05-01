@@ -2,11 +2,11 @@ RewriteEngine On
 RewriteBase /
 
 # Rediriger toutes les requêtes vers index.php
-RewriteRule ^(.*)$ index.php/$1 [L]
+#RewriteRule ^(.*)$ index.php/$1 [L]
 
 # Réécrire l'URL pour masquer le chemin complet
-RewriteCond %{HTTP_HOST} ^10\.206\.237\.30$ [NC]
-RewriteRule ^(.*)$ http://www.WiseTreeBanque.sio/$1 [R=301,L]
+#RewriteCond %{HTTP_HOST} ^10\.206\.237\.30$ [NC]
+#RewriteRule ^(.*)$ http://www.WiseTreeBanque.sio/$1 [R=301,L]
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
