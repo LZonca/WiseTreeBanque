@@ -1,9 +1,10 @@
 <?php
-    session_start();
+
+session_start();
     
-    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
 global $bdd; 
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree'); //VM DEBIAN SERVEUR 
+//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree'); //VM DEBIAN SERVEUR 
 
 
 //global $bdd;

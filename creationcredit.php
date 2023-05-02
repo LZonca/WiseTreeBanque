@@ -1,8 +1,8 @@
 <?php
 session_start();
 try{
-    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');  //Localhost 
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
+    //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');  //Localhost 
 
 }catch(exception $e){
     die('Erreur: '. $e->getMessage());
@@ -20,7 +20,7 @@ if(isset($_POST['compteactuel'])){
 {
     if(!isset($_POST['prenompret']))
     {
-        header('Location: controlpannel.php');
+        header('Location: Administration');
     }
 }*/
 
@@ -48,7 +48,7 @@ if(isset($_POST['comptes'])){
 <body>
     <header>
     <div class="navbar-nav">
-        <form method="POST" action="Crédit">
+        <form method="POST" action="NouveauCrédit">
             <button name="comptes" class="btn btn-primary">Retour</button>
         </form>
     </div>
