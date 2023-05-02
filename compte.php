@@ -4,7 +4,7 @@ $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wi
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 
 try{
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+    $bdd;
 
     }catch(exception $e){
         die('Erreur: '. $e->getMessage());

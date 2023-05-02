@@ -1,28 +1,22 @@
 RewriteEngine On
-RewriteBase /
 
-# Rediriger toutes les requêtes vers index.php
-#RewriteRule ^(.*)$ index.php/$1 [L]
+# Rediriger les URL contenant l'adresse IP vers l'URL de votre site sans l'adresse IP
 
-# Réécrire l'URL pour masquer le chemin complet
-#RewriteCond %{HTTP_HOST} ^10\.206\.237\.30$ [NC]
-#RewriteRule ^(.*)$ http://www.WiseTreeBanque.sio/$1 [R=301,L]
-
+# Réécrire les URL de votre site
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^(.*)$ $1.php [NC]
+RewriteRule ^(.*)$ $1.php [L]
 
-# Réécrire les URL pour utiliser des noms de fichiers
-RewriteRule ^Connexion$ index.php [NC]
-RewriteRule ^Accueil$ lescomptes.php [NC]
-RewriteRule ^Parametres$ settings.php [NC]
-RewriteRule ^VotreCompte$ compte.php [NC]
-RewriteRule ^Administration$ controlpannel.php [NC]
-RewriteRule ^NouveauCrédit$ creationcredit.php [NC]
-RewriteRule ^VosCrédits$ voscredits.php [NC]
-RewriteRule ^Messagerie$ contact.php [NC]
-RewriteRule ^VotreHistorique$ depenses.php [NC]
-RewriteRule ^Utilisateur$ viewusers.php [NC]
+RewriteRule ^Connexion$ index [L]
+RewriteRule ^Accueil$ lescomptes [L]
+RewriteRule ^Paramètres$ settings [L]
+RewriteRule ^VotreCompte$ compte [L]
+RewriteRule ^Administration$ controlpannel [L]
+RewriteRule ^NouveauCrédit$ creationcredit [L]
+RewriteRule ^VosCrédits$ voscredits [L]
+RewriteRule ^Messagerie$ contact [L]
+RewriteRule ^VotreHistorique$ depenses [L]
+RewriteRule ^Utilisateur$ viewusers [L]
 
 # Renvoyer les erreurs 404 vers la page 404.php
 RewriteRule ^404$ 404.php [NC]
