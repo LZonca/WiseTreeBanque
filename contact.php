@@ -207,7 +207,7 @@ function displaymessage()
                 }
                 ?>
             </div>
-            <form method="POST" action="contact.php">
+            <form method="POST" action="Messagerie">
                 <div class="form-group">
                     <input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>
                     <input type="datetime-local" name="rdvtime" class="form-control" min=" <?= date('y-m-d h:i') ?>">

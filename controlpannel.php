@@ -1,17 +1,17 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['userid'])){
+if (!isset($_SESSION['userid'])) {
     header('Location: Connexion');
 }
 
-if(isset($_POST['lescomptes'])){
+if (isset($_POST['lescomptes'])) {
     header('Location: Accueil');
 }
 
 try {
     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');  //Localhost 
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');  //Localhost 
 
 } catch (exception $e) {
     die('Erreur: ' . $e->getMessage());

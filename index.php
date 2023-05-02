@@ -19,7 +19,7 @@ function loginrequest($bdd)
             if(password_verify($pass, $data['password']))
             {
                 $_SESSION['userid'] = $_POST['userid'];
-                header('Location: lescomptes.php');
+                header('Location: Accueil');
             }else{
                 $err = 1;
             }
