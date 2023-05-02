@@ -2,7 +2,7 @@
 session_start();
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
 $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree'); // Localhost
-
+//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
 function loginrequest($bdd)
 {
     $user = $_POST['userid'];

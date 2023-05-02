@@ -1,10 +1,10 @@
 <?php
 session_start();
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
+//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
 
 //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', ''); // Localhost
-//$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+
 
 if (!isset($_SESSION)) {
     header('Location: Connexion');
