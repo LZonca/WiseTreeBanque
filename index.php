@@ -1,7 +1,7 @@
 <?php
 session_start();
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
-
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
 
 function loginrequest($bdd)
 {
@@ -19,7 +19,7 @@ function loginrequest($bdd)
             if(password_verify($pass, $data['password']))
             {
                 $_SESSION['userid'] = $_POST['userid'];
-                header('Location: lescomptes.php');
+                header('Location: Accueil');
             }else{
                 $err = 1;
             }

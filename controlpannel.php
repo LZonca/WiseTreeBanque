@@ -8,10 +8,11 @@ if(!isset($_SESSION['userid'])){
 if(isset($_POST['lescomptes'])){
     header('Location: Accueil');
 }
-
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
+//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');  //Localhost 
 try {
     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');  //Localhost 
+    
 
 } catch (exception $e) {
     die('Erreur: ' . $e->getMessage());
@@ -349,7 +350,7 @@ function checkusercomptes($bdd)
         while ($data = $requetedata->fetch()) {
             echo "<div class='compte'>";
             echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
-            echo "<form method='POST' action='Crédit'>";
+            echo "<form method='POST' action='NouveauCrédit'>";
             echo "<input class='btn btn-primary' type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>";
             echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB'] . " '>";
             echo "</form>";
@@ -544,7 +545,7 @@ function verifnewuser()
                         </h2>
                         <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo">
                             <div class="accordion-body">
-                                <form action='controlpannel' method="POST">
+                                <form action='Administration' method="POST">
                                     <label for="nompret">Nom du créancier:</label>
                                     <input type='text' name='nompret' class="form-control" placeholder='<?php
                                                                                                         if (isset($_POST['nompret'])) {

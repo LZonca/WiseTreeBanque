@@ -1,6 +1,7 @@
 <?php
 session_start();
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
+$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
+//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
 
 //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', ''); // Localhost
 //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
@@ -65,14 +66,14 @@ function updatepass($bdd)
     </head>
         <body>
                 <div class="navbar-nav">
-                    <form method="POST" action="lescomptes.php">
+                    <form method="POST" action="Accueil">
                         <button name="Deco" class="btn btn-secondary">Deconnexion</button>
                         <button name="lescomptes" class="btn btn-secondary">Retour</button>
                     </form>
                 </div>
             <div class="container">
                 <h2><u>Vos paramètres:</u></h2>
-                    <form method='POST' action='settings.php'>
+                    <form method='POST' action='Paramètres'>
                         <label for="mdp">Mot de passe actuel</label><br><br>
                         <input type="password" name="mdp" placeholder="Mot de passe actuel" class="form-control" required><br><br>
                         <label for="mdpchange">Nouveau mot de passe</label><br><br>
