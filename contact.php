@@ -17,11 +17,11 @@ try {
 }
 
 if (!isset($_SESSION['userid'])) {
-    header('Location: Connexion');
+    header('Location: connexion');
 }
 
 if (isset($_POST['retour'])) {
-    header('Location: Accueil');
+    header('Location: accueil');
 }
 
 if (isset($_POST['Deco'])) {
@@ -57,7 +57,7 @@ if (isset($_POST['accept'])) {
     $update = $bdd->prepare($update);
     $update->execute(array($id));
     //Afficher le bouton Annuler
-    echo "<form method='post' action='Messagerie'>
+    echo "<form method='post' action='messagerie'>
     <button type='submit' name='cancel' value='" . $id . "' class='btn btn-warning btn-sm'>Annuler le rendez-vous.</button>
     </form> ";
 }
@@ -101,7 +101,7 @@ function displaymessage()
             "<small> - Envoyé à " . $datamsg['time'] . "</small>";
 
         if ($datamsg['requeststatus'] == 0) {
-            echo "<form method='post' action='Messagerie'>
+            echo "<form method='post' action='messagerie'>
         <button type='submit' name='accept' value='" . $datamsg['idmsg'] . "' class='btn btn-success btn-sm'>Accepter le rendez-vous.<br></button>
         <button type='submit' name='deny' value='" . $datamsg['idmsg'] . "' class='btn btn-danger btn-sm'>Refuser le rendez-vous.</button>
         <button type='submit' name='cancel' value='" . $datamsg['idmsg'] . "' class='btn btn-warning btn-sm'>Annuler</button>
@@ -188,7 +188,7 @@ function displaymessage()
 
     <body>
         <div class="navbar-nav">
-            <form method="POST" action="Accueil">
+            <form method="POST" action="accueil">
                 <button name="Deco" class="btn btn-secondary">Deconnexion</button>
                 <button name="retour" class="btn btn-secondary">Retour</button>
             </form>
@@ -208,7 +208,7 @@ function displaymessage()
                 }
                 ?>
             </div>
-            <form method="POST" action="Messagerie">
+            <form method="POST" action="messagerie">
                 <div class="form-group">
                     <input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>
                     <input type="datetime-local" name="rdvtime" class="form-control" min=" <?= date('y-m-d h:i') ?>">

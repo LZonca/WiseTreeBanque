@@ -4,10 +4,10 @@ session_start();
     echo "<h1>Deconnexion en cours !</h1>";
     unset($_SESSION['usermessage']);
     session_destroy();
-    header('Location: Connexion');
+    header('Location: connexion');
 
     if(!isset($_SESSION))
     {
-        header('Location: Connexion');
+        header('Location: connexion');
     }
 ?>

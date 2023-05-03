@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION)) {
-    header('Location: Connexion');
+    header('Location: connexion');
 }
 
 
@@ -66,12 +66,12 @@ function checkcredits($bdd)
 }
 
 if (isset($_POST['comptes'])) {
-    (header('Location: VotreCompte'));
+    (header('Location: votre-compte'));
 }
 
 if (isset($_POST['lescomptes'])) {
     unset($_SESSION['compteactuel']);
-    header('Location: Accueil');
+    header('Location: accueil');
 }
 
 if (isset($_POST['Deco'])) {
@@ -134,7 +134,7 @@ if (isset($_POST['Deco'])) {
 
         <header>
             <div class="navbar-nav">
-                <form method="POST" action="VosCrédits">
+                <form method="POST" action="vos-credits">
                     <button name="comptes" class="btn btn-primary">Retour</button>
                     <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
                     <button name="Deco" class="btn btn-secondary">Deconnexion</button>

@@ -4,7 +4,7 @@
     //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree'); // Localhost
     if(!isset($_SESSION['userid']))
     {
-        header('Location: Connexion');
+        header('Location: connexion');
     }
 
     if(isset($_POST['Deco'])){
@@ -12,21 +12,21 @@
     }
     
     if(isset($_POST['parametres'])){
-        header('Location: Paramètres');
+        header('Location: parametres');
     }
 
     if(isset($_POST['compteactuelnom'])){
         $_SESSION['compteactuel'] = $_POST['compteactuel'];
         $_SESSION['compteactuelnom'] = $_POST['compteactuelnom'];
-        header('Location: VotreCompte');
+        header('Location: votre-compte');
     }
 
     if(isset($_POST['control'])){
-        header('Location: Administration');
+        header('Location: administration');
     }
 
     if(isset($_POST['contact'])){
-        header('Location: Messagerie');
+        header('Location: messagerie');
     }
     
     unset($_SESSION['usermessage']);
@@ -114,7 +114,7 @@
             
             echo "<div class='compte'>";
             echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
-            echo "<form method='POST' action='Accueil'>";
+            echo "<form method='POST' action='accueil'>";
             echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>";
             echo "<input class='btn btn-primary' type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
             
@@ -150,7 +150,7 @@ function messagecount($bdd){
     </head>
     <body>
             <div class="navbar-nav">
-                <form method="POST" action="Accueil">
+                <form method="POST" action="accueil">
                     <button name="Deco" class="btn btn-secondary">Deconnexion</button>
                     <button name="parametres" class="btn btn-secondary">Paramètres</button>
                     <button name='contact' class='btn btn-primary'>Messagerie<span class="badge bg-danger ms-2"><?php messagecount($bdd) ?></span></button>  

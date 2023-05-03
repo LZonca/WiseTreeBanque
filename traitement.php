@@ -3,7 +3,7 @@ session_start();
 
 if(!isset($_SESSION))
     {
-        header('Location: Connexion');
+        header('Location: connexion');
     }
 
 //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
@@ -147,12 +147,12 @@ function addcredit($bdd){
 
 if(isset($_POST['createpret'])){
     addcredit($bdd);
-    header('Location: NouveauCrédit');
+    header('Location: nouveau-credit');
 }
 
 if(isset($_POST['send']))
 {
     checkvirement($bdd);
-    header('Location: VotreHistorique');
+    header('Location: votre-historique');
 }
 ?>

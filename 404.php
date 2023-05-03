@@ -17,7 +17,7 @@
         <div class="container">
             <h1>Erreur 404</h1>
             <h2>La page recherchée n'existe pas..</h2>
-            <a href="Accueil">Retourner vers la page de connexion</a>
+            <a href="Connexion">Retourner vers la page de connexion</a>
         </div>
     </body>
 </html>

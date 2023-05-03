@@ -12,20 +12,20 @@ try{
     }
 
 if(!isset($_SESSION['userid'])){
-        header('Location: Connexion');
+        header('Location: connexion');
     }
 
 if(!isset($_SESSION['compteactuel']) && !isset($_SESSION['compteactuelnom'])){
-    header('Location: Connexion');
+    header('Location: connexion');
 }
 
 if(isset($_POST['comptes'])){
-    header('Location: Accueil');
+    header('Location: accueil');
 }
 
 if(isset($_POST['lescomptes'])){
     unset($_SESSION['compteactuel']);
-    header('Location: Accueil');
+    header('Location: accueil');
 }
 
 if(isset($_POST['Deco'])){
@@ -33,11 +33,11 @@ if(isset($_POST['Deco'])){
 }
 
 if(isset($_POST['virement'])){
-    header('Location: VotreHistorique');
+    header('Location: votre-historique');
 }
 
 if(isset($_POST['credits'])){
-    header('Location: VosCrédits');
+    header('Location: vos-credits');
 }
 
 unset($_SESSION['usermessage']);
@@ -67,7 +67,7 @@ unset($_SESSION['usermessage']);
         echo "<h2>RIB: </h2>";
         echo "<h2>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h2>";
         echo "<h3>BIC: " . htmlspecialchars(strtoupper($data['BIC'])) . "</h3>";
-        echo "<form action='VotreCompte' method='POST'>";
+        echo "<form action='votre-compte' method='POST'>";
         echo "<button name='virement' class='btn btn-primary'>Virement</button> 
         <button name='credits' class='btn btn-primary'>Vos crédits</button>";
         echo "</form>";
@@ -93,7 +93,7 @@ unset($_SESSION['usermessage']);
 
 <body>
     <div class="navbar-nav">
-        <form method="POST" action="VotreCompte">
+        <form method="POST" action="votre-compte">
         <button name="comptes" class="btn btn-primary">Retour</button>
             <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
             <button name="Deco" class="btn btn-secondary">Deconnexion</button>

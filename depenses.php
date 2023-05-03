@@ -14,25 +14,25 @@ try{
 
 if(!isset($_SESSION['userid']))
     {
-        header('Location: Connexion');
+        header('Location: connexion');
     }
 
 if(!isset($_SESSION['compteactuel'])){
-    header('Location: Accueil');
+    header('Location: accueil');
 }
 
 if(isset($_POST['comptes'])){
-    header('Location: VotreCompte');
+    header('Location: votre-compte');
 }
 
 if(isset($_POST['lescomptes'])){
     unset($_SESSION['compteactuel']);
     unset($_SESSION['compteactuelnom']);
-    header('Location: Accueil');
+    header('Location: accueil');
 }
 
 if(isset($_POST['Deco'])){
-    header('Location: logout.php');
+    header('Location: logout');
 }
 
 function historique($bdd){
@@ -171,7 +171,7 @@ function checkcomptes($bdd){
     </head>
     <body>
         <div class="navbar-nav">
-            <form method="POST" action="VotreHistorique">
+            <form method="POST" action="votre-historique">
                 <button name="comptes" class="btn btn-secondary">Retour</button>
                 <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
                 <button name="Deco" class="btn btn-secondary">Deconnexion</button>
