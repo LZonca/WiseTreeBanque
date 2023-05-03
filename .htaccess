@@ -9,7 +9,7 @@ RewriteEngine On
 #RewriteRule ^(.*)$ BanqueProjetPro/ProjetProBanque/$1 [L]
 
 ## Modifier l'IP pour avoir celui du serveur debian 10.206.237.9 (J'espere c ça popaul)
-#RewriteCond %{HTTP_HOST} ^10\.206\.237\.30$
+#RewriteCond %{HTTP_HOST} ^10\.206\.237\.9$
 #RewriteRule ^WiseTreeBanque(.*)$ http://www.WiseTreeBanque.sio/$1 [R=301,L]
 
 
