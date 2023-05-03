@@ -19,7 +19,7 @@ function loginrequest($bdd)
             if(password_verify($pass, $data['password']))
             {
                 $_SESSION['userid'] = $_POST['userid'];
-                header('Location: Accueil');
+                header('Location: accueil');
             }else{
                 $err = 1;
             }
@@ -74,7 +74,7 @@ function checklogin($bdd)
                 <h2 id="connexion_title">
                     Connectez-vous:
                 </h2>
-                <form action="Connexion" method="post">
+                <form action="connexion" method="post">
                     <label for="userid">Numéro de compte*:</label><br>
                     <input type="text" name="userid" placeholder="04123456789" pattern="[0-9]{11}" class="form-control" required><br>
                     <small>Format: 04123456789</small><br>

@@ -13,7 +13,7 @@ try{
 }
 
 if(!isset($_SESSION['userid'])){
-    header('Location: Connexion');
+    header('Location: connexion');
 }
 
 if(isset($_POST['compteactuel'])){
@@ -24,12 +24,12 @@ if(isset($_POST['compteactuel'])){
 {
     if(!isset($_POST['prenompret']))
     {
-        header('Location: Administration');
+        header('Location: administration');
     }
 }*/
 
 if(isset($_POST['comptes'])){
-    header('Location: Administration');
+    header('Location: administration');
 }
 
 ?>
@@ -52,7 +52,7 @@ if(isset($_POST['comptes'])){
 <body>
     <header>
     <div class="navbar-nav">
-        <form method="POST" action="NouveauCrédit">
+        <form method="POST" action="nouveau-credit">
             <button name="comptes" class="btn btn-primary">Retour</button>
         </form>
     </div>
