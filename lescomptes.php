@@ -2,7 +2,7 @@
     session_start();
     if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.111"){
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
     }elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
         $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
@@ -74,7 +74,7 @@
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($user));
         $data = $requete->fetch();
-        echo "<h1>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</h1>";
+        echo "<p>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</p>";
     }
 
     /*function solderequest()
@@ -167,7 +167,7 @@ function messagecount($bdd){
             </div>
         <div class="container">
                 <?php nomrequest($bdd);?>
-                <h1><u>Bienvenue sur la Wise Tree Bank</u></h1>
+                <p><u>Bienvenue sur la Wise Tree Bank</u></p>
                 <?php echo "<h2>Compte utilisateur n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
                 <h2>Vos comptes</h2>
                 <div class="comptes_container">
