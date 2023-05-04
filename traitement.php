@@ -10,6 +10,8 @@ if(!isset($_SESSION))
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
     }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+    }elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
     }
 
 try{
