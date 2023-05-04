@@ -1,10 +1,12 @@
 <?php
 session_start();
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
-
-//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', ''); // Localhost
-//$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
+if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+    $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
+}
 
 if (!isset($_SESSION)) {
     header('Location: connexion');
@@ -60,7 +62,7 @@ function updatepass($bdd)
         <title>Wise Tree Banque - Paramètres</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="icon" type="image/jpg" href="logo.jpg" />
+        <link rel="icon" type="image/jpg" href="img/logo.jpg" />
         <style>
         </style>
     </head>

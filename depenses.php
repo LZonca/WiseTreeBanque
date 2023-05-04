@@ -1,10 +1,13 @@
 <?php
 session_start();
 
-//$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
-
+if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+    $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
+}
 try{
     $bdd;
 
@@ -87,9 +90,10 @@ function historique($bdd){
 function checkcomptes($bdd){
 
     $compte = $_SESSION['compteactuelnom'];
-    $requetedata = "SELECT * FROM comptes WHERE comptenom = ?";
+    $RIB = $_SESSION['compteactuel'];
+    $requetedata = "SELECT * FROM comptes WHERE comptenom = ? AND RIB = ?";
     $requetedata = $bdd->prepare($requetedata); 
-    $requetedata->execute(array($compte));
+    $requetedata->execute(array($compte, $RIB));
     $data = $requetedata->fetch();
     echo "<h3>Votre solde: <u>" . $data['solde'] . "€</u></h4>";
     echo "<h3>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
@@ -99,7 +103,7 @@ function checkcomptes($bdd){
 <html>
     <head>
         <meta charset="utf-8">
-        <link rel="icon" type="image/jpg" href="logo.jpg" />
+        <link rel="icon" type="image/jpg" href="img/logo.jpg" />
         <title>Ma banque</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <style>

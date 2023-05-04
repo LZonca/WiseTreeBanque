@@ -8,10 +8,15 @@ if (!isset($_SESSION['userid'])) {
 if (isset($_POST['lescomptes'])) {
     header('Location: accueil');
 }
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
-//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');  //Localhost 
+
+if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+    }elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
+    }
 try {
-    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
     $bdd;
 } catch (exception $e) {
     die('Erreur: ' . $e->getMessage());
@@ -422,7 +427,7 @@ function verifnewuser()
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/jpg" href="logo.jpg" />
+    <link rel="icon" type="image/jpg" href="img/logo.jpg" />
     <title>Pannel conseillers</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
