@@ -1,0 +1,34 @@
+RewriteEngine On
+#RewriteBase /
+
+# Rediriger toutes les requêtes vers index.php
+#RewriteRule ^(.*)$ index.php/$1 [L]
+
+# Réécrire l'URL pour masquer le chemin complet
+#RewriteCond %{HTTP_HOST} ^www\.WiseTreeBanque\.sio$ [NC]
+#RewriteRule ^(.*)$ BanqueProjetPro/ProjetProBanque/$1 [L]
+
+## Modifier l'IP pour avoir celui du serveur debian 10.206.237.9 (J'espere c ça popaul)
+#RewriteCond %{HTTP_HOST} ^10\.206\.237\.9$
+#RewriteRule ^WiseTreeBanque(.*)$ http://www.WiseTreeBanque.sio/$1 [R=301,L]
+
+
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME}\.php -f
+#RewriteRule ^(.*)$ $1.php [NC]
+
+# Réécrire les URL pour utiliser des noms de fichiers
+RewriteRule ^connexion$ index.php [NC]
+RewriteRule ^accueil$ lescomptes.php [NC]
+RewriteRule ^parametres$ settings.php [NC]
+RewriteRule ^votre-compte$ compte.php [NC]
+RewriteRule ^administration$ controlpannel.php [NC]
+RewriteRule ^nouveau-credit$ creationcredit.php [NC]
+RewriteRule ^vos-credits$ voscredits.php [NC]
+RewriteRule ^messagerie$ contact.php [NC]
+RewriteRule ^votre-historique$ depenses.php [NC]
+RewriteRule ^utilisateur$ viewusers.php [NC]
+
+# Renvoyer les erreurs 404 vers la page 404.php
+RewriteRule ^404$ 404.php [NC]
+ErrorDocument 404 /BanqueProjetPro/ProjetProBanque/404.php

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 23 mars 2023 à 10:05
+-- Généré le : jeu. 06 avr. 2023 à 09:25
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -22,12 +22,72 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
-
-
-
+-- --------------------------------------------------------
 
 --
+-- Structure de la table `users`
+--
 
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `userid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `nom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `prenom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `date_naissance` date NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `mail` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `tel` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `idconseiller` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `permissions` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`userid`),
+  KEY `FK_users_perms` (`permissions`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Structure de la table `actionlogs`
+--
+
+DROP TABLE IF EXISTS `actionlogs`;
+CREATE TABLE IF NOT EXISTS `actionlogs` (
+  `idaction` int NOT NULL AUTO_INCREMENT,
+  `typaction` int NOT NULL,
+  `actionuser` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`idaction`),
+  KEY `FK_credit_logsuser` (`actionuser`),
+  KEY `FK_credit_actionindex` (`typaction`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `actionsindex`
+--
+
+DROP TABLE IF EXISTS `actionsindex`;
+CREATE TABLE IF NOT EXISTS `actionsindex` (
+  `idaction` int NOT NULL AUTO_INCREMENT,
+  `libaction` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`idaction`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `actionsindex`
+--
+
+INSERT INTO `actionsindex` (`idaction`, `libaction`) VALUES
+(1, 'Crédit'),
+(2, 'Création nouvel utilisateur'),
+(3, 'Création nouveau compte'),
+(4, 'Création nouvel administrateur'),
+(5, 'Supprimer un compte'),
+(6, 'Supprimer un utilisateur'),
+(7, 'Supprimer un compte administrateur'),
+(8, 'Supprimer un compte banquier'),
+(9, 'Supprimer un compte conseiller'),
+(10, 'Supprimer un crédit');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `chat`
 --
 
@@ -43,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
   PRIMARY KEY (`idmsg`),
   KEY `FK_users_chat` (`envoyeurid`),
   KEY `FK_chat_conseiller` (`destinataireid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `chat`
@@ -54,7 +114,8 @@ INSERT INTO `chat` (`idmsg`, `envoyeurid`, `destinataireid`, `chat`, `daterdv`, 
 (2, '10000000000', '10000000002', 'ABOULE UN MAX DE MOULA', '2023-03-12 12:00:00', '2023-03-09 01:35:00', 1),
 (3, '10000000000', '10000000002', 'Bonjour donne des sous', '2023-03-25 10:22:00', '2023-03-09 08:07:00', 1),
 (4, '10000000000', '10000000002', 'ABOULE UN MAX DE MOULA', '2023-03-24 21:20:00', '2023-03-09 10:21:00', 1),
-(5, '10000000000', '10000000002', 'Aled', '2023-04-08 12:12:00', '2023-03-16 11:23:00', 1);
+(5, '10000000000', '10000000002', 'Aled', '2023-04-08 12:12:00', '2023-03-16 11:23:00', 1),
+(6, '10000000000', '10000000002', 'DONNE RDV !!', '2023-04-14 12:40:00', '2023-04-06 10:40:00', 3);
 
 -- --------------------------------------------------------
 
@@ -64,8 +125,8 @@ INSERT INTO `chat` (`idmsg`, `envoyeurid`, `destinataireid`, `chat`, `daterdv`, 
 
 DROP TABLE IF EXISTS `comptes`;
 CREATE TABLE IF NOT EXISTS `comptes` (
+  `userid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `RIB` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `userid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `BIC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'WSBNFRXX',
   `comptenom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `solde` float NOT NULL DEFAULT '20',
@@ -78,12 +139,12 @@ CREATE TABLE IF NOT EXISTS `comptes` (
 -- Déchargement des données de la table `comptes`
 --
 
-INSERT INTO `comptes` (`RIB`, `userid`, `BIC`, `comptenom`, `solde`, `decouvert_autorise`) VALUES
-('FR76 69420 10000000000 25', '10000000000', 'WSBNFRXX ', 'Courant', 11138400, 10000),
-('FR76 69420 10000000000 87', '10000000000', 'WSBNFRXX ', 'Etudiant', 20, 500),
-('FR76 69420 10000000001 06', '10000000001', 'WSBNFRXX ', 'Courant', 121528, 400),
-('FR76 69420 20639419637 65', '20639419637', 'WSBNFRXX ', 'Epargne', 3300, 0),
-('FR76 69420 77036964710 75', '77036964710', 'WSBNFRXX', 'Courant', 20, 100);
+INSERT INTO `comptes` (`userid`, `RIB`, `BIC`, `comptenom`, `solde`, `decouvert_autorise`) VALUES
+('10000000000', 'FR76 69420 10000000000 25', 'WSBNFRXX ', 'Courant', 11138400, 10000),
+('10000000000', 'FR76 69420 10000000000 87', 'WSBNFRXX ', 'Etudiant', 20, 500),
+('10000000001', 'FR76 69420 10000000001 06', 'WSBNFRXX ', 'Courant', 121528, 400),
+('20639419637', 'FR76 69420 20639419637 65', 'WSBNFRXX ', 'Epargne', 3300, 0),
+('77036964710', 'FR76 69420 77036964710 75', 'WSBNFRXX', 'Courant', 20, 100);
 
 -- --------------------------------------------------------
 
@@ -127,26 +188,7 @@ INSERT INTO `permissions` (`permissionid`, `permissionnom`) VALUES
 (3, 'Banquier'),
 (4, 'Administrateur');
 
--- --------------------------------------------------------
 
---
--- Structure de la table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `userid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `nom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `prenom` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `date_naissance` date NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `mail` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `tel` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `idconseiller` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `permissions` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`userid`),
-  KEY `FK_users_perms` (`permissions`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `users`
@@ -157,9 +199,9 @@ INSERT INTO `users` (`userid`, `nom`, `prenom`, `date_naissance`, `password`, `m
 ('10000000001', 'Vernus', 'Paul', '2002-04-16', '$2y$10$FCPsCXK4f/lpdPpFPtxFI.J7rJFKhfFUNAGU2L3Xj7N8r8Fj325qK', 'paulvernus@wisemail.com', '0782586136', '20639419637', 1),
 ('10000000002', 'Mocanu', 'Miruna', '2003-04-03', '$2y$10$FCPsCXK4f/lpdPpFPtxFI.J7rJFKhfFUNAGU2L3Xj7N8r8Fj325qK', 'mirunamocanu@wisemail.com', '0617780388', '0', 3),
 ('20639419637', 'Lavaux', 'Bastien', '2004-07-21', '$2y$10$EKimhRi0Otuo0jy5H2Edd.p/4GSraDqrTXbOF6l2zS2uKJXODZlaO', 'bastien.lavaux@wisemail.com', '0750076268', '10000000002', 2),
-('27886795685', 'TestAdmin', 'TestAdmin', '2023-03-11', '$2y$10$fc15f0lbMB8D/lnFI8Pfde4fw7/F7KpBFwwrEAAzOjkSYka3mdWlW', 'TestAdmin@TestAdmin', '+335114514', '20639419637\"', 4),
 ('32407958244', 'tets', 'Tst_8', '2023-03-24', '$2y$10$ry5TxHGXQeU.Hny.hESYIOx96W2qgZAceuE8.Ym7yh5b5rrWahudi', 'WiseTree@tree', '45454', '0', 1),
 ('39762984437', 'Testy', 'Test', '2023-03-15', '$2y$10$ujNHv9jzN1poUcm6n.fWWuvaSDM8.Aeyrua4C7Ueew6ud2hwf2RVa', 'tesy@tes', '+333532131', '20639419637', 1),
+('41157767050', 'Hawk', 'Mike', '2023-04-14', '$2y$10$DR.cTUYdS3FFWdobAaEbKe/eZcd2jb.5XDj6.a0VPQaA783Vd9vSS', 'Mike.hawk@gmail.com', '+333532131', '20639419637\"', 1),
 ('42855391884', 'test', 'test', '2023-03-24', '$2y$10$FCPsCXK4f/lpdPpFPtxFI.J7rJFKhfFUNAGU2L3Xj7N8r8Fj325qK', 'test@mail', '+335114514', '0', 1),
 ('71043740740', 'Doutaz', 'Mathys', '2004-05-15', '$2y$10$QhqtlhuX4z.O.rybQQqKh.JPZDKsTyqz4AA2m9ijt30ZjFm9crqjO', 'mathysdoutaz@wisemail.com', '0783775444', '', 3),
 ('77036964710', 'Cardeillac', 'Cyril', '2002-12-09', '$2y$10$fKJSrP/1tk7GkFJgKMK9wObfzuZcSwKm1puUV2Aic2pHbV3IWhP5i', 'cyril@wisemail.com', '+33 601470917', '20639419637\"', 1);
@@ -280,6 +322,13 @@ INSERT INTO `virements` (`idvirement`, `id_destinataire`, `id_envoyeur`, `valeur
 --
 
 --
+-- Contraintes pour la table `actionlogs`
+--
+ALTER TABLE `actionlogs`
+  ADD CONSTRAINT `FK_credit_actionindex` FOREIGN KEY (`typaction`) REFERENCES `actionsindex` (`idaction`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `FK_credit_logsuser` FOREIGN KEY (`actionuser`) REFERENCES `credits` (`conseillerid`);
+
+--
 -- Contraintes pour la table `chat`
 --
 ALTER TABLE `chat`
@@ -291,13 +340,6 @@ ALTER TABLE `chat`
 --
 ALTER TABLE `comptes`
   ADD CONSTRAINT `FK_users_comptes` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`);
-
---
--- Contraintes pour la table `credits`
---
-ALTER TABLE `credits`
-  ADD CONSTRAINT `FK_compte_credit` FOREIGN KEY (`compteid`) REFERENCES `comptes` (`RIB`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_user_conseiller` FOREIGN KEY (`conseillerid`) REFERENCES `users` (`userid`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `users`

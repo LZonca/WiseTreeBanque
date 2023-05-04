@@ -1,17 +1,13 @@
 <?php
 session_start();
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
-
-
-function loginrequest()
-{
-    try{
-    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat');
+if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-
-    }catch(exception $e){
-        die('Erreur: '. $e->getMessage());
-    }
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}
+function loginrequest($bdd)
+{
     $user = $_POST['userid'];
     $pass = $_POST['password'];
     $requete = "SELECT * FROM users WHERE userid = ?;";
@@ -26,7 +22,7 @@ function loginrequest()
             if(password_verify($pass, $data['password']))
             {
                 $_SESSION['userid'] = $_POST['userid'];
-                header('Location: lescomptes.php');
+                header('Location: accueil');
             }else{
                 $err = 1;
             }
@@ -37,51 +33,42 @@ function loginrequest()
     }
 }
 
-function checklogin()
+function checklogin($bdd)
 {
     $err = 0;
     if (isset($_POST['login'])) {
         if (isset($_POST['password']) && $_POST['password'] != '' && strlen($_POST['password']) >= 6) {
             if (isset($_POST['userid']) && $_POST['userid'] != '' && strlen($_POST['userid']) == 11) {
-                loginrequest();
+                loginrequest($bdd);
             } else {
                 $err = 1;
             }
-        }else
-        {
-            $err = 2;
         }
-        return $err;
-    }  
+    }
 }
-checklogin();
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/jpg" href="logo.jpg" />
-        <title>Connexion</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    
-        <link rel="stylesheet" type="text/css" href="css/relook.css">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpg" href="logo.jpg" />
+    <title>Connexion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/relook.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
+</head>
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
+<body>
 
 
-        <style>
-        </style>
-    </head>
-
-    <body>
         <div class="">
             <div class="row">
             <div class="col" border: solid>
@@ -154,7 +141,9 @@ checklogin();
                                 echo "</div>";
                             }
                         ?></div>
-            </div>
+           </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

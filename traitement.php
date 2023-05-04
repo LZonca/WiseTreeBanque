@@ -1,6 +1,16 @@
 <?php
-//$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+session_start();
+
+if(!isset($_SESSION))
+    {
+        header('Location: connexion');
+    }
+
+    if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+    }
 
 try{
     $bdd;
@@ -9,6 +19,7 @@ try{
     die('Erreur connexion: '. $e->getMessage());
 }
 
+unset($_SESSION['usermessage']);
 
 function RIBrequest($bdd)
     {
@@ -21,11 +32,11 @@ function RIBrequest($bdd)
     }
 
 function transfertrequete($bdd){
-    date_default_timezone_set('Europe/Paris');
-    $date = date('d-m-y h:i:s');
+
     $envoyeur = RIBrequest($bdd);
     $destinataire = $_POST['destinataire'];
     $valeur = $_POST['virement'];
+    $raison = $_POST['raison'];
 
     $destinatairesolde = "SELECT * FROM comptes WHERE RIB = ?;";
     $destinatairesolde = $bdd->prepare($destinatairesolde); 
@@ -36,9 +47,9 @@ function transfertrequete($bdd){
     $usersolde = $bdd->prepare($usersolde); 
     $usersolde->execute(array(RIBrequest($bdd)));
     $soldeexpe = $usersolde->fetch();
-    $requetedata = 'INSERT INTO virements VALUES (NULL, ?, ?, ?, ?)';
+    $requetedata = 'INSERT INTO virements (id_destinataire, id_envoyeur, valeur, raison) VALUES (?, ?, ?, ?)';
     $requetedata = $bdd->prepare($requetedata); 
-    $requetedata->execute(array($destinataire, $envoyeur, $valeur, $date));
+    $requetedata->execute(array($destinataire, $envoyeur, $valeur));
     
     $destinatairerequete = "UPDATE comptes SET solde = ? WHERE RIB = ?;";
     $destinatairerequete  = $bdd->prepare($destinatairerequete); 
@@ -79,36 +90,71 @@ function verifdest($bdd, $dest){
     }
 }
 
-function checkvirement($bdd)
-{
-    $err = 0;
+function checkvirement($bdd) {
     if (isset($_POST['send'])) {
-        if (isset($_POST['virement']) && $_POST['virement'] != '' && $_POST['virement'] >= 0 && is_numeric($_POST['virement'])) {
-            if (isset($_POST['destinataire']) && $_POST['destinataire'] != '' && strlen($_POST['destinataire']) >= 24 ) {
-                if($_POST['destinataire'] != RIBrequest($bdd))
-                {
-                    if(verifdest($bdd, $_POST['destinataire']))
-                    {
-                        if(verifsolde($bdd)){
-                            transfertrequete($bdd);
-                            $err = 0; // Effectuer transfert
+        if (isset($_POST['virement']) && $_POST['virement'] != '' && $_POST['virement'] > 0 && is_numeric($_POST['virement'])) {
+            if (isset($_POST['destinataire'])) {
+                if ($_POST['destinataire'] != '' && strlen($_POST['destinataire']) >= 24) {
+                    if ($_POST['destinataire'] != RIBrequest($bdd)) {
+                        if (verifdest($bdd, $_POST['destinataire'])) {
+                            if (verifsolde($bdd)) {
+                                transfertrequete($bdd);
+                                $_SESSION['usermessage'] = "<p class='alert alert-success'>Le virement a été effectué avec succès!<p>"; // Effectuer transfert
+                            } else {
+                                $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Pas assez d\'argent sur le compte.</b></p>';
+                            }
+                        }else{
+                                $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Compte inconnu</b></p>';
+                            }
+                        } else {
+                            $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Vous ne pouvez pas envoyer de l\'argent vers le compte d\'origine</b></p>';
                         }
-                    }else{
-                        $err = 4; // Destinataire inconnu
-                    }
-                }else{
-                    $err = 3; // Destinataire = emetteur
+                     } else{
+                            $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Compte inconnu</b></p>';
+                } }else {
+                    $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Veuillez entrer l\'IBAN du destinataire.</b></p>'; // Destinataire incorrect
                 }
             } else {
-                $err = 1; // Destinataire incorrect
+                $_SESSION['usermessage'] = '<p class="alert alert-danger"><b>Veuillez entrer une somme valide à transférer.<br> (La somme ne peut pas etre négative !)</b></p>';
             }
-        }else
-        {
-            $err = 2; // Mauvaise valeur
         }
-        return $err;
-    }  
+    }
+
+function addcredit($bdd){
+
+    $crediteur = $_SESSION['compteactuel'];
+
+    date_default_timezone_set('Europe/Paris');
+    $date = date('d-m-y');
+
+    $creditrequete = "INSERT INTO credits (compteid, soldepret, remboursement , echeance, date, interet, valeur_remboursment , conseillerid, typeprelevement, raison) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    $creditrequete= $bdd->prepare($creditrequete);
+    $creditrequete->execute(array($crediteur, $_POST['valeur'], $_POST['valeurremboursment'],$_POST['valeur'] * (1 + $_POST['valeur']/100), $_POST['echeance'], $date, $_POST['interet'], $_SESSION['userid'],$_POST['prelevement'], $_POST['raisonpret']));
+    
+    $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+    $logrequete= $bdd->prepare($logrequete);
+    $logrequete->execute(array(1, $_SESSION['userid']));
+
+    $usersolde = "SELECT * FROM comptes WHERE RIB = ?;";
+    $usersolde = $bdd->prepare($usersolde); 
+    $usersolde->execute(array($_SESSION['compteactuel']));
+    $soldecrediteur = $usersolde->fetch();
+
+    $destinatairerequete = "UPDATE comptes SET solde = ? WHERE RIB = ?;";
+    $destinatairerequete  = $bdd->prepare($destinatairerequete); 
+    $destinatairerequete ->execute(array($_POST['valeur'] + $soldecrediteur['solde'], $_SESSION['compteactuel']));
+
+    $_SESSION['usermessage'] = "<p class='alert alert-success'>Le crédit a été effectué avec succès!<p>";
 }
 
-sleep(0.5);
-header('Location: depenses.php');
+if(isset($_POST['createpret'])){
+    addcredit($bdd);
+    header('Location: nouveau-credit');
+}
+
+if(isset($_POST['send']))
+{
+    checkvirement($bdd);
+    header('Location: votre-historique');
+}
+?>

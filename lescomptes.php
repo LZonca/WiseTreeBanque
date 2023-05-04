@@ -1,46 +1,38 @@
 <?php
     session_start();
-    //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root',''); // Localhost
+    if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+    }
     if(!isset($_SESSION['userid']))
     {
-        header('Location: index.php');
+        header('Location: connexion');
     }
 
     if(isset($_POST['Deco'])){
-        header('Location: logout.php');
+        header('Location: logout');
     }
     
     if(isset($_POST['parametres'])){
-        header('Location: settings.php');
-    }
-
-    if(isset($_POST['contact'])){
-        header('Location: contact.php');
+        header('Location: parametres');
     }
 
     if(isset($_POST['compteactuelnom'])){
         $_SESSION['compteactuel'] = $_POST['compteactuel'];
         $_SESSION['compteactuelnom'] = $_POST['compteactuelnom'];
-        header('Location: compte.php');
+        header('Location: votre-compte');
     }
 
-    if(isset($_POST['admin'])){
-        header('Location: panneladmin.php');
-    }
-
-    if(isset($_POST['conseil'])){
-        header('Location: pannelconseiller.php');
-    }
-
-    if(isset($_POST['banquier'])){
-        header('Location: pannelbanquier.php');
+    if(isset($_POST['control'])){
+        header('Location: administration');
     }
 
     if(isset($_POST['contact'])){
-        header('Location: contact.php');
+        header('Location: messagerie');
     }
     
+    unset($_SESSION['usermessage']);
     function rankrequest($bdd)
     {
         try{
@@ -56,13 +48,13 @@
         $data = $requete->fetch();
         if ($data['permissions'] == 4) {
             // Afficher le bouton d'administration
-            echo "<button name='admin' class='btn btn-info'>Accéder au panneau d'administration !</button>";
+            echo "<button name='control' class='btn btn-info'>Accéder au panneau d'administration !</button>";
         }
         elseif($data['permissions'] == 2){
-            echo "<button name='conseil' class='btn btn-info'>Accéder aux outils conseiller !</button>";
+            echo "<button name='control' class='btn btn-info'>Accéder aux outils conseiller !</button>";
         }
         elseif($data['permissions'] == 3){
-            echo "<button name='banquier' class='btn btn-info'>Accéder aux outils banquier !</button>";
+            echo "<button name='control' class='btn btn-info'>Accéder aux outils banquier !</button>";
         }
     }
     
@@ -107,6 +99,16 @@
             die('Erreur nom compte: '. $e->getMessage());
         }
         $user = $_SESSION['userid'];
+
+        $countcomptes = "SELECT COUNT(*) FROM comptes WHERE userid = ?";
+        $countcomptes = $bdd->prepare($countcomptes); 
+        $countcomptes->execute(array($user));
+        $compteur =  $countcomptes->fetchColumn();
+
+        if($compteur == 0){
+            echo "<h2 style='color: black; padding-top: 5px'>Vous n'avez aucun compte, contactez votre conseiller pour en ouvrir un !</h2>";
+        }else{
+
         $requetedata = "SELECT * FROM comptes WHERE userid = ? ";
         $requetedata = $bdd->prepare($requetedata); 
         $requetedata->execute(array($user));
@@ -115,13 +117,15 @@
             
             echo "<div class='compte'>";
             echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
-            echo "<form method='POST' action='lescomptes.php'>";
-            echo "<input type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
-            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>"; 
+            echo "<form method='POST' action='accueil'>";
+            echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>";
+            echo "<input class='btn btn-primary' type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 
+            
             echo"</form>";
             echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
             echo "</div>";
         }
+    }
     }
 
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
@@ -149,7 +153,7 @@ function messagecount($bdd){
     </head>
     <body>
             <div class="navbar-nav">
-                <form method="POST" action="lescomptes.php">
+                <form method="POST" action="accueil">
                     <button name="Deco" class="btn btn-secondary">Deconnexion</button>
                     <button name="parametres" class="btn btn-secondary">Paramètres</button>
                     <button name='contact' class='btn btn-primary'>Messagerie<span class="badge bg-danger ms-2"><?php messagecount($bdd) ?></span></button>  
@@ -173,5 +177,4 @@ function messagecount($bdd){
         </div>
     </div> 
     </body>
-
 </html>
