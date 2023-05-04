@@ -2,7 +2,7 @@
 session_start();
 //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
 $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
-// var_dump($_SESSION['userid']); // A enlever si nécéssaire
+// var_dump($_SESSION); // A enlever si nécéssaire
 
 try{
     $bdd;

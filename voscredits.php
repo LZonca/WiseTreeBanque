@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//var_dump($_SESSION);
 if (!isset($_SESSION)) {
     header('Location: connexion');
 }
@@ -19,20 +19,19 @@ unset($_SESSION['usermessage']);
 
 function checkcredits($bdd)
 {
-    $user = $_SESSION['compteactuel'];
-
-    $requetedata = "SELECT * FROM credits WHERE compteid = ?";
-    $requetedata = $bdd->prepare($requetedata);
-    $requetedata->execute(array($user));
-
+    $compte = $_SESSION['compteactuel'];
     $countcredits = "SELECT COUNT(*) FROM credits WHERE compteid = ?";
     $countcredits = $bdd->prepare($countcredits);
-    $countcredits->execute(array($user));
+    $countcredits->execute(array($compte));
     $compteur =  $countcredits->fetchColumn();
 
     if ($compteur == 0) {
         echo "<h2>Aucun crédit en cours</h2>";
     } else {
+    
+            $requetedata = "SELECT * FROM credits WHERE compteid = ?";
+            $requetedata = $bdd->prepare($requetedata);
+            $requetedata->execute(array($compte));
 
 ?>
         <table>
@@ -45,7 +44,7 @@ function checkcredits($bdd)
             <th>Periodicité des prélèvements</th>
             <th>Date du crédit</th>
             <th>Prochain prélèvement</th>
-    <?php }
+    <?php 
     while ($data = $requetedata->fetch()) {
         //if(strtotime($data['echeance']) > date('d-m-y')){
 
@@ -62,7 +61,7 @@ function checkcredits($bdd)
         echo "<td>" . $data['date'] . "</td></strike>";
         // Ajouter les prélèvements
         echo "</tr>";
-    }echo "</table>";
+    }echo "</table>";}
 }
 
 if (isset($_POST['comptes'])) {

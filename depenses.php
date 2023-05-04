@@ -4,7 +4,7 @@ session_start();
 //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
 $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
 //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');
-
+//var_dump($_SESSION); // A enlever si nécéssaire
 try{
     $bdd;
 
@@ -87,9 +87,10 @@ function historique($bdd){
 function checkcomptes($bdd){
 
     $compte = $_SESSION['compteactuelnom'];
-    $requetedata = "SELECT * FROM comptes WHERE comptenom = ?";
+    $RIB = $_SESSION['compteactuel'];
+    $requetedata = "SELECT * FROM comptes WHERE comptenom = ? AND RIB = ?";
     $requetedata = $bdd->prepare($requetedata); 
-    $requetedata->execute(array($compte));
+    $requetedata->execute(array($compte, $RIB));
     $data = $requetedata->fetch();
     echo "<h3>Votre solde: <u>" . $data['solde'] . "€</u></h4>";
     echo "<h3>IBAN: " . htmlspecialchars(strtoupper($data['RIB'])) . "</h3>";
