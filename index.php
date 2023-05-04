@@ -59,45 +59,89 @@ function checklogin($bdd)
     <title>Connexion</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <style>
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/relook.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container">
-        <h1>
-            WiseTreeBank
-        </h1>
-        <?php if (isset($_SESSION['usermessage'])) {
-            echo $_SESSION['usermessage'];
-        } ?>
-        <div class="row">
-            <div class="col"></div>
+
+
+        <div class="">
+            <div class="row">
             <div class="col" border: solid>
-                <h2 id="connexion_title">
-                    Connectez-vous:
-                </h2>
-                <form action="connexion" method="post">
-                    <label for="userid">Numéro de compte*:</label><br>
-                    <input type="text" name="userid" placeholder="04123456789" pattern="[0-9]{11}" class="form-control" required>
-                    <small>Format: 04123456789</small><br><br>
-
-                    <label for="password">Code Personnel*:</label><br>
-                    <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" class="form-control" required>
-                    <small>Format: 123456</small><br>
-
-                    <button name="login" class="btn btn-primary">Se connecter</button>
-                </form>
-                <p id="obligatory">
-                    * : Champ obligatoire
+    <div class="frame-1">
+      <h1 class="surname">WISE TREE BANK</h1>
+    <form action="index.php" method="post" id="formulaire">
+      <div class="numero-de-compte">NUMERO DE COMPTE*:</div>
+      <input type="text" name="userid" placeholder=" Exemple: 04123456789" pattern="[0-9]{11}" class="form-control" required >
+      <div class="overlap-groupoverlap">
+        <div class="exempleinter-medium-black-24px"></div>
+      </div>
+      <div class="code-personnel">CODE PERSONNEL*:</div>
+    <input type="password" id="pwd" name="password" placeholder=" Exemple: 123456" pattern="[0-9]{6}" class="form-control" required>
+      <div class="overlap-group1overlap">
+        <div class="exempleinter-medium-black-24px"></div>
+      </div>
+      <div class="conne-container">
+        <span class="inter-normal-white-15px"></span>
+      </div>
+           <p align="center"><button name="login" class="se-connecter">Se connecter</button>
+            <p class="champ-obligatoire">
+                        * : Champ obligatoire
+                    </p>
                 </p>
-                <?php
-                if (isset($_POST['login'])) {
-                    checklogin($bdd);
-                }
-                ?>
-            </div>
-            <div class="col"></div>
+                   
+    </div>
+                       
+                   
+                    </form>
+                        <?php
+                            if(isset($_POST['login']))
+                            {
+                                echo "<div class = 'error_box'>";
+                                switch(checklogin())
+                                {
+                                    case 1:
+                                    {
+                                        
+                                        echo '<h2 class ="error">L\'identifiant ne respecte pas les conditions !</h2>';
+                                        
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        echo "<div class = 'error_box'>";
+                                        echo '<h2 class ="error">Le mot de passe ne respecte pas les conditions ! </h2>';
+                                        echo "</div>";
+                                        break;
+                                    }
+                                }
+                                switch(loginrequest())
+    
+                                {
+                                    case 1:
+                                    {
+                                        echo "<div class = 'error_box'>";
+                                        echo '<h2 class ="error">Le mot de passe incorrect ! </h2>';
+                                        echo "</div>";
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        echo "<div class = 'error_box'>";
+                                        echo '<h2 class ="error">Utilisateur inconnu ! </h2>';
+                                        echo "</div>";
+                                        break;
+                                    }
+
+                                }
+                                echo "</div>";
+                            }
+                        ?></div>
+           </div>
         </div>
     </div>
 </body>
