@@ -376,7 +376,6 @@ function verifnewuser()
             if (isset($_POST['email']) && checkmail($_POST['email'])) {
                 if (isset($_POST['datenaissance'])) {
                     if (isset($_POST['tel']) && $_POST['tel'] != "") {
-                        echo "ca marche";
                         return True;
                     } else {
                         $_SESSION['usermessage'] = "<p class='alert alert-danger'>Numero de téléphone non rempli !</p>";
@@ -394,6 +393,14 @@ function verifnewuser()
         $_SESSION['usermessage'] = "<p class='alert alert-danger'> Le nom est mal rempli !</p>";
     }
 }
+
+
+    if (isset($_POST['adduser'])) {
+        if(verifnewuser()){
+            create_user($bdd);
+        }
+    }
+    
 ?>
 
 <!DOCTYPE HTML>
@@ -440,6 +447,7 @@ function verifnewuser()
             <div class="loginform">
                 <?php if (isset($_SESSION['usermessage'])) {
                     echo $_SESSION['usermessage'];
+                    unset($_SESSION['usermessage']);
                 } ?>
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                     <div class="accordion-item">
@@ -472,15 +480,10 @@ function verifnewuser()
                                     checkranks($bdd);
                                     ?>
 
-                                    <button name="adduser" class="btn btn-primary">Ajouter un compte</button>
+                                    <button name="adduser" class="btn btn-primary">Ajouter un utilisateur</button>
                                 </form>
                                 <?php
-                                if (isset($_POST['adduser'])) {
-                                    if(verifnewuser()){
-                                        create_user($bdd);
-                                    }
-                                }
-                                displayusers($bdd);
+                                    displayusers($bdd);
                                 ?>
                             </div>
                         </div>

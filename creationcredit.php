@@ -70,6 +70,7 @@ if(isset($_POST['comptes'])){
             echo '<br/>';
             if(isset($_SESSION['usermessage'])){
                 echo $_SESSION['usermessage'];
+                unset($_SESSION['usermessage']);
             }
             
         ?>

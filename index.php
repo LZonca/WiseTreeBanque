@@ -44,8 +44,10 @@ function checklogin($bdd)
             if (isset($_POST['userid']) && $_POST['userid'] != '' && strlen($_POST['userid']) == 11) {
                 loginrequest($bdd);
             } else {
-                $err = 1;
+                $_SESSION['usermessage'] = "<p class='alert alert-danger'>Utilisateur incorrect</p>";
             }
+        }else{
+            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Mauvais mot de passe</p>";
         }
     }
 }
@@ -77,7 +79,10 @@ function checklogin($bdd)
             <div class="col" border: solid>
     <div class="frame-1">
       <h1 class="surname">WISE TREE BANK</h1>
-    <form action="index.php" method="post" id="formulaire">
+      <?php if (isset($_SESSION['usermessage'])) {
+            echo $_SESSION['usermessage'];
+        } ?>
+    <form action="connexion" method="post" id="formulaire">
       <div class="numero-de-compte">NUMERO DE COMPTE*:</div>
       <input type="text" name="userid" placeholder=" Exemple: 04123456789" pattern="[0-9]{11}" class="form-control" required >
       <div class="overlap-groupoverlap">
@@ -101,49 +106,12 @@ function checklogin($bdd)
                        
                    
                     </form>
-                        <?php
-                            if(isset($_POST['login']))
-                            {
-                                echo "<div class = 'error_box'>";
-                                switch(checklogin())
-                                {
-                                    case 1:
-                                    {
-                                        
-                                        echo '<h2 class ="error">L\'identifiant ne respecte pas les conditions !</h2>';
-                                        
-                                        break;
-                                    }
-                                    case 2:
-                                    {
-                                        echo "<div class = 'error_box'>";
-                                        echo '<h2 class ="error">Le mot de passe ne respecte pas les conditions ! </h2>';
-                                        echo "</div>";
-                                        break;
-                                    }
-                                }
-                                switch(loginrequest())
-    
-                                {
-                                    case 1:
-                                    {
-                                        echo "<div class = 'error_box'>";
-                                        echo '<h2 class ="error">Le mot de passe incorrect ! </h2>';
-                                        echo "</div>";
-                                        break;
-                                    }
-                                    case 2:
-                                    {
-                                        echo "<div class = 'error_box'>";
-                                        echo '<h2 class ="error">Utilisateur inconnu ! </h2>';
-                                        echo "</div>";
-                                        break;
-                                    }
-
-                                }
-                                echo "</div>";
-                            }
-                        ?></div>
+                    <?php
+                if (isset($_POST['login'])) {
+                    checklogin($bdd);
+                }
+                ?>
+                </div>
            </div>
         </div>
     </div>
