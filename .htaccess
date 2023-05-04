@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /
+RewriteBase /WiseTreeBanque
 
 # Rediriger toutes les requêtes vers index.php
 #RewriteRule ^(.*)$ index.php/$1 [L]
