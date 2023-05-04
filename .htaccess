@@ -31,4 +31,4 @@ RewriteRule ^utilisateur$ viewusers.php [NC]
 
 # Renvoyer les erreurs 404 vers la page 404.php
 RewriteRule ^404$ 404.php [NC]
-ErrorDocument 404 /BanqueProjetPro/ProjetProBanque/404.php
+ErrorDocument 404 /var/www/html/404.php
