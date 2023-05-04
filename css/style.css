@@ -20,9 +20,11 @@
 
 body{
     background-image: url("../background.png");
-    height: 100%;
-    background-position-y: 40%;
-    background-position-x: 50%;
+    background-repeat: no-repeat;
+    height: 200px;
+    background-position-y: bottom 40%;
+    background-position-x: 60%;
+    background-size:1500px;
     text-align: center;
 }
 
@@ -40,7 +42,7 @@ h1 {
 }
 
 h2{
-    font-size: 0.85vw;
+    font-size: 0.8vw;
     text-align: center;
 }
 
@@ -102,15 +104,13 @@ button{
     
 }
 
-
-
 .form-container{
     text-align: center;
     border-style: solid;
     border-radius: 5px;
     width: fit-content;
     margin: auto;
-    padding: 5px;
+    padding: 10px;
 }
 
 .data-container{
@@ -147,9 +147,7 @@ div.login-container h1 {
     opacity: 1;
 }
 
-.btn.btn-primary{
-    margin: 5px;
-}
+
 
 .btn.btn-tertiary{
     margin: 5px;
@@ -159,3 +157,11 @@ div.login-container h1 {
     margin: 5px;
 }
 
+#formulaire {
+
+    margin-top: 100px;
+    margin-bottom: 1052px;
+    margin: auto;
+    width: 700px;
+    border-radius: 20px;
+}
