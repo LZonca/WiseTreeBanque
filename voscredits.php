@@ -6,8 +6,11 @@ if (!isset($_SESSION)) {
 }
 
 
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');  //Localhost 
-//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}
 
 try {
     $bdd;

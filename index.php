@@ -1,8 +1,11 @@
 <?php
 session_start();
 // var_dump($_SESSION['userid']); // A enlever si nécéssaire
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
-
+if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}
 function loginrequest($bdd)
 {
     $user = $_POST['userid'];
@@ -76,12 +79,12 @@ function checklogin($bdd)
                 </h2>
                 <form action="connexion" method="post">
                     <label for="userid">Numéro de compte*:</label><br>
-                    <input type="text" name="userid" placeholder="04123456789" pattern="[0-9]{11}" class="form-control" required><br>
-                    <small>Format: 04123456789</small><br>
+                    <input type="text" name="userid" placeholder="04123456789" pattern="[0-9]{11}" class="form-control" required>
+                    <small>Format: 04123456789</small><br><br>
 
                     <label for="password">Code Personnel*:</label><br>
-                    <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" class="form-control" required><br>
-                    <small>Format: 123456</small><br><br>
+                    <input type="password" id="pwd" name="password" placeholder="123456" pattern="[0-9]{6}" class="form-control" required>
+                    <small>Format: 123456</small><br>
 
                     <button name="login" class="btn btn-primary">Se connecter</button>
                 </form>

@@ -13,9 +13,9 @@ RewriteEngine On
 #RewriteRule ^WiseTreeBanque(.*)$ http://www.WiseTreeBanque.sio/$1 [R=301,L]
 
 
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^(.*)$ $1.php [NC]
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME}\.php -f
+#RewriteRule ^(.*)$ $1.php [NC]
 
 # Réécrire les URL pour utiliser des noms de fichiers
 RewriteRule ^connexion$ index.php [NC]

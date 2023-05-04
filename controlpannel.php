@@ -8,8 +8,11 @@ if (!isset($_SESSION['userid'])) {
 if (isset($_POST['lescomptes'])) {
     header('Location: accueil');
 }
-$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
-//$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','wisetree');  //Localhost 
+if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}
 try {
     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
     $bdd;
