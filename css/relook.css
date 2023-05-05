@@ -74,7 +74,7 @@
   text-align: center;
   color: white;
   font-family: 'IM Fell Double Pica', serif;
-  font-size: 25px;
+  font-size: 3vw;
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
@@ -107,11 +107,11 @@
 
 .surname {
 
-  padding-top: 15%;
+  padding-top: 11%;
   text-align: center;
   color: white;
   font-family: 'IM Fell Double Pica', serif;
-  font-size: 50px;
+  font-size: 5vw;
   font-weight: 406;
   letter-spacing: 0;
   line-height: normal;
@@ -147,7 +147,7 @@
   text-align: center;
   color: white;
   font-family: 'IM Fell Double Pica', serif;
-  font-size: 25px;
+  font-size: 3vw;
   font-weight: 408;
   letter-spacing: 0;
   line-height: normal;
