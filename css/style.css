@@ -19,12 +19,10 @@
 }
 
 body{
-    background-image: url("../background.png");
-    background-repeat: no-repeat;
-    height: 200px;
-    background-position-y: bottom 40%;
-    background-position-x: 60%;
-    background-size:1500px;
+    background-image: url("../img/background.png");
+    height: 100%;
+    background-position-y: 40%;
+    background-position-x: 50%;
     text-align: center;
 }
 

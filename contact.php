@@ -1,11 +1,13 @@
 <?php
 
 session_start();
-    
+
 if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+    $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
 }
 
 try {
@@ -85,7 +87,7 @@ function displaymessage()
 {
     global $bdd;
     $user = $_SESSION['userid'];
-    $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
+    $requetedata = "SELECT COUNT(*) FROM chat WHERE destinataireid = ?";
     $requetedata = $bdd->prepare($requetedata);
     $requetedata->execute(array($user));
 
@@ -93,6 +95,12 @@ function displaymessage()
     $requete = $bdd->prepare($requete);
     $requete->execute(array($user));
     $data = $requete->fetch();
+
+if($compteur == 0){
+    $_SESSION['usermessage'] = "Aucun message à afficher.";
+}else{
+
+
 
     while ($datamsg = $requetedata->fetch()) {
         echo "<h2>" . $data['prenom'] . " " . $data['nom'] . " souhaite planifier un rendez-vous à " . $datamsg['daterdv'] . " | Message: " . $datamsg['chat'] .
@@ -107,6 +115,7 @@ function displaymessage()
         }
 
         echo "</h2><br>";
+    }
     }
 
 
@@ -181,6 +190,9 @@ function displaymessage()
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <style>
+            label{
+                color: white;
+            }
         </style>
     </head>
 
@@ -194,26 +206,35 @@ function displaymessage()
         <div class="container">
             <h1>
                 WiseTreeBank - Contact
-            </h1>
-            <?php
-                displaymessage();
-            ?>
-            <div class='chat-box'>
+            </p>
+            <p>Vos messages:</p>
+                <?php if (isset($_SESSION['usermessage'])) {
+                    echo $_SESSION['usermessage'];
+                } ?>
+                
+                <?php
+                    displaymessage();
+                ?></div><br>
+
+            <div class='form-container'>
                 <?php
 
                 if (isset($_POST['submit'])) {
                     messagerequest($bdd);
                 }
                 ?>
-            </div>
-            <form method="POST" action="messagerie">
-                <div class="form-group">
-                    <input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>
-                    <input type="datetime-local" name="rdvtime" class="form-control" min=" <?= date('y-m-d h:i') ?>">
-                    <button name="submit" class="btn btn-primary">Envoyer le message</button>
-                </div>
-            </form>
 
+                <form method="POST" action="messagerie">
+                    <div class="form-group">
+                        <label for='usermessage'>Raison du rendez-vous: </label><br>
+                        <input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>
+                        <label for='rdvtime'>Heure du rendez-vous: </label><br>
+                        <input type="datetime-local" name="rdvtime" class="form-control" min=" <?= date('y-m-d h:i') ?>"><br>
+                        <button name="submit" class="btn btn-primary">Envoyer le message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         </div>
         </div>
     </body>

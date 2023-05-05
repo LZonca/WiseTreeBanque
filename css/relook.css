@@ -4,7 +4,7 @@
 
 .frame-1 {
   align-items: center;
-  background-image: url("../background.png");
+  background-image: url("../img/background.png");
   background-size: cover;
   background-position: center;
   border: 1px none;
@@ -74,7 +74,7 @@
   text-align: center;
   color: white;
   font-family: 'IM Fell Double Pica', serif;
-  font-size: 3vw;
+  font-size: 25px;
   font-weight: 400;
   letter-spacing: 0;
   line-height: normal;
@@ -107,11 +107,11 @@
 
 .surname {
 
-  padding-top: 11%;
+  padding-top: 15%;
   text-align: center;
   color: white;
   font-family: 'IM Fell Double Pica', serif;
-  font-size: 5vw;
+  font-size: 50px;
   font-weight: 406;
   letter-spacing: 0;
   line-height: normal;
@@ -147,7 +147,7 @@
   text-align: center;
   color: white;
   font-family: 'IM Fell Double Pica', serif;
-  font-size: 3vw;
+  font-size: 25px;
   font-weight: 408;
   letter-spacing: 0;
   line-height: normal;
