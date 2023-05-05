@@ -96,12 +96,6 @@ function displaymessage()
     $requete->execute(array($user));
     $data = $requete->fetch();
 
-if($compteur == 0){
-    $_SESSION['usermessage'] = "Aucun message à afficher.";
-}else{
-
-
-
     while ($datamsg = $requetedata->fetch()) {
         echo "<h2>" . $data['prenom'] . " " . $data['nom'] . " souhaite planifier un rendez-vous à " . $datamsg['daterdv'] . " | Message: " . $datamsg['chat'] .
             "<small> - Envoyé à " . $datamsg['time'] . "</small>";
@@ -115,7 +109,6 @@ if($compteur == 0){
         }
 
         echo "</h2><br>";
-    }
     }
 
 
@@ -190,9 +183,6 @@ if($compteur == 0){
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <style>
-            label{
-                color: white;
-            }
         </style>
     </head>
 
