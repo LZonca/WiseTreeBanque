@@ -50,7 +50,6 @@
             echo '<td>' . $data['date_naissance'] . '</td>';
             echo '<td>' . $data['idconseiller'] . '</td>';
             echo '<td>' . $data['permissions'] . '</td>';
-            echo '<td>';
     
             // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
             if($data['permissions'] >=3){

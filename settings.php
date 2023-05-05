@@ -52,6 +52,11 @@ function updatepass($bdd)
         }
     }
 }
+    if(isset($_POST['changemdp']))
+    {
+        updatepass($bdd);
+    }
+
 
 ?>
 
@@ -74,6 +79,10 @@ function updatepass($bdd)
                 </div>
             <div class="container">
                 <h2><u>Vos paramètres:</u></h2>
+                <?php if(isset($_SESSION['usermessage'])){
+                echo $_SESSION['usermessage'];
+                unset($_SESSION['usermessage']);
+            }?>
                     <form method='POST' action='parametres'>
                         <label for="mdp">Mot de passe actuel</label><br><br>
                         <input type="password" name="mdp" placeholder="Mot de passe actuel" class="form-control" required><br><br>
@@ -83,12 +92,7 @@ function updatepass($bdd)
                         <input type="password" name="mdprepeat" placeholder="Répéter le nouveau mot de passe" class="form-control" required><br><br>
                         <button name='changemdp' class="btn btn-primary">Changer de mot de passe</button>
                     </form>
-                    <?php
-                        if(isset($_POST['changemdp']))
-                        {
-                            updatepass($bdd);
-                        }
-                    ?>
+                    
                 </div>
             </div>
         </div> 
