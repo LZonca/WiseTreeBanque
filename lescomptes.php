@@ -116,7 +116,7 @@
         {
             
             echo "<div class='compte'>";
-            echo "<h2><b>Compte " . $data['comptenom'] . "</b></h2>";
+            echo "<p><b>Compte " . $data['comptenom'] . "</b></p>";
             echo "<form method='POST' action='accueil'>";
             echo "<input type='text' hidden name='compteactuel' value='" . $data['RIB']. " '>";
             echo "<input class='btn btn-primary' type='submit' name='compteactuelnom' value='" . $data['comptenom'] . "'>"; 

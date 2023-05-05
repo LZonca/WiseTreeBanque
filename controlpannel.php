@@ -10,8 +10,10 @@ if (isset($_POST['lescomptes'])) {
 }
 if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+    $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
 }
 try {
     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
@@ -39,7 +41,12 @@ function displayusers($bdd)
         </tr>
     </thead>';
 
+    echo '<br><input type="text" id="search-input" placeholder="Rechercher un utilisateur" class="form-control"><br>';
+    
+
     echo '<tbody>';
+
+    
 
     while ($data = $request->fetch()) {
         echo '<tr>';
@@ -52,10 +59,10 @@ function displayusers($bdd)
 
         // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
         if ($data['permissions'] >= 3) {
-            echo '<td style="width: fit-content; height: fit-content >';
+            echo '<td style="display: flex; align-items: center;">';
             echo '<form method="POST" action="administration">
                 <input type="hidden" name="id" value="' . $data['userid'] . '">
-                <input type="password" name="password" placeholder="Mot de passe">
+                <input type="password" name="password" placeholder="Mot de passe" class="form-control">
                 <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer">
             </form>';
         } else {
@@ -72,6 +79,25 @@ function displayusers($bdd)
     echo '</tbody>';
     echo '</table>';
     echo '</div>';
+
+    echo '<script>
+    const searchInput = document.querySelector("#search-input");
+    const rows = document.querySelectorAll("tbody tr");
+
+    searchInput.addEventListener("keyup", function(event) {
+        const searchString = event.target.value.toLowerCase();
+
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            if (text.indexOf(searchString) !== -1) {
+                row.style.display = "table-row";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+    </script>';
+
 
     if (isset($_POST['delete'])) {
         $id = $_POST['id'];
@@ -135,7 +161,7 @@ function generateRIB($bdd, $numeroCompte)
     // Calculer le reste de la division euclidienne de $chiffres par 97
     $reste = 0;
     for ($i = 0; $i < strlen($chiffres); $i++) {
-        $reste = ($reste * 10 + (int)$chiffres[$i]) % 97;
+        $reste = ($reste * 10 + (int) $chiffres[$i]) % 97;
     }
 
     // Calculer la clé RIB
@@ -262,27 +288,27 @@ function create_user($bdd)
     $countnaissance = $naissrequete->fetchColumn();
 
 
-        if (($countnom > 0 && $countpren > 0 && $countnaissance > 0 && $countmail > 0 && $counttel > 0) || $countmail > 0 || $counttel > 0) {
-            // Afficher un message d'erreur si l'utilisateur existe déjà
-            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Cet utilisateur existe déjà.</p>";
-        } else {
+    if (($countnom > 0 && $countpren > 0 && $countnaissance > 0 && $countmail > 0 && $counttel > 0) || $countmail > 0 || $counttel > 0) {
+        // Afficher un message d'erreur si l'utilisateur existe déjà
+        $_SESSION['usermessage'] = "<p class='alert alert-danger'>Cet utilisateur existe déjà.</p>";
+    } else {
 
-            $requete = "INSERT INTO users (userid, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $requete = $bdd->prepare($requete);
-            $requete->execute(array($id, $nom, $prenom, $datenaissance, $password, $mail, $tel, $conseillier, $perms));
+        $requete = "INSERT INTO users (userid, nom, prenom, date_naissance, password, mail, tel, idconseiller, permissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $requete = $bdd->prepare($requete);
+        $requete->execute(array($id, $nom, $prenom, $datenaissance, $password, $mail, $tel, $conseillier, $perms));
 
 
-            $_SESSION['usermessage'] = "<p class='alert alert-success'>L'utilisateur a été ajouté avec succès. Son ID est: ". $id . "</p>";
-        }
-        if ($perms == 4) {
-            $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
-            $logrequete = $bdd->prepare($logrequete);
-            $logrequete->execute(array(4, $_SESSION['userid']));
-        } else {
-            $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
-            $logrequete = $bdd->prepare($logrequete);
-            $logrequete->execute(array(2, $_SESSION['userid']));
-        }
+        $_SESSION['usermessage'] = "<p class='alert alert-success'>L'utilisateur a été ajouté avec succès. Son ID est: " . $id . "</p>";
+    }
+    if ($perms == 4) {
+        $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+        $logrequete = $bdd->prepare($logrequete);
+        $logrequete->execute(array(4, $_SESSION['userid']));
+    } else {
+        $logrequete = "INSERT INTO actionlogs (typaction, actionuser) VALUES (?,?)";
+        $logrequete = $bdd->prepare($logrequete);
+        $logrequete->execute(array(2, $_SESSION['userid']));
+    }
 }
 
 function create_compte($bdd)
@@ -403,15 +429,10 @@ function verifnewuser()
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/jpg" href="logo.jpg" />
     <title>Pannel conseillers</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <style>
-        body {
-            background-image: url("background.png");
-            height: 100%;
-            background-position-y: 20%;
-            background-position-x: 50%;
-        }
 
         h2 {
             font-size: 1.5vw;
@@ -420,10 +441,12 @@ function verifnewuser()
 </head>
 
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
+        </script>
     <div class="navbar-nav">
         <form method="POST" action="administration">
             <button name="lescomptes" class="btn btn-secondary">Vos comptes</button>
@@ -442,23 +465,31 @@ function verifnewuser()
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#flush-collapseOne" aria-expanded="false"
+                                aria-controls="flush-collapseOne">
                                 <h2>Ajouter un utilisateur</h2>
                             </button>
                         </h2>
-                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div id="flush-collapseOne" class="accordion-collapse collapse"
+                            aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
                                 <form action="administration" method="post">
                                     <label for="nom">Nom*:</label><br><br>
-                                    <input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control" required><br><br>
+                                    <input type="text" id="nom" name="nom" placeholder="Votre nom" class="form-control"
+                                        required><br><br>
                                     <label for="prenom">Prenom*:</label><br><br>
-                                    <input type="text" id="prenom" name="prenom" placeholder="Votre prenom" class="form-control" required><br><br>
+                                    <input type="text" id="prenom" name="prenom" placeholder="Votre prenom"
+                                        class="form-control" required><br><br>
                                     <label for="email">Mail*:</label><br><br>
-                                    <input type="mail" id="mail" name="email" placeholder="Wise@Tree.com" class="form-control" required><br><br>
+                                    <input type="mail" id="mail" name="email" placeholder="Wise@Tree.com"
+                                        class="form-control" required><br><br>
                                     <label for="datenaissance">Date de naissance*:</label><br><br>
-                                    <input type="date" id="date" name="datenaissance" placeholder="11/10/2003" class="form-control" required><br><br>
+                                    <input type="date" id="date" name="datenaissance" placeholder="11/10/2003"
+                                        class="form-control" required><br><br>
                                     <label for="tel">N°télephone*:</label><br><br>
-                                    <input type="text" id="tel" name="tel" placeholder="+33**********" class="form-control" required><br><br>
+                                    <input type="text" id="tel" name="tel" placeholder="+33**********"
+                                        class="form-control" required><br><br>
                                     <label for="conseiller">Conseillers:</label><br><br>
                                     <?php
                                     //$bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat'); // Reseau local VM
@@ -474,29 +505,61 @@ function verifnewuser()
                                 </form>
                                 <?php
                                 if (isset($_POST['adduser'])) {
-                                    if(verifnewuser()){
+                                    if (verifnewuser()) {
                                         create_user($bdd);
                                     }
                                 }
-                                displayusers($bdd);
+                                
                                 ?>
                             </div>
                         </div>
                     </div>
                     <br>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#flush-collapseFour" aria-expanded="false"
+                                aria-controls="flush-collapseFour">
+                                <h2>Users</h2>
+                            </button>
+                        </h2>
+                        <div id="flush-collapseFour" class="accordion-collapse collapse"
+                            aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+
+                            <?php displayusers($bdd);
+
+                            ?>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <br>
                     <div class="loginform">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseTwo" aria-expanded="false"
+                                    aria-controls="flush-collapseTwo">
                                     <h2>Créer un compte</h2>
                                 </button>
                             </h2>
-                            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                                aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
                                 <form action="administration" method="post">
                                     <label for="nomclient">Nom:*</label><br><br>
-                                    <input type="text" id="nomclient" name="nomclient" placeholder="Nom du propriétaire de compte" class="form-control" required><br><br>
+                                    <input type="text" id="nomclient" name="nomclient"
+                                        placeholder="Nom du propriétaire de compte" class="form-control"
+                                        required><br><br>
                                     <label for="prenomclient">Prenom:*</label><br><br>
-                                    <input type="text" id="prenomclient" name="prenomclient" placeholder="Prenom du propriétaire de compte" class="form-control" required><br><br>
+                                    <input type="text" id="prenomclient" name="prenomclient"
+                                        placeholder="Prenom du propriétaire de compte" class="form-control"
+                                        required><br><br>
                                     <label for="nomcompte">Type de compte:*</label><br><br>
                                     <select name='nomcompte' class="form-control" required>
                                         <option value="Courant" selected>Compte courant</option>
@@ -535,24 +598,28 @@ function verifnewuser()
                 <div class="accordion" id="accordionPanelsStayOpenExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
+                                aria-controls="panelsStayOpen-collapseTwo">
                                 <h2>Créer un prêt pour un utilisateur: </h2>
                             </button>
                         </h2>
-                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo">
+                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
+                            aria-labelledby="panelsStayOpen-headingTwo">
                             <div class="accordion-body">
                                 <form action='administration' method="POST">
                                     <label for="nompret">Nom du créancier:</label>
                                     <input type='text' name='nompret' class="form-control" placeholder='<?php
-                                                                                                        if (isset($_POST['nompret'])) {
-                                                                                                            echo $_POST['nompret'];
-                                                                                                        }
-                                                                                                        ?>'><br><br>
+                                    if (isset($_POST['nompret'])) {
+                                        echo $_POST['nompret'];
+                                    }
+                                    ?>'><br><br>
                                     <label for="prenompret">Prénom du créancier:</label>
-                                    <input type='text' name='prenompret' class="form-control" placeholder='<?php
-                                                                                                            if (isset($_POST['prenompret'])) {
-                                                                                                                echo $_POST['prenompret'];
-                                                                                                            } ?>'><br><br>
+                                    <input type='text' name='prenompret' class="form-control"
+                                        placeholder='<?php
+                                        if (isset($_POST['prenompret'])) {
+                                            echo $_POST['prenompret'];
+                                        } ?>'><br><br>
                                     <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
                                 </form>
                                 <?php

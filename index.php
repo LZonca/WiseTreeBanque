@@ -51,6 +51,10 @@ function checklogin($bdd)
         }
     }
 }
+
+if(isset($_POST['login'])){
+    checklogin($bdd);
+}
 ?>
 
 <!DOCTYPE html>
