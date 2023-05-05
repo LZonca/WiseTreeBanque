@@ -2,10 +2,11 @@
 session_start();
 if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+    $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
 }
-
 if (!isset($_SESSION)) {
     header('Location: connexion');
 }
@@ -51,6 +52,11 @@ function updatepass($bdd)
         }
     }
 }
+    if(isset($_POST['changemdp']))
+    {
+        updatepass($bdd);
+    }
+
 
 ?>
 
@@ -60,7 +66,7 @@ function updatepass($bdd)
         <title>Wise Tree Banque - Paramètres</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="icon" type="image/jpg" href="logo.jpg" />
+        <link rel="icon" type="image/jpg" href="img/logo.jpg" />
         <style>
         </style>
     </head>
@@ -73,6 +79,10 @@ function updatepass($bdd)
                 </div>
             <div class="container">
                 <h2><u>Vos paramètres:</u></h2>
+                <?php if(isset($_SESSION['usermessage'])){
+                echo $_SESSION['usermessage'];
+                unset($_SESSION['usermessage']);
+            }?>
                     <form method='POST' action='parametres'>
                         <label for="mdp">Mot de passe actuel</label><br><br>
                         <input type="password" name="mdp" placeholder="Mot de passe actuel" class="form-control" required><br><br>
@@ -82,12 +92,7 @@ function updatepass($bdd)
                         <input type="password" name="mdprepeat" placeholder="Répéter le nouveau mot de passe" class="form-control" required><br><br>
                         <button name='changemdp' class="btn btn-primary">Changer de mot de passe</button>
                     </form>
-                    <?php
-                        if(isset($_POST['changemdp']))
-                        {
-                            updatepass($bdd);
-                        }
-                    ?>
+                    
                 </div>
             </div>
         </div> 

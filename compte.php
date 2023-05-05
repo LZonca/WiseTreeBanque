@@ -1,12 +1,12 @@
 <?php
 session_start();
-$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-var_dump($url);
 
 if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+}elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+    $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
 }
 // var_dump($_SESSION); // A enlever si nécéssaire
 
@@ -55,7 +55,7 @@ unset($_SESSION['usermessage']);
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($user));
         $data = $requete->fetch();
-        echo "<h1>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</h1>";
+        echo "<p>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</p>";
     }
 
     
@@ -67,7 +67,7 @@ unset($_SESSION['usermessage']);
         $requetedata = $bdd->prepare($requetedata); 
         $requetedata->execute(array($compte));
         $data = $requetedata->fetch();
-        echo "<h2>Compte " . $data['comptenom'] . "</h2>";
+        echo "<p>Compte " . $data['comptenom'] . "</p>";
         echo "<h5>Votre solde: <u>" . $data['solde'] . "€</u></h5>";
         echo "<h3>Découvert autorisé : " . htmlspecialchars(strtoupper($data['decouvert_autorise'])) . " €</u></h3>";
         echo "<h2>RIB: </h2>";
@@ -107,15 +107,12 @@ unset($_SESSION['usermessage']);
     </div>
     <div class="container">
     <?php
-    // $bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat');
-    
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
     nomrequest($bdd);
     ?>
     
-        <h2><u>Bienvenue sur la Wise Tree Bank</u></h2>
+        <p><u>Bienvenue sur la Wise Tree Bank</u></p>
         <div class="data-container">
-            <h3><u>Votre compte</u></h3>
+            <p><u>Votre compte</u></p>
             <p>
                 <?php
                 //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
