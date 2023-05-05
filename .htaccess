@@ -13,9 +13,9 @@ RewriteEngine On
 #RewriteRule ^WiseTreeBanque(.*)$ http://www.WiseTreeBanque.sio/$1 [R=301,L]
 
 
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^(.*)$ $1.php [NC]
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME}\.php -f
+#RewriteRule ^(.*)$ $1.php [NC]
 
 # Réécrire les URL pour utiliser des noms de fichiers
 RewriteRule ^connexion$ index.php [NC]
@@ -31,4 +31,4 @@ RewriteRule ^utilisateur$ viewusers.php [NC]
 
 # Renvoyer les erreurs 404 vers la page 404.php
 RewriteRule ^404$ 404.php [NC]
-ErrorDocument 404 /var/www/html/404.php
+ErrorDocument 404 /BanqueProjetPro/ProjetProBanque/404.php

@@ -2,10 +2,8 @@
     session_start();
     if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio"){
+    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
-    }elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
-        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
     }
     if(!isset($_SESSION['userid']))
     {
@@ -74,7 +72,7 @@
         $requete = $bdd->prepare($requete); 
         $requete->execute(array($user));
         $data = $requete->fetch();
-        echo "<p>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</p>";
+        echo "<h1>Bienvenue " . htmlspecialchars(strtoupper($data['prenom'])) . " " . htmlspecialchars(strtoupper($data['nom'])) . " !</h1>";
     }
 
     /*function solderequest()
@@ -151,7 +149,7 @@ function messagecount($bdd){
         <title>Wise Tree Banque</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="icon" type="image/jpg" href="img/logo.jpg" />
+        <link rel="icon" type="image/jpg" href="logo.jpg" />
     </head>
     <body>
             <div class="navbar-nav">
@@ -167,7 +165,7 @@ function messagecount($bdd){
             </div>
         <div class="container">
                 <?php nomrequest($bdd);?>
-                <p><u>Bienvenue sur la Wise Tree Bank</u></p>
+                <h1><u>Bienvenue sur la Wise Tree Bank</u></h1>
                 <?php echo "<h2>Compte utilisateur n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
                 <h2>Vos comptes</h2>
                 <div class="comptes_container">

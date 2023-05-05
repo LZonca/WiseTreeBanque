@@ -1,14 +1,13 @@
 <?php
 
 session_start();
-
-if ($_SERVER['SERVER_NAME'] == "127.0.0.1") {
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
-} elseif ($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio") {
+    
+if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+}elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
-} elseif ($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net") {
-    $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
 }
+
 try {
     $bdd;
 } catch (exception $e) {
@@ -90,42 +89,25 @@ function displaymessage()
     $requetedata = $bdd->prepare($requetedata);
     $requetedata->execute(array($user));
 
-    $requetedata = "SELECT * FROM chat WHERE destinataireid = ?";
-    $requetedata = $bdd->prepare($requetedata);
-    $requetedata->execute(array($user));
-    $compteur = $requetedata->fetch();
-
-
-
     $requete = "SELECT * FROM users WHERE userid IN (SELECT envoyeurid FROM chat WHERE destinataireid = ?);";
     $requete = $bdd->prepare($requete);
     $requete->execute(array($user));
     $data = $requete->fetch();
 
-    if ($compteur == 0) {
-        $_SESSION['usermessage'] = "Aucun message à afficher.";
-    } else {
+    while ($datamsg = $requetedata->fetch()) {
+        echo "<h2>" . $data['prenom'] . " " . $data['nom'] . " souhaite planifier un rendez-vous à " . $datamsg['daterdv'] . " | Message: " . $datamsg['chat'] .
+            "<small> - Envoyé à " . $datamsg['time'] . "</small>";
 
-
-
-        while ($datamsg = $requetedata->fetch()) {
-            echo "<h2>" . $data['prenom'] . " " . $data['nom'] . " souhaite planifier un rendez-vous à " . $datamsg['daterdv'] . " | Message: " . $datamsg['chat'] .
-                "<small> - Envoyé à " . $datamsg['time'] . "</small>";
-        if($data['permissions'] > 1){
-            if ($datamsg['requeststatus'] == 0) {
-                echo "<form method='post' action='messagerie'>
-                    <button type='submit' name='accept' value='" . $datamsg['idmsg'] . "' class='btn btn-success btn-sm'>Accepter le rendez-vous.<br></button>
-                    <button type='submit' name='deny' value='" . $datamsg['idmsg'] . "' class='btn btn-danger btn-sm'>Refuser le rendez-vous.</button>
-                    <button type='submit' name='cancel' value='" . $datamsg['idmsg'] . "' class='btn btn-warning btn-sm'>Annuler</button>
-                </form>";
-            }else{
-
-            }
-
-            echo "</h2><br>";
+        if ($datamsg['requeststatus'] == 0) {
+            echo "<form method='post' action='messagerie'>
+        <button type='submit' name='accept' value='" . $datamsg['idmsg'] . "' class='btn btn-success btn-sm'>Accepter le rendez-vous.<br></button>
+        <button type='submit' name='deny' value='" . $datamsg['idmsg'] . "' class='btn btn-danger btn-sm'>Refuser le rendez-vous.</button>
+        <button type='submit' name='cancel' value='" . $datamsg['idmsg'] . "' class='btn btn-warning btn-sm'>Annuler</button>
+        </form>";
         }
+
+        echo "</h2><br>";
     }
-}
 
 
     function afficherdv()
@@ -146,14 +128,13 @@ function displaymessage()
         } else {
 ?>
 
-            <p>Vos rendez-vous</p>
+            <h3>Vos rendez-vous</h3>
 
             <table>
                 <tr>
                     <th>Raison RDV</th>
                     <th>Date RDV</th>
                     <th>Client</th>
-                    <?php if($data['permissions'])?>
                 </tr>
     <?php
             while ($datardv = $requete->fetch()) {
@@ -185,9 +166,6 @@ function displaymessage()
         }
     }*/
 
-if (isset($_POST['submit'])) {
-    messagerequest($bdd);
-}
 
     ?>
 
@@ -198,14 +176,11 @@ if (isset($_POST['submit'])) {
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/jpg" href="img/logo.jpg" />
+        <link rel="icon" type="image/jpg" href="logo.jpg" />
         <title>Wise Tree Banque - Contact</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <style>
-            label {
-                color: white;
-            }
         </style>
     </head>
 
@@ -217,38 +192,28 @@ if (isset($_POST['submit'])) {
             </form>
         </div>
         <div class="container">
-            <p>
+            <h1>
                 WiseTreeBank - Contact
-            </p>
-            <p>Vos messages:</p>
-            <?php if (isset($_SESSION['usermessage'])) {
-                echo $_SESSION['usermessage'];
-            } ?>
-
+            </h1>
             <?php
-
-            
                 displaymessage();
             ?>
-        </div><br>
+            <div class='chat-box'>
+                <?php
 
-        <div class='form-container'>
+                if (isset($_POST['submit'])) {
+                    messagerequest($bdd);
+                }
+                ?>
+            </div>
             <form method="POST" action="messagerie">
                 <div class="form-group">
-                    <label for='usermessage'>Raison du rendez-vous: </label><br>
                     <input type="text" name="usermessage" class="form-control" placeholder="Votre message"><br>
-                    <label for='rdvtime'>Heure du rendez-vous: </label><br>
-                    <input type="datetime-local" name="rdvtime" class="form-control" min=" <?= date('y-m-d h:i') ?>"><br>
+                    <input type="datetime-local" name="rdvtime" class="form-control" min=" <?= date('y-m-d h:i') ?>">
                     <button name="submit" class="btn btn-primary">Envoyer le message</button>
                 </div>
             </form>
-        </div>
-        <div class='form-container'>
-            <?php
-                afficherdv();    
-            ?>
-        </div>
-        </div>
+
         </div>
         </div>
     </body>
