@@ -10,6 +10,7 @@ if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
     $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
 }
 
+
 try {
     $bdd;
 } catch (exception $e) {

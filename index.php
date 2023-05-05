@@ -77,43 +77,38 @@ function checklogin($bdd)
         <div class="">
             <div class="row">
             <div class="col" border: solid>
-    <div class="frame-1">
-      <h1 class="surname">WISE TREE BANK</h1>
-      <?php if (isset($_SESSION['usermessage'])) {
-            echo $_SESSION['usermessage'];
-        } ?>
-    <form action="connexion" method="post" id="formulaire">
-      <div class="numero-de-compte">NUMERO DE COMPTE*:</div>
-      <input type="text" name="userid" placeholder=" Exemple: 04123456789" pattern="[0-9]{11}" class="form-control" required >
-      <div class="overlap-groupoverlap">
-        <div class="exempleinter-medium-black-24px"></div>
-      </div>
-      <div class="code-personnel">CODE PERSONNEL*:</div>
-    <input type="password" id="pwd" name="password" placeholder=" Exemple: 123456" pattern="[0-9]{6}" class="form-control" required>
-      <div class="overlap-group1overlap">
-        <div class="exempleinter-medium-black-24px"></div>
-      </div>
-      <div class="conne-container">
-        <span class="inter-normal-white-15px"></span>
-      </div>
-           <p align="center"><button name="login" class="se-connecter">Se connecter</button>
-            <p class="champ-obligatoire">
-                        * : Champ obligatoire
-                    </p>
-                </p>
-                   
-    </div>
-                       
-                   
-                    </form>
-                    <?php
-                if (isset($_POST['login'])) {
-                    checklogin($bdd);
-                }
-                ?>
+                <div class="frame-1">
+                    <h1 class="surname">WISE TREE BANQUE</h1>
+                    <?php if (isset($_SESSION['usermessage'])) {
+                        echo $_SESSION['usermessage'];
+                    } ?>
+                    <form action="connexion" method="post" id="formulaire">
+                        <div class="numero-de-compte">NUMERO DE COMPTE*:</div>
+                        <input type="text" name="userid" placeholder=" Exemple: 04123456789" pattern="[0-9]{11}" class="form-control" required>
+                        <div class="overlap-groupoverlap">
+                            <div class="exempleinter-medium-black-24px"></div>
+                        </div>
+                        <div class="code-personnel">CODE PERSONNEL*:</div>
+                        <input type="password" id="pwd" name="password" placeholder=" Exemple: 123456" pattern="[0-9]{6}" class="form-control" required>
+                        <div class="overlap-group1overlap">
+                            <div class="exempleinter-medium-black-24px"></div>
+                        </div>
+                        <div class="conne-container">
+                            <span class="inter-normal-white-15px"></span>
+                        </div>
+                        <p align="center"><button name="login" class="se-connecter">Se connecter</button>
+                            <p class="champ-obligatoire">
+                                * : Champ obligatoire
+                            </p>
+                        </p>
+
                 </div>
-           </div>
+
+
+                </form>
+            </div>
         </div>
+    </div>
     </div>
 </body>
 
