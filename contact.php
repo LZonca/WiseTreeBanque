@@ -195,7 +195,26 @@ if (isset($_POST['submit'])) {
 }
 
 
+function checkconseillers($bdd)
+{
 
+    $requetedata = "SELECT idconseiller FROM users WHERE userid = ?";
+    $requetedata = $bdd->prepare($requetedata);
+    $requetedata->execute(array($_SESSION["userid"]));
+    $data = $requetedata->fetch();
+
+    $info = "SELECT * FROM users WHERE userid = ?";
+    $info = $bdd->prepare($info);
+    $info->execute(array($data['idconseiller']));
+    $infodata = $info->fetch();
+    
+    if($infodata){
+        return "<p>Votre conseiller: " . $infodata['prenom'] . " " . $infodata['nom'] . "</p>";
+    }else{
+        return "Vous n'avez pas de conseiller.";
+    }
+    
+}
 
 
 
@@ -240,6 +259,9 @@ if (isset($_POST['submit'])) {
         </div>
         <div class="container">
             <h1>WiseTreeBank - Contact</h1>
+            <?php
+                echo checkconseillers($bdd); 
+            ?>
                 <p>Vos messages:</p>
                 <?php 
                     if (isset($_SESSION['usermessage'])) {

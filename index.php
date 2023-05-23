@@ -75,8 +75,10 @@ if(isset($_POST['login'])){
 </head>
 
 <body>
-
-
+<div id="loading-screen">
+  <div id="loading-icon"></div>
+  <div id="loading-text">Chargement en cours...</div>
+</div>
         <div class="">
             <div class="row">
             <div class="col" border: solid>
@@ -111,6 +113,7 @@ if(isset($_POST['login'])){
     <footer>
 
     </footer>
+    <script type="text/javascript" src='loading.js'></script>
 </body>
 
 </html>
