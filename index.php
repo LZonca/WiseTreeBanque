@@ -27,12 +27,11 @@ function loginrequest($bdd)
                 $_SESSION['userid'] = $_POST['userid'];
                 header('Location: accueil');
             }else{
-                $err = 1;
+                $_SESSION['usermessage'] = "<p class='alert alert-danger'>Le mot de passe ne correspond pas.</p>";
             }
         }else{
-            $err = 2;
+            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Aucun utilisateur correspondant.</p>";
         }
-        return $err;
     }
 }
 
@@ -47,7 +46,7 @@ function checklogin($bdd)
                 $err = 1;
             }
         }else{
-            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Mauvais mot de passe</p>";
+            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Le mot de passe ne respecte pas les 6 caractères.</p>";
         }
     }
 }
@@ -84,21 +83,17 @@ if(isset($_POST['login'])){
                 <div class="frame-1">
                     <h1 class="surname">WISE TREE BANQUE</h1>
                     <?php if (isset($_SESSION['usermessage'])) {
+                        echo "<div style='margin-top: 7%;'>";
                         echo $_SESSION['usermessage'];
+                        echo '</div>';
                     } ?>
                     <form action="connexion" method="post" id="formulaire">
                         <div class="numero-de-compte">NUMERO DE COMPTE*:</div>
                         <input type="text" name="userid" placeholder=" Exemple: 04123456789" pattern="[0-9]{11}" class="form-control" required>
-                        <div class="overlap-groupoverlap">
-                            <div class="exempleinter-medium-black-24px"></div>
-                        </div>
-                        <div class="code-personnel">CODE PERSONNEL*:</div>
+                            <div class="code-personnel">CODE PERSONNEL*:</div>
                         <input type="password" id="pwd" name="password" placeholder=" Exemple: 123456" pattern="[0-9]{6}" class="form-control" required>
                         <div class="overlap-group1overlap">
                             <div class="exempleinter-medium-black-24px"></div>
-                        </div>
-                        <div class="conne-container">
-                            <span class="inter-normal-white-15px"></span>
                         </div>
                         <p align="center"><button name="login" class="se-connecter">Se connecter</button>
                             <p class="champ-obligatoire">
@@ -113,7 +108,9 @@ if(isset($_POST['login'])){
             </div>
         </div>
     </div>
-    </div>
+    <footer>
+
+    </footer>
 </body>
 
 </html>

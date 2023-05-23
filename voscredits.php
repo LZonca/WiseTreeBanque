@@ -103,10 +103,6 @@ if (isset($_POST['Deco'])) {
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <style>
             body {
-                background-image: url("background.png");
-                height: 100%;
-                background-position-y: 20%;
-                background-position-x: 50%;
                 color: white;
             }
 
