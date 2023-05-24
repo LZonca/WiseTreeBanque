@@ -28,6 +28,7 @@ RewriteRule ^vos-credits$ voscredits.php [NC]
 RewriteRule ^messagerie$ contact.php [NC]
 RewriteRule ^votre-historique$ depenses.php [NC]
 RewriteRule ^utilisateur$ viewusers.php [NC]
+RewriteRule ^contact-mail$ mail.php [NC]
 
 # Renvoyer les erreurs 404 vers la page 404.php
 RewriteRule ^404$ 404.php [NC]

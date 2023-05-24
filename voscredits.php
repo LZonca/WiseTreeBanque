@@ -147,6 +147,7 @@ if (isset($_POST['Deco'])) {
                 ?>
             </div>
         </div>
+        <script type="text/javascript" src='loading.js'></script>
     </body>
 
     </html>

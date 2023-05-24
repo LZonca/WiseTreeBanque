@@ -15,6 +15,16 @@ try{
     die('Erreur: '. $e->getMessage());
 }
 
+$sql = "SELECT * FROM users WHERE userid = ?";
+$request = $bdd->prepare($sql);
+$request->execute(array($_SESSION['userid']));
+$user = $request->fetch();
+
+if($user['permissions'] < 2){
+    $_SESSION['usermessage'] = "<p class='alert alert-warning' role='alert'>Le rendez-vous a été annulé avec succès.</p>";
+    header('Location: accueil');
+}
+
 if(!isset($_SESSION['userid'])){
     header('Location: connexion');
 }
@@ -94,4 +104,5 @@ if(isset($_POST['admin'])){
         </form>
         
     </div>
+    <script type="text/javascript" src='loading.js'></script>
 </body>

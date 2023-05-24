@@ -19,5 +19,6 @@
             <h2>La page recherchée n'existe pas..</h2>
             <a href="connexion">Retourner vers la page de connexion</a>
         </div>
+        <script type="text/javascript" src='loading.js'></script>
     </body>
 </html>

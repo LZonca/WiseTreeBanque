@@ -5,6 +5,10 @@ if (!isset($_SESSION['userid'])) {
     header('Location: connexion');
 }
 
+
+
+
+
 if (isset($_POST['lescomptes'])) {
     header('Location: accueil');
 }
@@ -22,6 +26,15 @@ try {
     die('Erreur: ' . $e->getMessage());
 }
 
+$sql = "SELECT * FROM users WHERE userid = ?";
+$request = $bdd->prepare($sql);
+$request->execute(array($_SESSION['userid']));
+$user = $request->fetch();
+
+if($user['permissions'] < 2){
+    $_SESSION['usermessage'] = "<p class='alert alert-warning' role='alert'>Ressource interdite.</p>";
+    header('Location: accueil');
+}
 function displayusers($bdd)
 {
     $sql = "SELECT * FROM users ";
@@ -50,7 +63,7 @@ function displayusers($bdd)
 
     while ($data = $request->fetch()) {
         echo '<tr>';
-        echo '<td>' . $data['userid'] . '</td>';
+        echo '<td><a href="utilisateur?id=' . $data['userid'] . '" style="text-decoration: underline; color:black">'. $data['userid'] . '</td>';
         echo '<td>' . $data['nom'] . '</td>';
         echo '<td>' . $data['prenom'] . '</td>';
         echo '<td>' . $data['mail'] . '</td>';
@@ -636,6 +649,7 @@ function verifnewuser()
             </div>
         </div>
     </div>
+    <script type="text/javascript" src='loading.js'></script>
 </body>
 
 </html>

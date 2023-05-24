@@ -255,6 +255,12 @@ function checkconseillers($bdd)
             <form method="POST" action="accueil">
                 <button name="Deco" class="btn btn-secondary">Deconnexion</button>
                 <button name="retour" class="btn btn-secondary">Retour</button>
+                <?php 
+                    if($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+                        echo "<a href='contact-mail' class='btn btn-secondary'>Contacter un collaborateur de la banque.</a>";
+                    }
+                ?>
+                
             </form>
         </div>
         <div class="container">
@@ -294,6 +300,7 @@ function checkconseillers($bdd)
                 ?>
             </div>
         </div>
+        <script type="text/javascript" src='loading.js'></script>
     </body>
 
     </html>

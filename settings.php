@@ -103,5 +103,6 @@ if(isset($_POST['changemdp']))
                 </div>
             </div>
         </div> 
+        <script type="text/javascript" src='loading.js'></script>
     </body>
 </html>

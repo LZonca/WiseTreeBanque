@@ -18,12 +18,21 @@
         die('Erreur connexion: '. $e->getMessage());
     }
 
+    $sql = "SELECT * FROM users WHERE userid = ?";
+    $request = $bdd->prepare($sql);
+    $request->execute(array($_SESSION['userid']));
+    $user = $request->fetch();
+
+    if($user['permissions'] < 2){
+        header('Location: accueil');
+    }
+
     unset($_SESSION['usermessage']);
 
     function displayusers ($bdd) {
-        $sql = "SELECT * FROM users ";
+        $sql = "SELECT * FROM users WHERE userid = ?";
         $request = $bdd->prepare($sql);
-        $request->execute();
+        $request->execute(array($_GET['id']));
     
         echo '<table>';
         echo '<tr style="border-style: solid;">
@@ -32,42 +41,42 @@
             <th>Prenom</th>
             <th>Mail</th>
             <th>Téléphone</th>
+            <th>Adresse</th>
             <th>Date de naissance</th>
             <th>ID conseiller</th>
             <th>Permissions</th>
             <th>Actions</th>
         </tr>';
     
-        while($data = $request->fetch()){
+        $data = $request->fetch();
             echo '<tr>';
             echo '<td>' . $data['userid'] . '</td>';
             echo '<td>' . $data['nom'] . '</td>';
             echo '<td>' . $data['prenom'] . '</td>';
             echo '<td>' . $data['mail'] . '</td>';
             echo '<td>' . $data['tel'] . '</td>';
+            echo '<td>' . $data['adresse'] . '</td>';
             echo '<td>' . $data['date_naissance'] . '</td>';
             echo '<td>' . $data['idconseiller'] . '</td>';
             echo '<td>' . $data['permissions'] . '</td>';
             echo '<td>';
-    
-            // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
-            if($data['permissions'] >=3){
-                echo '<td>';
-                echo '<form method="POST" action="utilisateur">
-                    <input type="hidden" name="id" value="'. $data['userid'] .'">
-                    <input type="password" name="password" placeholder="Mot de passe">
-                    <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer">
-                </form>';
-            } else {
-                echo '<form method="POST" action="utilisateur">
-                    <input type="hidden" name="id" value="'. $data['userid'] .'">
-                    <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ? Wallali ?\')">
-                </form>';
-            }
-    
-            echo '</td>';
+                // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
+                if($data['permissions'] >=3){
+                    echo '<td>';
+                    echo '<form method="POST" action="utilisateur">
+                        <input type="hidden" name="id" value="'. $data['userid'] .'">
+                        <input type="password" name="password" placeholder="Mot de passe">
+                        <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer">
+                    </form>';
+                } else {
+                    echo '<form method="POST" action="utilisateur">
+                        <input type="hidden" name="id" value="'. $data['userid'] .'">
+                        <input class="btn btn-secondary" type="submit" name="delete" value="Supprimer" onclick="return confirm(\'Êtes-vous sûr de vouloir supprimer ce compte ? Wallali ?\')">
+                    </form>';
+                }
+        
+                echo '</td>';
             echo '</tr>';
-        }
         echo'</table>';
     
         if(isset($_POST['delete'])) {
@@ -112,7 +121,15 @@
         }
     }
     
-
+    if (isset($_POST['lescomptes'])) {
+        header('Location: accueil');
+    }
+    if (isset($_POST['comptes'])) {
+        header('Location: administration');
+    }
+    if (isset($_POST['Deco'])) {
+        header('Location: logout.php');
+    }
 
 ?>
 
@@ -128,14 +145,27 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <style>
         body{
-            background-image: url("background.png");
+            background-image: url("img/background.png");
             height: 100%;
             background-position-y: 20%;
             background-position-x: 50%;
             color: white;
         }
+
+        table{
+            text-align: center;
+            margin-left: 30vw;
+        }
+
         th{
             padding: 5px;
+            width: fit-content;
+            margin:3px
+        }
+        td{
+            padding: 1vw;
+            border: 1px;
+            border-style: solid;
         }
 
         .normal{
@@ -160,9 +190,10 @@
         </form>
     </div>
   </header>
-    <h1>Vos crédits en cours: </h1>
+    <h1>Utilisateur n° <?php echo $_GET['id']?> </h1>
     <?php
         displayusers($bdd);
     ?>
+    <script type="text/javascript" src='loading.js'></script>
   </body>
 </html>
