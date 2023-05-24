@@ -5,6 +5,10 @@ if (!isset($_SESSION['userid'])) {
     header('Location: connexion');
 }
 
+
+
+
+
 if (isset($_POST['lescomptes'])) {
     header('Location: accueil');
 }
@@ -22,6 +26,15 @@ try {
     die('Erreur: ' . $e->getMessage());
 }
 
+$sql = "SELECT * FROM users WHERE userid = ?";
+$request = $bdd->prepare($sql);
+$request->execute(array($_SESSION['userid']));
+$user = $request->fetch();
+
+if($user['permissions'] < 2){
+    $_SESSION['usermessage'] = "<p class='alert alert-warning' role='alert'>Ressource interdite.</p>";
+    header('Location: accueil');
+}
 function displayusers($bdd)
 {
     $sql = "SELECT * FROM users ";
@@ -50,7 +63,7 @@ function displayusers($bdd)
 
     while ($data = $request->fetch()) {
         echo '<tr>';
-        echo '<td>' . $data['userid'] . '</td>';
+        echo '<td><a href="utilisateur?id=' . $data['userid'] . '" style="text-decoration: underline; color:black">'. $data['userid'] . '</td>';
         echo '<td>' . $data['nom'] . '</td>';
         echo '<td>' . $data['prenom'] . '</td>';
         echo '<td>' . $data['mail'] . '</td>';
@@ -418,6 +431,23 @@ function verifnewuser()
         $_SESSION['usermessage'] = "<p class='alert alert-danger'> Le nom est mal rempli !</p>";
     }
 }
+
+    if (isset($_POST['adduser'])) {
+        if (verifnewuser()) {
+            create_user($bdd);
+        }
+    }
+
+    if (isset($_POST['addcompte'])) //&& verifnewuser())
+    {
+        create_compte($bdd);
+    }
+
+    if (isset($_POST['addpret'])) {
+        echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";
+        checkusercomptes($bdd);
+    }
+
 ?>
 
 <!DOCTYPE HTML>
@@ -433,6 +463,11 @@ function verifnewuser()
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <style>
+
+        body{
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
 
         h2 {
             font-size: 1.5vw;
@@ -461,6 +496,7 @@ function verifnewuser()
             <div class="loginform">
                 <?php if (isset($_SESSION['usermessage'])) {
                     echo $_SESSION['usermessage'];
+                    unset($_SESSION['usermessage']);
                 } ?>
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                     <div class="accordion-item">
@@ -503,14 +539,7 @@ function verifnewuser()
 
                                     <button name="adduser" class="btn btn-primary">Ajouter un compte</button>
                                 </form>
-                                <?php
-                                if (isset($_POST['adduser'])) {
-                                    if (verifnewuser()) {
-                                        create_user($bdd);
-                                    }
-                                }
                                 
-                                ?>
                             </div>
                         </div>
                     </div>
@@ -527,13 +556,9 @@ function verifnewuser()
                         <div id="flush-collapseFour" class="accordion-collapse collapse"
                             aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
-
-                            <?php displayusers($bdd);
-
+                            <?php 
+                                displayusers($bdd);
                             ?>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -583,12 +608,7 @@ function verifnewuser()
                                     </select><br><br>
 
                                     <button name="addcompte" class="btn btn-primary">Ajouter un compte</button>
-                                    <?php
-                                    if (isset($_POST['addcompte'])) //&& verifnewuser())
-                                    {
-                                        create_compte($bdd);
-                                    }
-                                    ?>
+                                    
                                 </form>
                             </div>
                         </div>
@@ -622,12 +642,6 @@ function verifnewuser()
                                         } ?>'><br><br>
                                     <button name="addpret" class="btn btn-primary">Chercher utilisateur</button>
                                 </form>
-                                <?php
-                                if (isset($_POST['addpret'])) {
-                                    echo "<h2>Comptes de l'utilisateur " . $_POST['nompret'] . " " . $_POST['prenompret'] . ": </h2>";
-                                    checkusercomptes($bdd);
-                                }
-                                ?>
                             </div>
                         </div>
                     </div>
@@ -635,6 +649,7 @@ function verifnewuser()
             </div>
         </div>
     </div>
+    <script type="text/javascript" src='loading.js'></script>
 </body>
 
 </html>

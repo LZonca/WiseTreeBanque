@@ -35,22 +35,35 @@ function updatepass($bdd)
     $requetemdp->execute(array($user));
     $data = $requetemdp->fetch();
 
-    if (($_POST['mdpchange'] == $_POST['mdprepeat']) && strlen($_POST['mdpchange']) == 6) {
-        if ($data) {
-            if (password_verify($pass, $data['password'])) {
-                $newpassword = password_hash($_POST['mdpchange'], PASSWORD_DEFAULT);
-                $requete = "UPDATE users SET password = ? WHERE userid = ?;";
-                $requete = $bdd->prepare($requete);
-                $requete->execute(array($newpassword, $user));
-                $_SESSION['usermessage'] = "<p class='alert alert-success'>Mot de passe changé !</p>";
-            } else {
-                $_SESSION['usermessage'] = "<p class='alert alert-danger'>>Mauvais mot de passe</p>";
+    if ($_POST['mdpchange'] == $_POST['mdprepeat']){
+        if(strlen($_POST['mdpchange']) == 6) {
+            if ($data) {
+                if(!password_verify($_POST['mdpchange'], $data['password'])){
+                    if (password_verify($pass, $data['password'])) {
+                        $newpassword = password_hash($_POST['mdpchange'], PASSWORD_DEFAULT);
+                        $requete = "UPDATE users SET password = ? WHERE userid = ?;";
+                        $requete = $bdd->prepare($requete);
+                        $requete->execute(array($newpassword, $user));
+                        $_SESSION['usermessage'] = "<p class='alert alert-success'>Mot de passe changé !</p>";
+                    } else {
+                        $_SESSION['usermessage'] = "<p class='alert alert-danger'>Mauvais mot de passe</p>";
+                    }
+                }else{
+                    $_SESSION['usermessage'] = "<p class='alert alert-danger'>Le nouveau mot de passe ne peut pas être le même que l'ancien...</p>";
+                }
+            } 
+        }else {
+                $_SESSION['usermessage'] = "<p class='alert alert-warning'>Le mot de passe n'a pas 6 caractères.</p>";
             }
-        } else {
-            $_SESSION['usermessage'] = "<p class='alert alert-danger'>Les mots de passe ne correspondent pas ou n'a pas 6 caractères</p>";
+        }else {
+            $_SESSION['usermessage'] = "<p class='alert alert-warning'>Les mots de passe ne correspondent pas.</p>";
         }
     }
-}
+
+if(isset($_POST['changemdp']))
+    {
+        updatepass($bdd);
+    }
 
 ?>
 
@@ -72,7 +85,12 @@ function updatepass($bdd)
                     </form>
                 </div>
             <div class="container">
+            
                 <h2><u>Vos paramètres:</u></h2>
+                <?php if (isset($_SESSION['usermessage'])) {
+                    echo $_SESSION['usermessage'];
+                    unset($_SESSION['usermessage']);
+                } ?>
                     <form method='POST' action='parametres'>
                         <label for="mdp">Mot de passe actuel</label><br><br>
                         <input type="password" name="mdp" placeholder="Mot de passe actuel" class="form-control" required><br><br>
@@ -82,14 +100,9 @@ function updatepass($bdd)
                         <input type="password" name="mdprepeat" placeholder="Répéter le nouveau mot de passe" class="form-control" required><br><br>
                         <button name='changemdp' class="btn btn-primary">Changer de mot de passe</button>
                     </form>
-                    <?php
-                        if(isset($_POST['changemdp']))
-                        {
-                            updatepass($bdd);
-                        }
-                    ?>
                 </div>
             </div>
         </div> 
+        <script type="text/javascript" src='loading.js'></script>
     </body>
 </html>

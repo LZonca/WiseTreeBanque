@@ -15,6 +15,16 @@ try{
     die('Erreur: '. $e->getMessage());
 }
 
+$sql = "SELECT * FROM users WHERE userid = ?";
+$request = $bdd->prepare($sql);
+$request->execute(array($_SESSION['userid']));
+$user = $request->fetch();
+
+if($user['permissions'] < 2){
+    $_SESSION['usermessage'] = "<p class='alert alert-warning' role='alert'>Le rendez-vous a été annulé avec succès.</p>";
+    header('Location: accueil');
+}
+
 if(!isset($_SESSION['userid'])){
     header('Location: connexion');
 }
@@ -31,7 +41,7 @@ if(isset($_POST['compteactuel'])){
     }
 }*/
 
-if(isset($_POST['comptes'])){
+if(isset($_POST['admin'])){
     header('Location: administration');
 }
 
@@ -56,7 +66,7 @@ if(isset($_POST['comptes'])){
     <header>
     <div class="navbar-nav">
         <form method="POST" action="nouveau-credit">
-            <button name="comptes" class="btn btn-primary">Retour</button>
+            <button name="admin" class="btn btn-primary">Retour</button>
         </form>
     </div>
     </header>
@@ -74,11 +84,11 @@ if(isset($_POST['comptes'])){
         <form action='traitement' method='POST'>
             <label for="raisonpret">Raison du crédit</label><br>
             <input type='text' name='raisonpret' class='form-control'><br>
-            <label for="raisonpret">Valeur du crédit</label><br>
+            <label for="valeur">Valeur du crédit</label><br>
             <input type='text' name='valeur' pattern="[0-9]+" class='form-control' required><br>
-            <label for="raisonpret">Taux d'interêt</label><br>
+            <label for="interet">Taux d'interêt</label><br>
             <input type='text' name='interet' pattern="[0-9,.]+" class='form-control' required><br>
-            <label for="raisonpret">Échéance</label><br>
+            <label for="echeance">Échéance</label><br>
             <input type='date' name='echeance' class='form-control' required><br>
             <label for="prelevement">Periodicité de prelevement</label><br>
             <select name='prelevement' class='form-control'>
@@ -88,10 +98,11 @@ if(isset($_POST['comptes'])){
                 <option value='Trimestriel'>Trimestriel</option>
                 <option value='Annuem'>Annuel</option>
             </select><br>
-            <label for="raisonpret">Valeur du remboursement</label><br>
+            <label for="valeurremboursment">Valeur du remboursement periodique</label><br>
             <input type='text' name='valeurremboursment' class='form-control' pattern="[0-9]+" required><br>
             <button name="createpret" class='btn btn-primary'>Créer le crédit</button>
         </form>
         
     </div>
+    <script type="text/javascript" src='loading.js'></script>
 </body>

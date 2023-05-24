@@ -164,7 +164,13 @@ function messagecount($bdd){
                 </form>
             </div>
         <div class="container">
-                <?php nomrequest($bdd);?>
+                <?php 
+                    if (isset($_SESSION['usermessage'])){
+                            echo $_SESSION['usermessage'];
+                            unset($_SESSION['usermessage']);
+                        }
+                    nomrequest($bdd);
+                ?>
                 <h1><u>Bienvenue sur la Wise Tree Bank</u></h1>
                 <?php echo "<h2>Compte utilisateur n° " . htmlspecialchars($_SESSION['userid']). "</h2>"; ?>
                 <h2>Vos comptes</h2>
@@ -176,5 +182,6 @@ function messagecount($bdd){
             </div>
         </div>
     </div> 
+    <script type="text/javascript" src='loading.js'></script>
     </body>
 </html>
