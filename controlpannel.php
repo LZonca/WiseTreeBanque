@@ -518,7 +518,7 @@ function verifnewuser()
                                     <input type="text" id="prenom" name="prenom" placeholder="Votre prenom"
                                         class="form-control" required><br><br>
                                     <label for="email">Mail*:</label><br><br>
-                                    <input type="mail" id="mail" name="email" placeholder="Wise@Tree.com"
+                                    <input type="mail" id="mail" name="email" placeholder="WiseTree@wisetree.sio"
                                         class="form-control" required><br><br>
                                     <label for="datenaissance">Date de naissance*:</label><br><br>
                                     <input type="date" id="date" name="datenaissance" placeholder="11/10/2003"

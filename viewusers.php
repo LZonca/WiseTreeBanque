@@ -62,7 +62,6 @@
             echo '<td>';
                 // Si l'utilisateur a une permission de 4, afficher le formulaire de confirmation de mot de passe
                 if($data['permissions'] >=3){
-                    echo '<td>';
                     echo '<form method="POST" action="utilisateur">
                         <input type="hidden" name="id" value="'. $data['userid'] .'">
                         <input type="password" name="password" placeholder="Mot de passe">
