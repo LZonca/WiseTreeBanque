@@ -6,10 +6,12 @@
         header('Location: connexion');
     }
 
-    if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    if ($_SERVER['SERVER_NAME'] == "127.0.0.1") {
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
+    } elseif ($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio") {
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+    } elseif ($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net") {
+        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
     }
     try{
         $bdd;
@@ -127,7 +129,7 @@
         header('Location: administration');
     }
     if (isset($_POST['Deco'])) {
-        header('Location: logout.php');
+        header('Location: deconnexion');
     }
 
 ?>
@@ -153,7 +155,7 @@
 
         table{
             text-align: center;
-            margin-left: 30vw;
+            margin: auto;
         }
 
         th{

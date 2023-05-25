@@ -6,10 +6,12 @@ if(!isset($_SESSION))
         header('Location: connexion');
     }
 
-    if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
-        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-    }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
+    if ($_SERVER['SERVER_NAME'] == "127.0.0.1") {
+        $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
+    } elseif ($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio") {
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+    } elseif ($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net") {
+        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
     }
 
 try{
@@ -49,7 +51,7 @@ function transfertrequete($bdd){
     $soldeexpe = $usersolde->fetch();
     $requetedata = 'INSERT INTO virements (id_destinataire, id_envoyeur, valeur, raison) VALUES (?, ?, ?, ?)';
     $requetedata = $bdd->prepare($requetedata); 
-    $requetedata->execute(array($destinataire, $envoyeur, $valeur));
+    $requetedata->execute(array($destinataire, $envoyeur, $valeur, $raison));
     
     $destinatairerequete = "UPDATE comptes SET solde = ? WHERE RIB = ?;";
     $destinatairerequete  = $bdd->prepare($destinatairerequete); 

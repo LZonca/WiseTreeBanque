@@ -29,6 +29,8 @@ RewriteRule ^messagerie$ contact.php [NC]
 RewriteRule ^votre-historique$ depenses.php [NC]
 RewriteRule ^utilisateur$ viewusers.php [NC]
 RewriteRule ^contact-mail$ mail.php [NC]
+RewriteRule ^deconnexion$ logout.php [NC]
+RewriteRule ^traitement$ traitement.php [NC]
 
 # Renvoyer les erreurs 404 vers la page 404.php
 RewriteRule ^404$ 404.php [NC]
