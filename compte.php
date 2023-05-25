@@ -1,11 +1,11 @@
 <?php
 session_start();
 
-if($_SERVER['SERVER_NAME'] == "127.0.0.1"){
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
-}elseif($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio"){
+if ($_SERVER['SERVER_NAME'] == "127.0.0.1") {
+    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', '');
+} elseif ($_SERVER['SERVER_NAME'] == "10.206.237.111" || $_SERVER['SERVER_NAME'] == "10.206.237.112" || $_SERVER['SERVER_NAME'] == "www.wisetreebanque.sio") {
     $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
-}elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+} elseif ($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net") {
     $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
 }
 // var_dump($_SESSION); // A enlever si nécéssaire
@@ -35,7 +35,7 @@ if(isset($_POST['lescomptes'])){
 }
 
 if(isset($_POST['Deco'])){
-    header('Location: logout');
+    header('Location: deconnexion');
 }
 
 if(isset($_POST['virement'])){
@@ -109,7 +109,7 @@ unset($_SESSION['usermessage']);
     <?php
     // $bdd = new PDO('mysql:host=10.206.237.9;dbname=wisebankdb;charset=utf8', 'phpmyadmin', 'carriat');
     
-    $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
+    //$bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
     nomrequest($bdd);
     ?>
     

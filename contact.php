@@ -26,7 +26,7 @@ if (isset($_POST['retour'])) {
 }
 
 if (isset($_POST['Deco'])) {
-    header('Location: logout');
+    header('Location: deconnexion');
 }
 
 function messagerequest($bdd)
@@ -179,7 +179,7 @@ function afficherdv()
             while ($datardv = $requete->fetch()) {
                 echo "<tr>";
                 echo "<td>" . $datardv['chat'] . "</td>";
-                echo "<td>" . $datardv['date'] . "</td>";
+                echo "<td>" . $datardv['daterdv'] . "</td>";
                 if($data['permissions'] > 1){
                 echo "<td>" . $data['prenom'] . " " . $data['nom'] . "</td>";
                 echo "<button type='submit' name='cancel' value='" . $datardv['idmsg'] . "' class='btn btn-warning btn-sm'>Annuler</button>";

@@ -4,6 +4,8 @@
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root','');
     }elseif($_SERVER['SERVER_NAME'] == "10.206.237.9"){
         $bdd = new PDO('mysql:host=localhost;dbname=wisebankdb;charset=utf8', 'root', 'wisetree');
+    }elseif($_SERVER['SERVER_NAME'] == "zonca.alwaysdata.net"){
+        $bdd = new PDO('mysql:host=mysql-zonca.alwaysdata.net;dbname=zonca_wisebankdb;charset=utf8', 'zonca_adminbank', 'wisetreebanque');
     }
     $sql = "SELECT * FROM users WHERE userid = ?";
     $request = $bdd->prepare($sql);
@@ -28,7 +30,7 @@
         }
     }*/
 
-    $mail = new PHPMailer();
+    //$mail = new PHPMailer();
     $mail->setFrom($_POST['from'], 'Expéditeur');
     $mail->addAddress($_POST['conseiller'], 'Destinataire');
     $mail->Subject = $_POST['objet'];

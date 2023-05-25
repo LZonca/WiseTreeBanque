@@ -88,6 +88,7 @@ if(isset($_POST['login'])){
                         echo "<div style='margin-top: 7%;'>";
                         echo $_SESSION['usermessage'];
                         echo '</div>';
+                        unset($_SESSION['usermessage']);
                     } ?>
                     <form action="connexion" method="post" id="formulaire">
                         <div class="numero-de-compte">NUMERO DE COMPTE*:</div>
